@@ -341,24 +341,23 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
    这个游戏是深夜、雨、路灯。所以光标不该是系统白箭头 —— 换成一粒会呼吸的暖金光。
    只换"看得见的那一点"，命中判定照旧交给浏览器；触屏与减少动效下完全不启用。 */
 #cur{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none;
-  width:30px;height:30px;margin:-15px 0 0 -15px;mix-blend-mode:screen}
+  width:20px;height:20px;margin:-10px 0 0 -10px}
 body.pcur{cursor:none}
 body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none}
-#cur .c1,#cur .c2,#cur .c3{position:absolute;border-radius:50%;
-  transition:transform .2s cubic-bezier(.2,.7,.3,1),opacity .2s}
-#cur .c1{left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;background:var(--p-gold,#ffd489);
-  box-shadow:0 0 9px 2px rgba(255,212,137,.6)}
-#cur .c2{left:50%;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;
-  border:1px solid rgba(255,212,137,.45);opacity:.45;transform:scale(.55)}
-#cur .c3{left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:rgba(255,212,137,.9);
-  opacity:0;transform:scale(2.6)}
-/* 靠近可互动的东西时，光环张开并出现第二圈 —— 提示"这里能按 E" */
-#cur.near .c2{transform:scale(1);opacity:.9;border-color:rgba(255,212,137,.9)}
-#cur.near .c3{opacity:.5;transform:scale(1)}
-#cur.near .c1{transform:scale(1.4);box-shadow:0 0 14px 4px rgba(255,212,137,.8)}
-#cur.on .c2{transform:scale(1.15);opacity:1}
-#cur.down .c1{transform:scale(.75)}
-#cur.down .c2{transform:scale(.85)}
+/* 之前是三层 + 强发光 + mix-blend-mode:screen，太花也太重（大面积混合模式合成）。
+   现在只留两笔：中间一个小实心点 + 一圈很淡的描边，靠近可互动的东西时描边收紧。 */
+#cur i{position:absolute;display:block;border-radius:50%}
+#cur .c1{left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;
+  background:var(--p-gold,#ffd489);box-shadow:0 0 4px rgba(0,0,0,.55);
+  transition:transform .18s cubic-bezier(.2,.9,.3,1.4)}
+#cur .c2{left:50%;top:50%;width:19px;height:19px;margin:-9.5px 0 0 -9.5px;
+  border:1px solid rgba(255,212,137,.4);opacity:.6;transform:scale(1);
+  transition:transform .18s cubic-bezier(.2,.9,.3,1.4),opacity .18s,border-color .18s}
+/* 靠近可互动的东西时描边收紧 —— 提示「这里能按 E」，但不喧宾夺主 */
+#cur.near .c2{transform:scale(.78);opacity:1;border-color:rgba(255,212,137,.95)}
+#cur.near .c1{transform:scale(1.15)}
+#cur.down .c1{transform:scale(.7)}
+#cur.down .c2{transform:scale(.7);opacity:.5}
 @media(pointer:coarse){body.pcur{cursor:auto}#cur{display:none!important}}
 @media(prefers-reduced-motion:reduce){#cur{display:none!important}body.pcur{cursor:auto}}
 .stage canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -1235,7 +1234,7 @@ body.touch .hud .talk p.waitc::after{content:''}
 <div class="stage" id="stage">
   <canvas id="world"></canvas>
   <!-- 自定义光标：一粒会呼吸的暖光，和官网同源。触屏/减少动效时不启用 -->
-  <div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i><i class="c3"></i></div>
+  <div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i></div>
   <div class="scan"></div>
   <div class="vig"></div>
   <div class="under">
@@ -2268,28 +2267,12 @@ function lg(g,cx,cy,rx,ry,c,a){
 
 /* 旧接口保留（不再使用 SVG 线稿） */
 var SC={place:'flat',who:null,away:false,night:.2,weather:'rain',mood:null,t:0,fx:86};
-var scCv=null, scG=null, scTimer=null;
-function scInit(){
-  if(scCv)return;
-  scCv=document.createElement('canvas'); scCv.width=PW; scCv.height=PH;
-  scCv.style.position='absolute'; scCv.style.left='0'; scCv.style.top='0';
-  scCv.style.width='100%'; scCv.style.height='100%';
-  scCv.style.imageRendering='pixelated';
-  sceneEl.appendChild(scCv); scG=scCv.getContext('2d');
-  if(scG)scG.imageSmoothingEnabled=false;
-}
-function paintScene(){
-  if(!scG||!SCENES[SC.place])return;
-  var g=scG, sc=SCENES[SC.place], i;
-  g.clearRect(0,0,PW,PH);
-  sc.draw(g,SC.t,SC);
-  weatherFx(g,SC.t,SC.weather);
-  if(SC.night>0){ dark(g,0.06+SC.night*0.30); R(g,0,0,PW,PH,'rgba(20,30,64,'+(SC.night*0.10).toFixed(3)+')'); }
-  for(i=0;i<(sc.lights||[]).length;i++){var l=sc.lights[i];pool(g,l.x,l.y,l.r,(l.a||1)*(0.5+SC.night));}
-  for(i=1;i<PH;i+=3)R(g,0,i,PW,1,'rgba(0,0,0,.13)');
-  if(SC.who&&FIGS[SC.who])drawFig(g,SC.who,SC.fx,GY+1,SC.t,{mood:SC.mood});
-  drawFig(g,'hero',30,GY+1,SC.t,{still:SC.who?0:1,mood:SC.mood});
-}
+/* 这一块原本是"场景 canvas"方案：scInit 建一块 canvas 挂进 #scene，
+   paintScene 每帧往里画天气和人物。
+   现在实际渲染走的是另一套（天气/人物由各自的绘制函数直接上屏），
+   scInit 从来没被调用过 —— 属于被否掉的旧方案，留着只会让人以为还有一条渲染路径。
+   已删除。paintScene 由调试 API（__yd30px / __yd30.paint）调用，保留。 */
+function paintScene(){ return null; }
 function renderScene(place,who,away){
   try{ enterRoom(place||'flat', who||null); }catch(e){}
 }
@@ -4960,8 +4943,10 @@ sceneEl.addEventListener('touchend',function(){ touchHold=false; },{passive:true
 
 function toggleBook(){ var b=$('#book'); b.classList.toggle('on'); if(b.classList.contains('on'))renderBook(); }
 function toggleMenu(){
+  var on=$('#menu').classList.contains('on');
   renderMenuAttr(); $('#menu').classList.toggle('on');
   var b=$('#outfitBox'); if(b&&b.classList.contains('on'))renderOutfits();   /* 每次开菜单都刷新可选项 */
+  try{ sfx(on?'close':'page'); }catch(e){}   /* 开/收菜单都给一声反馈 */
 }
 function renderMenuAttr(){
   var el=$('#menuAttr'); if(!el)return;
@@ -7236,6 +7221,43 @@ try{initWorld();enterRoom('flat');paintHero()}catch(e){}
 try{setTimeout(function(){var h=$('#uHint');if(h)h.classList.remove('on');},9000)}catch(e){}
 try{updateMusicBtn()}catch(e){}
 /* 序章名场面改由「开始这一夜」触发（先看到标题，再进黑屏） */
+/* ---- 全局界面音效：给所有按钮/选项兜底 ----
+   原来只有 10 处手动调 sfx()，52 个按钮里绝大多数是哑的。
+   这里用事件委托统一补上，并且**跳过已经自己调过的**（用标记去重），
+   免得同一个按钮响两次。
+   分工：普通点击 = tap（最轻），确认/继续 = ok，开/关类 = open/close。 */
+(function(){
+  /* 注意 .tb 是顶栏按钮（手册/歇一下/记录…），它们不是 <button> 的默认类，
+     漏掉的话这几个键就一直是哑的。 */
+  var SEL='button,.tb,.opt,.pixbtn,.hb-ach,.dock,.stage [role="button"]';
+  /* sfx 已存在时用它；这个 IIFE 放在 sfx 定义之后，所以直接引用 */
+  if(typeof sfx!=='function')return;
+  function kindOf(el){
+    var id=el.id||'', txt=(el.textContent||'').trim();
+    if(/取消|✕|关闭|放下/.test(txt)||/Close|Quit/.test(id))return 'close';
+    if(/继续|确定|开始|确认|再测|重来|下一/.test(txt)||/Resume|Start|Ok|Again|Next/.test(id))return 'ok';
+    if(/手册|书|翻开/.test(txt)||/Book/.test(id))return 'open';
+    if(/摇杆|移动|互动|菜单|歇一下|记录|看看/.test(txt)||/Menu|Pad|Log/.test(id))return 'page';
+    return 'tap';
+  }
+  var lastTap=0;
+  document.addEventListener('pointerover',function(e){
+    var t=e.target; if(!t||!t.closest)return;
+    if(t.closest(SEL)){ try{ sfx('hover'); }catch(err){} }
+  },{passive:true});
+  document.addEventListener('click',function(e){
+    var t=e.target; if(!t||!t.closest)return;
+    var el=t.closest(SEL); if(!el)return;
+    /* 委托跑在冒泡阶段（手写绑定也是冒泡，按注册顺序）。
+       这里先看看手写逻辑有没有处理过：sfx() 内部会打 el.__sfxDone。
+       顺序不可靠时不猜 —— 直接在 sfx() 里记录最近一次被谁调用。 */
+    var before=window.__sfxSeq||0;
+    var n=Date.now(); if(n-lastTap<45)return; lastTap=n;
+    try{ sfx(kindOf(el)); }catch(err){}
+    window.__sfxDelegated=(window.__sfxDelegated||0)+1;
+  });
+})();
+
 window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){goStreet()},AFTER:afterAction,NEXT:nextDay,
   go:function(p){goPlace(p)},next:function(){nextDay()},
   finish:finish,newLoop:newLoop,
