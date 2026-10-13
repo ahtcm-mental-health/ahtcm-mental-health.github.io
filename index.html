@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a2036">
+<title>大学生心理健康协会</title>
+<meta name="description" content="这里有几件小事，也许今晚就能用上。不用一次看完。">
+<!-- 字体走异步加载：Google Fonts 是外网资源，官网不能因为它连不上就打不开。
+     <noscript> 里留一份同步引用，禁 JS 时也能用上。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all';this.onload=null"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap"></noscript>
+<style>
+/* ==========================================================================
+   大学生心理健康协会 · 官网
+   每一个区块说自己的语言（"变化"在这里）：
+     首屏 ............ 水彩晕染
+     01 认识 ......... 细点阵纸 + 云/雾符号
+     02 四季 ......... 四色竖卡 + 季节符号
+     03 自助 ......... 方格稿纸
+     04 陪伴 ......... 并排/相切的暖块
+     05 树洞 ......... 便签贴纸墙
+     06 手册 ......... 千禧年复古窗口
+     07 游戏 ......... 沉入像素夜
+     08 周边 ......... 线稿
+     09 求助 ......... 唯一的红
+   整体气质：极简留白 + 柔和夜色 + 像素细节 + 暖光点缀，沉静、不喧哗。
+   避开的俗套：抱头、乌云=抑郁、彩虹=积极、黑狗、拼图、药丸、蓝色=抑郁。
+   ========================================================================== */
+:root{
+  --paper:#1a2036; --paper-2:#20263e; --card:#262d48;
+  --ink:#eae8f4; --ink-2:#c4c2d8; --muted:#9e9bb6;
+  --line:#343c5c; --line-2:#454e74;
+  /* 主色组：像素调 */
+  --c1:#8fa0d6; --c2:#7fc6c0; --c3:#e0a868; --c4:#b394d6; --c5:#a8c47e;
+  /* 四季 */
+  --sp:#8fb07f; --sps:#e9f1e2;   /* 春 */
+  --su:#63aaa2; --sus:#ddf0ec;   /* 夏 */
+  --sa:#c48f5e; --sas:#f7e8d7;   /* 秋 */
+  --sw:#8b95ae; --sws:#e6e9f1;   /* 冬 */
+  /* 像素 · 夜色 */
+  --night:#2b3350; --night-2:#232a42;
+  --lamp:#f0c060; --warm:#ffd98a;
+  --px1:#7f9dd4; --px2:#9d86d6; --px3:#7fc6c0;
+  --sign:#e07a70; --sign-soft:#3a2836; --hl:#f0c060;
+  /* 千禧年复古窗 */
+  --win-bg:#232a44; --win-bar:#3a4262; --win-bar-2:#2b3350; --win-line:#4a5478; --win-ink:#e8e6f2;
+  --serif:"Noto Serif SC","Source Han Serif SC",serif;
+  --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sec-y:clamp(56px,7.4vw,104px);
+  --wrap:min(1100px,92vw);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.36;margin:0}
+a{color:inherit;text-decoration:none}
+img{font-size:0;max-width:100%;display:block}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--hl);color:var(--ink)}
+:focus-visible{outline:2px solid var(--c1);outline-offset:3px;border-radius:4px}
+.wrap{width:var(--wrap);margin-inline:auto;position:relative;z-index:2}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.24;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E")}
+body>*{position:relative;z-index:1}
+
+.sym-s{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+
+/* ---------- 顶栏 ---------- */
+.helpbar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;padding:calc(11px + env(safe-area-inset-top)) clamp(14px,3.4vw,30px) 11px;
+  background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);border-bottom:1px solid transparent;
+  transition:border-color .3s,transform .45s cubic-bezier(.22,.61,.36,1)}
+.helpbar.scrolled{border-bottom-color:var(--line)}
+.helpbar.hide{transform:translateY(-104%)}
+.hb-brand{display:flex;align-items:center;gap:9px;min-width:0}
+.hb-logo{width:26px;height:26px;flex:none;border-radius:8px;background:var(--c1);display:grid;place-items:center}
+.hb-emblem{height:30px;width:auto;flex:none;display:block;background:#fff;padding:2px;
+  border:1px solid var(--line-2);box-shadow:2px 2px 0 rgba(0,0,0,.4);object-fit:contain}
+.hb-name{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-help{display:inline-flex;align-items:center;gap:7px;flex:none;padding:7px 15px;border-radius:999px;
+  font-size:12.5px;font-weight:500;background:var(--sign);color:#fff;transition:opacity .2s}
+.hb-help:hover{opacity:.86}
+.hb-help svg{width:13px;height:13px;flex:none}
+
+/* ---------- 首屏 ---------- */
+.hero{position:relative;padding:calc(118px + env(safe-area-inset-top)) 0 clamp(64px,9vw,120px);
+  overflow:hidden;display:flex;align-items:center;min-height:min(86vh,740px);
+  background:color-mix(in srgb,var(--c3) 15%,var(--paper));transition:background-color 2.6s ease}
+.hero[data-weather="cloud"]{background:color-mix(in srgb,var(--c1) 27%,var(--paper))}
+.hero[data-weather="rain"]{background:color-mix(in srgb,var(--c1) 40%,var(--paper))}
+.hero[data-weather="snow"]{background:color-mix(in srgb,var(--c1) 34%,var(--paper))}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--paper) 78%,transparent))}
+.sky{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.sky>b{position:absolute;inset:0;display:block;opacity:0;transition:opacity 2.4s ease}
+.sky .sun{background:radial-gradient(38% 42% at 76% 16%,rgba(240,216,160,.22),transparent 72%)}
+.hero[data-weather="clear"] .sun{opacity:1}
+.hero-inner{position:relative;z-index:2;width:var(--wrap);margin-inline:auto;display:grid;
+  grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:clamp(26px,4.6vw,66px);align-items:center}
+@media(max-width:940px){.hero-inner{grid-template-columns:1fr;gap:34px}}
+.hero-side{display:grid;gap:10px;align-content:center}
+.hs{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:15px 17px;
+  border:1px solid #46507a;background:rgba(255,255,255,.032);
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),4px 4px 0 rgba(0,0,0,.34);
+  transition:transform .16s cubic-bezier(.22,.61,.36,1),border-color .2s,background-color .2s}
+.hs:hover{border-color:var(--c1);background:rgba(255,255,255,.06);transform:translateX(3px)}
+.hs .ico{width:26px;height:26px;color:var(--c1);opacity:.9}
+.hs .ico svg{width:100%;height:100%}
+.hs b{display:block;font-family:var(--serif);font-size:14.5px;color:var(--ink);margin-bottom:2px}
+.hs em{font-style:normal;font-size:12px;color:var(--ink-2);line-height:1.6}
+.eb{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;font-size:11.5px;letter-spacing:.22em;
+  color:var(--c1);font-weight:500}
+.eb i{width:20px;height:1.5px;background:currentColor;display:block}
+.hero h1{font-size:clamp(30px,5.6vw,56px);line-height:1.22;letter-spacing:-.012em;margin-bottom:20px;max-width:22ch}
+.hl{background:linear-gradient(180deg,transparent 62%,var(--hl) 62%,var(--hl) 94%,transparent 94%)}
+.hero .sub{font-size:clamp(14px,1.7vw,16px);color:var(--ink-2);margin:0 0 30px;max-width:42ch}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.btn-a{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:999px;font-size:14.5px;
+  font-weight:600;background:var(--c1);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--c1) 62%,#000);
+  transition:transform .2s}
+.btn-a:hover{transform:translateY(-2px)}
+.btn-b{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-size:14.5px;
+  border:1.5px solid var(--line-2);color:var(--ink-2);background:color-mix(in srgb,var(--card) 66%,transparent);
+  transition:border-color .25s,color .25s}
+.btn-b:hover{border-color:var(--c1);color:var(--c1)}
+.hero-foot{display:flex;align-items:center;gap:20px;border-top:1px solid var(--line-2);
+  padding-top:18px;max-width:500px;flex-wrap:wrap}
+.seasons-mini{display:flex;gap:15px;align-items:center}
+.sm{display:inline-flex;align-items:center;gap:6px;padding:8px 3px;font-size:11.5px;color:var(--ink-2);letter-spacing:.06em;transition:color .2s}
+.sm:hover{color:var(--ink)}
+.sm i{width:7px;height:7px;border-radius:50%;display:block}
+.sm .sp{background:#6f9ab5} .sm .su{background:#c9a24e} .sm .sa{background:#c07856} .sm .sw{background:#6b6f9c}
+.hero-foot .tiny{font-size:11.5px;color:var(--muted);margin:0;flex:1;min-width:210px}
+/* 常驻角色 · 水木和（右下角） */
+.dock{position:fixed;right:clamp(12px,2.4vw,26px);bottom:clamp(12px,2.4vw,20px);z-index:80;
+  display:flex;align-items:flex-end;gap:1px;filter:drop-shadow(0 10px 22px rgba(90,74,44,.24));
+  transform:rotate(var(--dtilt,0deg));transform-origin:50% 100%;will-change:transform;
+  transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.dock-h{position:relative;height:clamp(112px,12.6vw,158px);width:clamp(56px,6.3vw,79px);display:block;
+  background-repeat:no-repeat;background-position:center bottom;background-size:contain;
+  image-rendering:pixelated;animation:idle 3.6s ease-in-out infinite;
+  transition:background-image .12s steps(2)}
+.dock-h.f-d{background-image:url(data:image/png;base64,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)}
+.dock-h.f-l{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAB4CAYAAACuNZEIAAAH8ElEQVR4nO2dT6hc1R3HP0apWkMjL8l7kSxEbWyaaCwKeahoUqyLFAURFCQVCYpZpVCIwYWLCoISUl0EEV0kSKtCg6LVxoWt+hSVJzS0amI0xuLC6ovJ0ErUVjBxceczk/nNnHfv/HsV53w3w8yce+flfs7v7zn35iTmWD+aP/94p88/P3r0pLn4/Xlz8SPfJQ39qkaiK887G4CxRQsBWLCweH1u9wvA8ElnwoOSZM8644cArLvxOgAWrby6Zdy+Fx8HYO3aSQA2b7kHGB7pTHhQkvDmO38DwGlLC4L//XgagG33PdDxuGzDA9bAr6Zkt2zbCcAPTj295ft7N1wDwDfz5wNzF39VJjwoRdLqzw/9FoC9Bz8CMuGha+iEVfTWX//vKwC2bt5Q6XyDmgmZcLdKVT/X/LLIqP5z5AgAH7yzH4D1mzYCMP3S1KznNcdevuoCoD1u90p85Aif0uuBkrX6WXfD9QDsf+sdAH627lagaavLVhTVkGRrhwvyk1deDjRzbOO2x6krJi+un2c5ADt2Pn4cuic9coQrX51oq1ZBN9/9INCeUUVJ7Njhtzp+r/euerwzqds6OhOOkuzJR48CcNlVVwIw+fM1QDmZYUni1tNVSY8c4aSXTnnheYtWAeU2O2z5+3ZKjPevTu+Z1XuPHOHkfJfwtq13AbB46UoADtTmtLipLDsptZkZAHbsLGw7kh45wm02nCL7XdWysXp6MLYagKmZZ2cdnwmrT2tfAPDv0wsTaFzJIOPhXHvt1N8z/cprQDO67D34UYvXHl3C2q5VifFWggdqrQT1ig39nzIu9dnHewE45yfnA/DP997vOG50CSs7DSnFeLfmF9cCcKBWfB/r2G5tu+rx5gOOP/zuh5XOnwnbQ0p1HuxY2HmIGj92EIBD887r+H1Vr24VZOdkUMqEVeww/L3eYVBjExNAe26dIqtSZJtx9TQADk8sbvk74nEN291b1MGHZj4DYLx+3N+mXuv4O5lwVLRZbbzRnQzxV9uzPr30hk1A2idEcs4Yu5jOsK/reYHvjRKSVb7/5IsvgVwttRM2w1KuGLz+11cAGJ8YB+CSNUU/ORLThpwJVb1tqs52Jo1PzMx6vHJmpZQJp/rGkWwcr02pCy9c3fL+X3v+1PG8ccUhqoyYM6rq+ExYacsStTu48+HfA80upiS37roTgA0bb245j17ePvbzu54CmlXNokRDReKuQZXl+Hpno8mr03s6/7tmPcv3UG2uMe6vWjJ2BtDsbb399ptAu42qqb8UPaXn//g0AGNLChtzb6Ve/8cXFCTW/GpLx/Po/d0T4syxE9P03sX5D+wrzivZ3JeuK2nDXsEla1szqRRZZX386PZHgCZJJfEymzRHdmY0u6dFZ6NWJ2sPq+quoEzYK/Tc7heOQzNjWry0uxPfsul2oFlV6a21xWee3D3r8TFHjtJmu93vlQlHmUHZ0ddGy+Q4u4m3/fqOlu8XLCx6Y6l6N+bkyplR5o1TGjnClXcAnNDJB+DRx57o64eN56n15qk/bAWacVul6tyqyoRTkrRX1ve9kt712A6gvU6OezesfsypjcvZhiuq8k68eCV9f8v6m1rWpCRhNaWXT+XWSrJv7Nrech7H+ernvSoTrqroveNKhJmVXtb7lsygYmdCsmVqzJztD/tRV3suM+Futf8fRSaljdnZmKzn0JI3p/bVauzMr4pXqyczLMep2DOzE+MOvKrKhMsUbdfelGs5cSd7ipQkX365yKldsde2l9XHe/yKn57bch7zr9RejpQy4arSZiViZ0PSEoszIHZAtPHYX7beXVD36nY4JO3v6kOo3+lWpky4qrTVhs2FOOz3kjbD0osru6JRqVXBqG7vYcyEU9I7ez+SauS8dW9aq3cRUzmvRPfVd90sGTu34zhXOmLv64R90UCulkrVtQ3rTbUpvbCKGVe8T6lXmZPnjkeX6ppw9JaxqyhJc+V4B1q30tv3mjtHZcJRMXdOyRw5tZs15tRxpsRcWemtf3f3/UDzjji6rINVJpxS7dPOXlm5iufakbmztleWUTkDUuPM1Pw7elUmXFXGY23XK+8KvURiFRSPtypKkVX2stwj8kl9BaRbZcIp2XWMPalYD0vKuBu9c5Rx2plRRrpfZcJRxjnvuVfGw7iPS1KpuJpSVbLOHDsdcc2rTJlwSnHVMJJVelFJpEg36ueKcTX2pd37afVUVZlwVcX4amdCYmZeqQzK93p3OyBxRuwL9yOZmeWVh4rqmbAkXDmwIxFzXm0v1buy22nGlVJjxoQ9m90qEy6T3nrzlntaVv6jJC25lLf2c23T9zHzKpsBVZUJV5WkfW6GGvM17MlIeeEoybbv2i2igHfX9PrUxJEjPLCHcsTeV9ylE3fC27eO8VnCZmzK3Lnf52Fmwr0qPkMgKq48OAPiHpB4T6G9sX5XHFQm3KvKbFhFW5a8mVnM1AZFVo0c4b73acVn5cX4W5b7pvZSSrrX7mRKmXBVpdacojdOVVEp9VsNlWnkCPfs+eJT/uP+q7IVf0nH4+Lxg34O9cgR7ttLN2wzEI226jiJnbDO23pciMuD1sgRHtjzpVPEUn1jx0teRbI50+pTfdvwCVe+80Pq6vLZtq4YRLJqUCv9KWXCvSplY9r48ouKO7xjFVXm3QetTHhQKvPeUZI9NHMIGN7/5ZIJD0rRe9uvTuXYjXg95P+lZ+QIfwtr1RxJBg+7nwAAAABJRU5ErkJggg==)}
+.dock-h.f-r{background-image:url(data:image/png;base64,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)}
+.dock-h.turn{animation:idle 3.6s ease-in-out infinite,hop .42s ease-out}
+.dock-d{height:clamp(112px,12.6vw,158px);width:auto;display:block}
+.dock::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:9px;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(80,66,40,.26),transparent 72%);z-index:-1}
+@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes hop{0%{transform:translateY(0)}40%{transform:translateY(-7px)}100%{transform:translateY(0)}}
+.dock:hover .dock-h{animation-play-state:paused}
+.dock .tip{position:absolute;right:0;bottom:calc(100% + 8px);white-space:nowrap;background:var(--ink);
+  color:#fff;font-size:11px;padding:5px 10px;border-radius:8px;opacity:0;transform:translateY(4px);
+  transition:opacity .25s,transform .25s;pointer-events:none}
+.dock:hover .tip{opacity:.94;transform:none}
+.dock-say{position:fixed;right:clamp(12px,2.4vw,26px);z-index:81;max-width:236px;padding:7px 11px;
+  background:var(--ink);color:var(--paper);font-size:12.5px;line-height:1.55;letter-spacing:.02em;
+  border:1px solid var(--line);opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .22s ease,transform .22s ease}
+.dock-say.on{opacity:.96;transform:none}
+.dock-say::after{content:"";position:absolute;right:15px;bottom:-5px;width:8px;height:8px;
+  background:var(--ink);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  transform:rotate(45deg)}
+@media(max-width:620px){.dock-say{max-width:184px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.dock-h{animation:none}}
+@media(max-width:620px){.dock{right:8px;bottom:10px}.dock .tip{display:none}
+  .dock-h,.dock-d{height:clamp(112px,31vw,146px)}}
+
+
+/* ---------- 通用区块 ---------- */
+.sec{padding:var(--sec-y) 0;position:relative;overflow:hidden;scroll-margin-top:calc(var(--hbH,64px) + 14px)}
+
+.sec-top{display:grid;grid-template-columns:auto 1fr auto;gap:0 16px;align-items:baseline;margin-bottom:16px}
+.tbar{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;color:var(--muted);
+  border:1px solid #39415f;padding:4px 10px;white-space:nowrap;align-self:center;background:rgba(255,255,255,.02)}
+.tbar i{width:7px;height:7px;border-radius:50%;display:block;flex:0 0 auto}
+/* 一天的时段色：未醒透 → 天亮 → 上午 → 正午 → 午后 → 黄昏 → 入夜 → 深夜
+   （沿用「一天的心情变化」那张卡的时间语言，往两头补齐成完整一天） */
+.tbar[data-t="first"] i{background:#7c8fa8}
+.tbar[data-t="dawn"]  i{background:#6f9ab5}
+.tbar[data-t="morn"]  i{background:#8fb3c4}
+.tbar[data-t="noon"]  i{background:#c9a24e}
+.tbar[data-t="aft"]   i{background:#b99a63}
+.tbar[data-t="dusk"]  i{background:#c07856}
+.tbar[data-t="night"] i{background:#5b6f9c}
+.tbar[data-t="deep"]  i{background:#7b82c8;box-shadow:0 0 6px rgba(140,150,230,.7)}
+@media(max-width:620px){.tbar{font-size:10.5px;padding:3px 7px;letter-spacing:.04em}}
+.sec-top .idx{font-size:11px;letter-spacing:.2em;color:var(--accent,var(--muted));white-space:nowrap}
+.sec-top h2{font-size:clamp(21px,3.1vw,30px)}
+.sec .lead{color:var(--ink-2);font-size:clamp(13.5px,1.7vw,15.5px);max-width:62ch;margin:0 0 28px}
+.sec .lead b{font-weight:600;color:var(--ink)}
+.reveal{opacity:0;transform:translateY(18px);
+  transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 背景符号水印 */
+.bgsym{position:absolute;pointer-events:none;z-index:1;color:var(--accent,var(--c1));
+  opacity:.09;user-select:none}
+.bgsym svg{width:100%;height:100%;display:block}
+.bgsym.b1{width:min(38vw,340px);height:min(38vw,340px);right:-4%;top:6%}
+.bgsym.b2{width:min(26vw,220px);height:min(26vw,220px);left:-3%;bottom:8%}
+
+/* 01 认识：细点阵 */
+.s-know{background:color-mix(in srgb,var(--c1) 20%,var(--paper));--accent:var(--c1)}
+.s-know::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:radial-gradient(color-mix(in srgb,var(--c1) 42%,transparent) 1px,transparent 1.4px);
+  background-size:20px 20px}
+.grid{display:grid;gap:0;border-top:1px solid var(--line)}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:960px){.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.g2,.g3{grid-template-columns:1fr}}
+.cell{padding:24px 24px 26px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+  position:relative;transition:background-color .3s;background:color-mix(in srgb,var(--card) 55%,transparent)}
+.g2>.cell:nth-child(2n),.g3>.cell:nth-child(3n){border-right:0}
+@media(max-width:960px){.g3>.cell:nth-child(3n){border-right:1px solid var(--line)}
+  .g3>.cell:nth-child(2n){border-right:0}}
+@media(max-width:620px){.g2>.cell,.g3>.cell{border-right:0}}
+.cell:hover{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.cell .tag{display:inline-block;font-size:10.5px;letter-spacing:.15em;color:var(--accent,var(--muted));
+  margin-bottom:12px;font-weight:500}
+.cell h3{font-size:16.5px;margin-bottom:8px}
+.cell p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.cell .src{margin-top:14px;font-size:11px;color:var(--muted)}
+.cell .no{position:absolute;top:22px;right:22px;font-size:11px;color:var(--line-2);font-family:var(--mono)}
+.stat{display:flex;align-items:baseline;gap:9px;margin-bottom:8px}
+.stat b{font-family:var(--serif);font-size:27px;color:var(--accent,var(--ink));line-height:1}
+.stat span{font-size:11.5px;color:var(--muted)}
+.blank{max-width:46ch;margin:40px auto 0;text-align:center;color:var(--muted);font-size:13px;line-height:2.2;
+  padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.blank em{font-style:normal;color:var(--ink-2)}
+
+/* 02 四季 */
+.s-season{background:var(--paper);--accent:var(--c2)}
+.four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-radius:16px;overflow:hidden;
+  border:1px solid var(--line)}
+@media(max-width:900px){.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.four{grid-template-columns:1fr}}
+.sq{position:relative;padding:26px 20px 24px;min-height:270px;overflow:hidden;
+  border-right:1px solid color-mix(in srgb,var(--qc) 26%,var(--line));transition:transform .3s}
+.sq:last-child{border-right:0}
+@media(max-width:900px){.sq{border-bottom:1px solid color-mix(in srgb,var(--qc) 26%,var(--line))}}
+.sq:hover{transform:translateY(-4px)}
+.sq .qico{position:absolute;right:-14px;bottom:-14px;width:112px;height:112px;color:var(--qc);opacity:.16;z-index:0}
+.sq .qico svg{width:100%;height:100%}
+.sq .qbar{position:absolute;left:0;top:0;right:0;height:4px;background:var(--qc)}
+.sq>*{position:relative;z-index:1}
+.sq .qmon{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--qc);margin-bottom:12px;display:block}
+.sq h3{font-size:17px;margin-bottom:9px}
+.sq .q1{font-size:12.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.75}
+.sq .qdo{font-size:12px;color:var(--ink);margin:0;padding-top:11px;
+  border-top:1px dashed color-mix(in srgb,var(--qc) 40%,var(--line))}
+.sq .qdo b{color:var(--qc);font-weight:600}
+.sq.q-d1{background:color-mix(in srgb,#8fb3c9 22%,var(--paper));--qc:#89b8d6}
+.sq.q-d2{background:color-mix(in srgb,#d8b878 20%,var(--paper));--qc:#c9a24e}
+.sq.q-d3{background:color-mix(in srgb,#c98f72 22%,var(--paper));--qc:#c07856}
+.sq.q-d4{background:color-mix(in srgb,#7b7fa8 24%,var(--paper));--qc:#969ad0}
+
+/* 03 自助：方格稿纸 */
+.s-self{background:color-mix(in srgb,var(--c2) 20%,var(--paper));--accent:var(--c2)}
+.s-self::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.55;
+  background-image:linear-gradient(color-mix(in srgb,var(--c2) 34%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--c2) 34%,transparent) 1px,transparent 1px);
+  background-size:26px 26px}
+.s-self .cell{background:color-mix(in srgb,var(--card) 80%,transparent)}
+.s-self .cell::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c2);opacity:.5}
+
+/* 04 陪伴：暖块 + 两个圆 */
+.s-with{background:color-mix(in srgb,var(--c3) 22%,var(--paper));--accent:var(--c3)}
+.s-with .cell.say{border-left:3px solid var(--c2)}
+.s-with .cell.avoid{border-left:3px solid var(--sign)}
+.s-with .cell.keep{border-left:3px solid var(--c3)}
+.s-with .cell.avoid .tag{color:var(--sign)}
+
+/* 05 树洞：便签墙 */
+.s-tree{background:color-mix(in srgb,var(--c4) 20%,var(--paper));--accent:var(--c4)}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
+.note{padding:15px 15px 17px;border-radius:12px;font-size:13px;line-height:1.75;color:var(--ink);
+  background:color-mix(in srgb,var(--c4) 22%,var(--card));
+  border:1px solid color-mix(in srgb,var(--c4) 26%,transparent);box-shadow:0 3px 10px rgba(90,80,110,.06)}
+.note:nth-child(2n){background:color-mix(in srgb,var(--c2) 22%,var(--card));
+  border-color:color-mix(in srgb,var(--c2) 26%,transparent);transform:rotate(-.6deg)}
+.note:nth-child(3n){background:color-mix(in srgb,var(--c3) 24%,var(--card));
+  border-color:color-mix(in srgb,var(--c3) 28%,transparent);transform:rotate(.5deg)}
+.note b{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+
+/* 06 手册：复古窗口 */
+.s-manual{background:var(--paper-2);--accent:var(--c1)}
+.retro{border:1px solid var(--win-line);background:var(--win-bg);border-radius:10px;overflow:hidden;
+  box-shadow:0 6px 20px rgba(90,80,100,.08)}
+.retro .rbar{display:flex;align-items:center;gap:8px;padding:7px 11px;
+  background:linear-gradient(180deg,var(--win-bar),var(--win-bar-2));
+  border-bottom:1px solid var(--win-line);font-size:11.5px;color:var(--win-ink);letter-spacing:.05em}
+.retro .rbar .rb{width:10px;height:10px;border-radius:3px;background:#fff;border:1px solid rgba(0,0,0,.18);flex:none}
+.retro .rbar .rb.x{background:var(--sign);border-color:transparent}
+.retro .rbody{padding:14px 15px}
+.retro .rfoot{border-top:1px solid var(--win-line);padding:7px 11px;font-size:11px;color:var(--muted);
+  display:flex;justify-content:space-between;gap:10px}
+.manual .who{padding:11px 0 9px;border-bottom:1px solid var(--line)}
+.manual .who:last-child{border-bottom:0}
+.manual .who .nm{font-family:var(--serif);font-size:13.5px;color:var(--win-ink);display:block;margin-bottom:6px}
+.manual .who .ln{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:12px;color:var(--ink-2);
+  padding:3px 0;align-items:baseline}
+.manual .who .ln .d{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.manual .who .ln.void{color:var(--muted);font-style:italic}
+.manual .who .ln.void .d{color:var(--line-2)}
+.manual .who .ln.seen .d{color:var(--c3)}
+.drawing{border:1px solid var(--line);padding:22px;background:var(--card);margin:0;border-radius:14px;
+  display:flex;flex-direction:column;justify-content:center}
+.drawing svg{width:100%;height:auto;display:block;max-width:280px;margin:0 auto}
+.drawing .u{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+.drawing .th{fill:none;stroke:var(--ink);stroke-width:.9;stroke-linecap:round;opacity:.3}
+.drawing figcaption{margin-top:14px;font-size:11.5px;color:var(--muted);text-align:center}
+[data-fill]{display:inline-block;min-width:5em;padding:0 5px;border-bottom:1.5px dashed var(--muted);
+  color:var(--ink-2);font-style:normal}
+
+/* 07 游戏：像素夜 */
+.s-game{background:linear-gradient(180deg,var(--night),var(--night-2));color:#e8e6f0;overflow:hidden}
+.s-game .sec-top .idx{color:var(--px1)}
+.s-game h2{color:#fff}
+.s-game .lead{color:#b9b6ca}
+.s-game .lead b{color:#fff}
+.s-game::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 26% 34%,#cfd6ff,transparent),
+    radial-gradient(1px 1px at 41% 12%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 58% 26%,#ffe6b0,transparent),
+    radial-gradient(1px 1px at 72% 14%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 86% 30%,#cfd6ff,transparent),
+    radial-gradient(1px 1px at 66% 8%,#fff,transparent),
+    radial-gradient(1px 1px at 8% 40%,#ffe6b0,transparent);
+  opacity:.9}
+.game-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+  gap:clamp(20px,3.4vw,44px);align-items:start}
+@media(max-width:900px){.game-grid{grid-template-columns:1fr}}
+/* 像素窗 */
+.pixelwin{border:2px solid #4a5478;background:#1d2338;border-radius:8px;overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.pixelwin .pbar{display:flex;align-items:center;gap:8px;padding:7px 11px;background:#3a4466;
+  border-bottom:2px solid #4a5478;font-size:11px;color:#cfd6ee;letter-spacing:.06em;font-family:var(--mono)}
+.pixelwin .pbar .pd{width:8px;height:8px;background:var(--px1);border-radius:1px}
+.pixelwin .pbar .pd2{background:var(--px3)}
+.pixelwin .pstage{position:relative;display:grid;place-items:center;padding:14px 10px 10px;background:#1a2036}
+.pixelwin .pstage svg{width:100%;height:auto;display:block;image-rendering:pixelated}
+.pixelwin .pfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;
+  border-top:2px solid #4a5478;background:#252c46;font-size:11.5px;color:#b9b6ca}
+.pgo{border:1.5px solid var(--px3);color:var(--px3);padding:9px 18px;min-height:38px;
+  display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-size:12px;
+  transition:background-color .2s,color .2s}
+.pgo:hover{background:var(--px3);color:#141a2c}
+.pcap{margin-top:11px;font-size:11.5px;color:#8f8ca8}
+/* 数值面板 */
+.statpanel{border:1px solid #4a5478;border-radius:8px;background:#232a44;padding:13px 14px;margin-top:14px}
+.statpanel .sh{font-size:10.5px;letter-spacing:.14em;color:#8f8ca8;margin-bottom:11px;font-family:var(--mono)}
+.srow{display:grid;grid-template-columns:78px 1fr 34px;gap:10px;align-items:center;margin-bottom:11px;font-size:11.5px}
+.srow:last-child{margin-bottom:0}
+.srow .sn{color:#cfd6ee}
+.sbar{height:9px;background:#161c30;border-radius:2px;overflow:hidden;border:1px solid #39415f}
+.sbar i{display:block;height:100%}
+.srow em{font-style:normal;font-family:var(--mono);color:#8f8ca8;font-size:11px;text-align:right}
+.bar-a i{background:linear-gradient(90deg,var(--px1),var(--px3))}
+.bar-b i{background:linear-gradient(90deg,var(--px2),var(--lamp))}
+.bar-c i{background:linear-gradient(90deg,var(--px1),var(--px2))}
+.notes{display:grid}
+.notes .r{padding:15px 2px;border-bottom:1px solid #3a4262;display:grid;grid-template-columns:auto 1fr;gap:14px;
+  align-items:baseline}
+.notes .r .k{font-size:10.5px;letter-spacing:.14em;color:var(--px1);white-space:nowrap;font-weight:500}
+.notes .r .v{font-size:13.5px;color:#b9b6ca}
+.notes .r .v b{color:#fff;font-weight:600}
+.s-game .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.s-game .btn-b{border-color:#4a5478;color:#cfd6ee;background:rgba(255,255,255,.04)}
+.s-game .btn-b:hover{border-color:var(--px3);color:var(--px3)}
+.s-game .btn-a{background:var(--px3);color:#141a2c;box-shadow:0 4px 0 #4a8d88}
+
+/* 08 周边 */
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+@media(max-width:760px){.duo{grid-template-columns:1fr}}
+.duo figure{margin:0;padding:24px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.duo figure:nth-child(2n){border-right:0}
+@media(max-width:760px){.duo figure{border-right:0}}
+.duo .drawing .a1{fill:color-mix(in srgb,var(--c1) 52%,transparent)}
+.duo .drawing .a3{fill:color-mix(in srgb,var(--c3) 52%,transparent)}
+
+/* 09 求助 */
+.s-help{border-top:3px solid var(--sign);background:color-mix(in srgb,var(--sign) 9%,var(--paper));--accent:var(--sign)}
+.helpcard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;
+  border-top:1px solid color-mix(in srgb,var(--sign) 24%,transparent)}
+@media(max-width:760px){.helpcard{grid-template-columns:1fr}}
+.hcard{padding:24px 24px 26px;border-bottom:1px solid color-mix(in srgb,var(--sign) 24%,transparent);
+  border-right:1px solid color-mix(in srgb,var(--sign) 24%,transparent)}
+.hcard:nth-child(2n){border-right:0}
+@media(max-width:760px){.hcard{border-right:0}}
+.hcard .hico{width:34px;height:34px;color:var(--sign);opacity:.75;margin-bottom:10px}
+.hcard .hico svg{width:100%;height:100%}
+.hcard .num{font-family:var(--serif);font-size:22px;color:var(--sign);margin-bottom:8px}
+.hcard h3{font-size:15.5px;margin-bottom:8px}
+.hcard p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.hcard .src{margin-top:12px;font-size:11px;color:var(--muted)}
+
+/* 09 关于我们 */
+.s-about{background:color-mix(in srgb,var(--hl) 24%,var(--paper));--accent:#d3a044}
+.about-grid{display:grid;grid-template-columns:1fr;gap:18px;max-width:70ch}
+.about-txt h3{font-size:18px;margin-bottom:12px}
+.about-txt p{font-size:14px;color:var(--ink-2);margin:0 0 12px;line-height:1.92;max-width:60ch}
+.theme-card{margin-top:18px;padding:18px 20px;border-radius:14px;background:var(--card);
+  border:1px solid color-mix(in srgb,#d3a044 32%,var(--line))}
+.theme-card span{font-size:11px;letter-spacing:.16em;color:#b3821f}
+.theme-card b{display:block;font-family:var(--serif);font-size:23px;color:var(--ink);margin:6px 0 8px}
+.theme-card p{font-size:13px;color:var(--ink-2);margin:0}
+.mascot{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.mascot img{height:104px;width:auto;display:block;image-rendering:pixelated;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 5px 16px rgba(60,60,100,.09)}
+.mascot p{font-size:11.5px;color:var(--muted);margin:0 0 8px;flex:1;min-width:150px;line-height:1.7}
+.photowall{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-top:34px}
+.pw{aspect-ratio:4/3;border:1.5px dashed var(--line-2);border-radius:12px;display:grid;place-items:center;
+  color:var(--muted);font-size:11.5px;text-align:center;padding:10px;line-height:1.6;
+  background:color-mix(in srgb,var(--card) 62%,transparent)}
+
+/* 09 部门 / 活动块 */
+.db-head{margin:44px 0 18px}
+.db-head h3{font-size:clamp(18px,2.4vw,22px);margin-bottom:6px}
+.db-head p{margin:0;font-size:13px;color:var(--ink-2);max-width:56ch;line-height:1.8}
+.dept-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:960px){.dept-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.dept-grid{grid-template-columns:1fr}}
+.dept{border:1px solid #46507a;padding:16px 16px 14px;
+  background-color:color-mix(in srgb,var(--card) 80%,transparent);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0) 44%,rgba(0,0,0,.14));
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),4px 4px 0 rgba(0,0,0,.3)}
+.dept .dno{display:block;font-family:var(--serif);font-size:15.5px;color:var(--ink);
+  margin-bottom:4px;padding-bottom:9px;border-bottom:1px dashed var(--line-2)}
+.dept .dno::before{content:"◆ ";color:#d3a044;font-size:.68em;vertical-align:.14em}
+.dept ul{margin:11px 0 0;padding:0;list-style:none}
+.dept li{position:relative;padding-left:14px;font-size:12.5px;color:var(--ink-2);line-height:1.72;margin-bottom:6px}
+.dept li:last-child{margin-bottom:0}
+.dept li::before{content:"·";position:absolute;left:1px;top:-2px;color:#d3a044;font-weight:700;font-size:16px}
+.act-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.act-grid{grid-template-columns:1fr}}
+.act{border:1px solid #46507a;padding:15px 16px;background:rgba(255,255,255,.03);
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),4px 4px 0 rgba(0,0,0,.3)}
+.act b{display:block;font-family:var(--serif);font-size:14.5px;color:var(--ink);margin-bottom:5px}
+.act b::before{content:"▸ ";color:#d3a044;font-size:.72em}
+.act p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.75}
+.act-more{margin:16px 0 0;font-size:12.5px;color:var(--muted);line-height:2}
+.act-more b{color:var(--ink-2);font-weight:600}
+
+/* 页脚 */
+.foot{padding:calc(var(--sec-y)*.6) 0 calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--line);
+  color:var(--muted);font-size:12.5px;background:color-mix(in srgb,var(--c5) 14%,var(--paper))}
+.foot-inner{width:var(--wrap);margin-inline:auto;display:flex;justify-content:space-between;gap:26px;
+  flex-wrap:wrap;align-items:flex-start;position:relative;z-index:2}
+.foot b{color:var(--ink-2);font-weight:600;font-family:var(--serif);font-size:13.5px}
+.foot .disclaim{max-width:54ch;line-height:1.85}
+.foot .disclaim strong{color:var(--ink);font-weight:600}
+.foot .filllist{margin-top:18px;padding:15px 17px;border:1.5px dashed var(--line-2);border-radius:12px;
+  font-size:12px;line-height:1.95;max-width:64ch;background:var(--card)}
+.foot .filllist b{color:var(--ink);font-family:var(--sans)}
+/* 清空痕迹：低调到不打扰，但不藏起来 */
+.wipe{margin-top:14px;margin-bottom:34px}
+.wipe-b{padding:7px 13px;border:1px solid var(--line-2);border-radius:9px;
+  background:transparent;color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer;
+  transition:color .18s,border-color .18s}
+.wipe-b:hover{color:var(--ink);border-color:var(--ink-2)}
+.wipe-b:focus-visible,.wipe-box button:focus-visible,.wipe-box input:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
+.wipe-box{margin-top:12px;padding:14px 16px;border:1px solid var(--line);border-radius:11px;
+  background:var(--card);max-width:42ch;font-size:12px}
+.wipe-box>p{margin:0 0 10px;color:var(--muted)}
+.wipe-box label{display:flex;align-items:center;gap:9px;padding:5px 0;cursor:pointer;color:var(--ink-2)}
+.wipe-box label:hover{color:var(--ink)}
+.wipe-box input{width:15px;height:15px;accent-color:var(--c1);cursor:pointer;flex:none}
+.wipe-acts{display:flex;gap:9px;margin-top:13px}
+.wipe-acts button{padding:6px 14px;border-radius:8px;border:1px solid var(--line-2);
+  background:transparent;color:var(--ink-2);font-family:var(--sans);font-size:12px;cursor:pointer}
+.wipe-acts #wipeGo{border-color:var(--c1);color:var(--c1)}
+.wipe-acts #wipeGo:hover{background:color-mix(in srgb,var(--c1) 14%,transparent)}
+.wipe-acts button:disabled{opacity:.45;cursor:not-allowed}
+.wipe-msg{margin:10px 0 0!important;color:var(--c3)!important;min-height:1em}
+
+@media(max-width:620px){
+  .hero{padding-top:calc(82px + env(safe-area-inset-top))}
+  .hb-help span{display:none}
+  .hb-help{padding:7px;min-width:40px;min-height:40px;justify-content:center}
+  .cell{padding:20px 18px 22px}
+  .duo figure{padding:18px}
+  .srow{grid-template-columns:64px 1fr 30px}
+}
+
+
+/* ===== 像素风覆盖层 ===== */
+*,*::before,*::after{border-radius:0!important}
+html{background:#151a2c}
+body::before{opacity:.05;mix-blend-mode:screen}
+.btn-a,.btn-b,.hb-help,.pgo,.hb-logo,.dot,.mascot img,.drawing,.retro,.pixelwin,.statpanel,.cell,.note,
+.helpcard,.hcard,.four,.sq,.pw,.filllist,.theme-card,.bgsym svg{border-radius:0!important}
+.btn-a{box-shadow:4px 4px 0 rgba(0,0,0,.6)}
+.btn-a:hover{box-shadow:1px 1px 0 rgba(0,0,0,.45)}
+.btn-b{background:color-mix(in srgb,var(--card) 80%,transparent)}
+.hb-logo{background:var(--c1);box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.hb-help{background:var(--sign);box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+
+.cell{border-width:0 0 2px 0!important;box-shadow:none!important}
+.note{box-shadow:4px 4px 0 rgba(0,0,0,.55)!important;transform:none!important}
+.four{border:2px solid var(--line)!important;box-shadow:6px 6px 0 rgba(0,0,0,.55)!important}
+.sq{border-right:2px solid var(--line)!important}
+.sq .qbar{height:5px}
+.sec-top h2{letter-spacing:.02em}
+.sec-top h2::before{content:"▸ ";color:var(--accent,var(--c1));font-size:.7em;vertical-align:.12em}
+.hero h1::before{content:"▸ ";color:var(--c1);font-size:.42em;vertical-align:.5em;letter-spacing:0}
+.hero{background:linear-gradient(180deg,color-mix(in srgb,var(--c3) 16%,var(--paper)),var(--paper))}
+.hero[data-weather="cloud"]{background:linear-gradient(180deg,color-mix(in srgb,var(--c1) 24%,var(--paper)),var(--paper))}
+.hero[data-weather="rain"]{background:linear-gradient(180deg,color-mix(in srgb,var(--c1) 34%,var(--paper)),var(--paper))}
+.hero[data-weather="snow"]{background:linear-gradient(180deg,color-mix(in srgb,var(--c1) 28%,var(--paper)),var(--paper))}
+.hero::after{background:linear-gradient(180deg,transparent,var(--paper))}
+.hl{background:linear-gradient(180deg,transparent 62%,var(--hl) 62%,var(--hl) 92%,transparent 92%);color:#1a2036}
+.s-game{background:linear-gradient(180deg,#151a2c,#1a2036)}
+.s-about{background:color-mix(in srgb,#e0a868 12%,var(--paper))}
+.bgsym{opacity:.13}
+#wx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+/* ===== 高级像素质感 ===== */
+/* 面板：内亮边 + 内暗边 + 硬投影（立体像素面板） */
+.cell,.note,.drawing,.retro,.pixelwin,.statpanel,.theme-card,.pw,.helpcard,.hcard,.filllist{
+  border:1px solid #46507a!important;
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),inset -1px -1px 0 rgba(0,0,0,.45),
+    5px 5px 0 rgba(0,0,0,.4)!important}
+.cell{border-width:0 0 2px 0!important;box-shadow:none!important}
+/* 卡片内渐变：上亮下暗 */
+.cell,.note,.pw,.hcard,.helpcard,.theme-card,.drawing{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 44%,rgba(0,0,0,.16))!important}
+/* 标题：细腻层次（不用像素描边） */
+.sec-top .idx{font-family:var(--mono)!important;font-weight:600}
+.sec-top h2,.game h2,h1{text-shadow:0 2px 14px rgba(0,0,0,.5)}
+/* 点阵分隔线 */
+.grid{border-top:1px solid #3f4869!important}
+.cell{border-bottom:1px solid #343d5e!important}
+.duo{border-top:1px solid #3f4869!important}
+
+/* 一天的光：随时刻变化的光源方向与颜色 */
+#amb{position:fixed;inset:0;pointer-events:none;z-index:54;background:transparent;
+  transition:background 3.2s cubic-bezier(.4,0,.2,1);will-change:background}
+/* 一天的天光：色温与明度随时段走，从清晨的冷灰蓝一路压到深夜 */
+body[data-sky="first"] #amb{background:rgba(74,92,120,.20)}
+body[data-sky="dawn"]  #amb{background:rgba(88,128,178,.15)}
+body[data-sky="morn"]  #amb{background:rgba(126,170,196,.11)}
+body[data-sky="noon"]  #amb{background:rgba(255,246,220,.14)}
+body[data-sky="aft"]   #amb{background:rgba(232,206,158,.13)}
+body[data-sky="dusk"]  #amb{background:rgba(206,110,52,.20)}
+body[data-sky="night"] #amb{background:rgba(26,42,92,.22)}
+body[data-sky="deep"]  #amb{background:rgba(14,22,58,.30)}
+#light{position:fixed;inset:0;pointer-events:none;z-index:55;will-change:background;
+  transition:background .85s cubic-bezier(.22,.61,.36,1);
+  background:radial-gradient(var(--ls,132% 112%) at var(--lx,28%) var(--ly,16%),var(--lc,rgba(122,142,206,.09)),transparent 70%)}
+/* ===== 区块柔和过渡（两端回到纸色，相邻区块自然衔接） ===== */
+.sec{background:linear-gradient(180deg,
+  var(--paper) 0,
+  color-mix(in srgb,var(--accent,var(--c1)) 14%,var(--paper)) 132px,
+  color-mix(in srgb,var(--accent,var(--c1)) 14%,var(--paper)) calc(100% - 132px),
+  var(--paper) 100%)!important}
+.sec.hash::before{display:none!important}
+.s-help{border-top:0!important;background:linear-gradient(180deg,
+  var(--paper) 0,
+  color-mix(in srgb,var(--sign) 11%,var(--paper)) 132px,
+  color-mix(in srgb,var(--sign) 11%,var(--paper)) calc(100% - 132px),
+  var(--paper) 100%)!important}
+.s-game{background:linear-gradient(180deg,
+  var(--paper) 0,#2b3350 140px,#1a2036 50%,var(--night-2) calc(100% - 140px),var(--paper) 100%)!important}
+.foot{border-top:0!important;background:linear-gradient(180deg,var(--paper),color-mix(in srgb,var(--c5) 14%,var(--paper)) 30%)!important}
+.hero::after{height:42%}
+.drawing .th,.hero-art .th{opacity:.45}
+.hb-help{filter:saturate(.9)}
+/* ===== 按钮：像素立体按键 ===== */
+.btn-a{border:0!important;position:relative;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.34),inset -2px -2px 0 rgba(0,0,0,.30),5px 5px 0 rgba(0,0,0,.52)!important;
+  transition:transform .1s steps(2),filter .2s,box-shadow .1s!important}
+.btn-a:hover{transform:none;filter:brightness(1.10)}
+.btn-a:active{transform:translate(4px,4px);
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.3),inset -2px -2px 0 rgba(0,0,0,.3),1px 1px 0 rgba(0,0,0,.52)!important}
+.btn-b{border:2px solid var(--line-2)!important;background:rgba(255,255,255,.03)!important;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.07),4px 4px 0 rgba(0,0,0,.36)!important;
+  transition:transform .1s steps(2),border-color .2s,color .2s,box-shadow .1s!important}
+.btn-b:hover{border-color:var(--c1)!important;color:var(--c1);transform:none;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.09),2px 2px 0 rgba(0,0,0,.36)!important}
+.btn-b:active{transform:translate(3px,3px);box-shadow:inset 2px 2px 0 rgba(255,255,255,.07),0 0 0 rgba(0,0,0,0)!important}
+.hb-help{box-shadow:inset 2px 2px 0 rgba(255,255,255,.32),inset -2px -2px 0 rgba(0,0,0,.26),4px 4px 0 rgba(0,0,0,.5)!important;
+  transition:transform .1s steps(2),filter .2s!important}
+.hb-help:hover{opacity:1;filter:brightness(1.1)}
+.hb-help:active{transform:translate(3px,3px)}
+.pgo{box-shadow:inset 2px 2px 0 rgba(255,255,255,.28),inset -2px -2px 0 rgba(0,0,0,.28),3px 3px 0 rgba(0,0,0,.45)!important;
+  transition:transform .1s steps(2),background-color .2s,color .2s!important}
+.pgo:active{transform:translate(2px,2px)}
+/* ===== 顶栏导航 ===== */
+.hb-nav{display:flex;gap:3px;margin-left:auto;margin-right:14px}
+.hb-nav a{padding:6px 12px;font-size:12.5px;color:var(--ink-2);border:2px solid transparent;
+  letter-spacing:.04em;transition:color .2s,border-color .2s,background-color .2s}
+.hb-nav a:hover{color:var(--ink);background:rgba(255,255,255,.045)}
+.hb-nav a.on{color:var(--c1);border-color:var(--c1);background:color-mix(in srgb,var(--c1) 13%,transparent)}
+/* 手机端区块快捷导航：默认隐藏，仅 ≤820px 且滚动后出现（见下方媒体查询） */
+.hb-mnav{display:none}
+/* ===== 成就系统 ===== */
+/* 情绪打卡 */
+.bgsym{animation:floaty 11s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.twrite{display:flex;gap:10px;align-items:flex-end;margin-top:18px;max-width:620px}
+.twrite textarea{flex:1;font:inherit;font-size:13px;color:var(--ink);background:rgba(255,255,255,.03);
+  border:1px solid #46507a;padding:11px 13px;resize:vertical;line-height:1.7;
+  box-shadow:inset 1px 1px 0 rgba(0,0,0,.3);outline:none}
+.twrite textarea:focus{border-color:var(--c4)}
+.twrite textarea::placeholder{color:var(--muted)}
+.twrite button{flex:none;padding:11px 20px;font-size:13px;font-weight:600;color:#0e1424;background:var(--c4);border:0;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.32),inset -2px -2px 0 rgba(0,0,0,.26),4px 4px 0 rgba(0,0,0,.45);
+  transition:transform .1s steps(2)}
+.twrite button:active{transform:translate(3px,3px);box-shadow:inset 2px 2px 0 rgba(255,255,255,.3),inset -2px -2px 0 rgba(0,0,0,.3),1px 1px 0 rgba(0,0,0,.45)}
+#myNotes{display:contents}
+/* 文本排版优化 */
+.cell p{line-height:1.88;letter-spacing:.008em}
+.sec .lead{line-height:1.95}
+.game .sub,.hero .sub{line-height:1.92}
+.hs em,.ex p{line-height:1.78}
+.mood{margin-top:44px;padding-top:32px;border-top:1px solid var(--line)}
+.mood>h3{font-size:17px;margin-bottom:6px}
+.mood>.exsub{font-size:12.5px;color:var(--muted);margin:0}
+.mood-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 16px}
+@media(max-width:700px){.mood-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mo{display:grid;justify-items:center;gap:7px;padding:15px 8px;border:1px solid #46507a;
+  background:rgba(255,255,255,.03);color:var(--ink-2);
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),3px 3px 0 rgba(0,0,0,.3);
+  transition:transform .18s cubic-bezier(.22,.61,.36,1),border-color .2s,color .2s,background-color .2s}
+.mo svg{width:30px;height:30px;transition:transform .3s}
+.mo span{font-size:11.5px;letter-spacing:.02em}
+.mo:hover{border-color:var(--c2);color:var(--ink);transform:translateY(-3px)}
+.mo:hover svg{transform:scale(1.12)}
+.mo.on{border-color:var(--c2);color:var(--c2);background:color-mix(in srgb,var(--c2) 15%,transparent);
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.14),3px 3px 0 rgba(0,0,0,.3)}
+.mo.on svg{animation:pop .42s cubic-bezier(.3,1.4,.5,1)}
+@keyframes pop{0%{transform:scale(.7)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
+.mood-say{min-height:1.7em;font-size:14px;color:var(--ink);margin:0;font-family:var(--serif);
+  opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+.mood-say.on{opacity:1;transform:none}
+.extra{margin-top:40px;padding-top:30px;border-top:1px solid var(--line)}
+.extra>h3{font-size:16.5px;margin-bottom:6px}
+.extra>.exsub{font-size:12.5px;color:var(--muted);margin:0 0 16px}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(216px,1fr));gap:12px}
+.ex{padding:16px 18px;border:1px solid #46507a;background:rgba(255,255,255,.03);
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),4px 4px 0 rgba(0,0,0,.3)}
+.ex b{display:block;font-family:var(--serif);font-size:14px;color:var(--ink);margin-bottom:5px}
+.ex p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.75}
+.ex i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--accent,var(--c1))}
+/* 呼吸引导 */
+.breathe{margin-top:40px;padding-top:30px;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:30px;align-items:center}
+@media(max-width:700px){.breathe{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.borb{width:134px;height:134px;border-radius:50%;border:2px solid var(--c2);flex:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--c2) 30%,transparent),transparent 70%);
+  display:grid;place-items:center;transform:scale(.62);transition:transform 1s ease}
+.borb span{font-size:12.5px;color:var(--ink);font-family:var(--mono);letter-spacing:.08em}
+.breathe .btxt h3{font-size:16px;margin-bottom:8px}
+.breathe .btxt p{margin:0 0 14px;font-size:13px;color:var(--ink-2);max-width:48ch;line-height:1.85}
+.bbtn{display:inline-flex;align-items:center;padding:10px 22px;font-size:13.5px;font-weight:600;
+  color:#0e1424;background:var(--c2);border:0;
+  box-shadow:inset 2px 2px 0 rgba(255,255,255,.35),inset -2px -2px 0 rgba(0,0,0,.28),4px 4px 0 rgba(0,0,0,.45);
+  transition:transform .1s steps(2)}
+.bbtn:active{transform:translate(3px,3px);box-shadow:inset 2px 2px 0 rgba(255,255,255,.3),inset -2px -2px 0 rgba(0,0,0,.3),1px 1px 0 rgba(0,0,0,.45)}
+/* 天气自选（左下角） */
+.wxctl{position:fixed;left:clamp(12px,2.4vw,26px);bottom:clamp(12px,2.4vw,20px);z-index:80;display:flex;gap:8px;align-items:flex-end}
+.wxbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-size:12.5px;color:var(--ink-2);
+  background:#1c2340;border:1px solid #46507a;
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.1),4px 4px 0 rgba(0,0,0,.4);
+  transition:transform .1s steps(2),border-color .2s,color .2s}
+.wxbtn:hover{border-color:var(--c1);color:var(--ink)}
+.wxbtn.on{border-color:var(--c1);color:#fff;background:color-mix(in srgb,var(--c1) 22%,#1c2340)}
+.wxbtn:active{transform:translate(3px,3px);box-shadow:inset 1px 1px 0 rgba(198,212,255,.1),1px 1px 0 rgba(0,0,0,.4)}
+.wxbtn svg{width:14px;height:14px}
+.wxbtn em{font-style:normal;font-size:11px;color:var(--muted);letter-spacing:.04em;margin-left:2px;padding-left:8px;border-left:1px solid #39415f}
+.wxmenu{position:absolute;left:0;bottom:calc(100% + 10px);display:none;flex-direction:column;gap:4px;padding:8px;
+  background:#1c2340;border:1px solid #46507a;min-width:132px;
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.1),6px 6px 0 rgba(0,0,0,.45)}
+.wxmenu.on{display:flex}
+.wxmenu button{text-align:left;padding:7px 11px;font-size:12.5px;color:var(--ink-2);border:1px solid transparent;
+  transition:background-color .18s,color .18s,border-color .18s}
+.wxmenu button:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+.wxmenu button.on{color:var(--c1);border-color:var(--c1);background:color-mix(in srgb,var(--c1) 12%,transparent)}
+.wxmenu small{opacity:.55;font-size:11px;margin-left:8px;letter-spacing:.04em}
+.wxmenu .sep{height:1px;background:#39415f;margin:3px 0}
+/* 一天 8 个时段排两列，不然向上弹会顶出屏幕 */
+.wx-day{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:min(62vh,420px);
+  overflow-y:auto;min-width:268px;overscroll-behavior:contain}
+.wx-day.on{display:grid}
+.wx-day .wx-cap{grid-column:1/-1;font-size:10.5px;letter-spacing:.18em;color:var(--muted);padding:2px 4px 6px}
+.wx-day .sep{grid-column:1/-1}
+.wx-day button{display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+.wx-day button small{margin-left:0;font-size:10.5px;opacity:.6}
+@media(max-width:620px){.wxctl{bottom:auto;top:calc(58px + env(safe-area-inset-top))}}
+.hb-ach{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);
+  border:2px solid transparent;margin-right:4px;transition:color .2s,border-color .2s}
+.hb-ach:hover{color:var(--hl);border-color:color-mix(in srgb,var(--hl) 55%,transparent)}
+.hb-ach svg{width:13px;height:13px}
+#ach{position:fixed;left:50%;bottom:24px;transform:translate(-50%,150%);z-index:96;opacity:0;
+  display:flex;align-items:center;gap:11px;padding:11px 18px;background:#1a2036;
+  border:2px solid var(--c1);box-shadow:inset 1px 1px 0 rgba(198,212,255,.14),5px 5px 0 rgba(0,0,0,.5);
+  transition:transform .5s cubic-bezier(.22,.61,.36,1),opacity .4s}
+#ach.on{transform:translate(-50%,0);opacity:1}
+#ach .ic{width:22px;height:22px;color:var(--hl);flex:none}
+#ach b{display:block;font-size:10px;letter-spacing:.2em;color:var(--c1);font-family:var(--mono);margin-bottom:2px}
+#ach span{font-size:13.5px;color:var(--ink)}
+#achp{position:fixed;inset:0;z-index:97;display:none;place-items:center;background:rgba(8,11,22,.72);padding:20px}
+#achp.on{display:grid}
+#achp .card{width:min(470px,92vw);max-height:78vh;overflow:auto;background:#1e2540;border:2px solid #46507a;
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.12),8px 8px 0 rgba(0,0,0,.5);padding:22px 24px;position:relative}
+#achp h3{font-size:13px;letter-spacing:.3em;color:var(--ink-2);margin-bottom:4px}
+#achp .sub{font-size:12px;color:var(--muted);margin:0 0 16px}
+#achp .close{position:absolute;top:14px;right:16px;color:var(--muted);font-size:14px}
+#achp .close:hover{color:var(--ink)}
+.achrow{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:11px 0;
+  border-bottom:1px solid #303a5c}
+.achrow:last-child{border-bottom:0}
+.achrow .ico{width:24px;height:24px;color:#3c4568}
+.achrow.on .ico{color:var(--hl)}
+.achrow b{display:block;font-size:13.5px;color:var(--muted)}
+.achrow.on b{color:var(--ink)}
+.achrow em{font-style:normal;font-size:11.5px;color:#5b6180}
+.achrow.on em{color:var(--ink-2)}
+#achp .foot{margin-top:14px;font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
+.sm.on{color:var(--ink)}
+.sm.on i{outline:2px solid rgba(226,232,255,.35);outline-offset:2px}
+@media(max-width:820px){
+  .hb-nav{display:none}
+  .helpbar{flex-wrap:wrap;row-gap:8px}
+  .helpbar.scrolled .hb-mnav{display:flex;flex-basis:100%;order:5;gap:6px;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:1px 2px}
+  .hb-mnav::-webkit-scrollbar{display:none}
+  .hb-mnav a{flex:none;padding:7px 14px;border-radius:999px;font-size:12px;line-height:1;
+    white-space:nowrap;color:var(--ink-2);border:2px solid transparent;
+    background:rgba(255,255,255,.05);transition:color .2s,border-color .2s,background-color .2s}
+  .hb-mnav a:active{transform:scale(.95)}
+  .hb-mnav a.on{color:var(--c1);border-color:var(--c1);background:color-mix(in srgb,var(--c1) 13%,transparent)}
+}
+.pw{color:var(--muted)}
+
+/* ---------- 真实图片整合 ---------- */
+.pw.photo{position:relative;border-style:solid;padding:0;overflow:hidden}
+.pw.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.pw.photo figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px 10px 7px;
+  font-size:10.5px;letter-spacing:.05em;color:#e8e6f2;text-align:center;
+  background:linear-gradient(180deg,transparent,rgba(10,12,24,.8))}
+/* 海报 / 长图横滑条 */
+.strip{display:flex;gap:12px;margin-top:14px;overflow-x:auto;padding:2px 2px 10px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.strip a{flex:none}
+.strip figure{border:1px solid var(--line-2);background:var(--card);padding:8px;margin:0}
+.strip img{height:clamp(190px,26vw,260px);width:auto;display:block}
+.strip figcaption{margin-top:8px;font-size:10.5px;color:var(--muted);text-align:center;white-space:nowrap}
+.strip a:hover figure{border-color:var(--c1)}
+/* 07 那一夜的人 */
+.crew{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
+@media(max-width:640px){.crew{grid-template-columns:repeat(3,1fr)}}
+.crew figure{border:1px solid #4a5478;background:rgba(255,255,255,.03);padding:9px 6px 8px;text-align:center;margin:0}
+.crew img{height:96px;width:auto;image-rendering:pixelated;margin:0 auto;display:block}
+.crew b{display:block;font-size:12px;margin-top:7px;color:#fff;font-weight:600}
+.crew em{display:block;font-style:normal;font-size:10.5px;color:#9e9bb6;line-height:1.5;margin-top:2px}
+.crew .you{border-color:var(--px3)}
+/* 07 真机截图 + 点按开玩 */
+.playwrap{display:block;position:relative;width:100%;cursor:pointer;padding:0}
+.playwrap img.shot{width:100%;display:block}
+.playtag{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:inline-flex;
+  align-items:center;gap:8px;padding:8px 18px;border:1.5px solid var(--px3);
+  background:rgba(10,14,26,.84);color:var(--px3);font-size:13px;letter-spacing:.08em;
+  transition:background-color .2s,color .2s}
+.playtag i{font-style:normal;font-size:11px}
+.playwrap:hover .playtag,.playwrap:focus-visible .playtag{background:var(--px3);color:#141a2c}
+/* 全屏游玩浮层（隐藏即 display:none，不挡点击） */
+#gp{position:fixed;inset:0;z-index:120;background:#0a0d18}
+#gp[hidden]{display:none}
+#gp iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#gpClose{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:121;
+  padding:8px 16px;border:1.5px solid #4a5478;background:rgba(10,14,26,.92);color:#cfd6ee;font-size:13px}
+#gpClose:hover{border-color:var(--sign);color:var(--sign)}
+/* 08 实拍图 */
+.drawing.photo img{max-width:min(280px,100%);max-height:340px;width:auto;margin:0 auto;display:block}
+.drawing.photo a:hover img{opacity:.85}
+/* 09 会徽 / 主角立绘 */
+.emblem{width:88px;background:#fff;padding:8px;border:1px solid var(--line);display:block;margin-bottom:16px}
+
+/* ===== 新增设计元素：阅读进度 / 回顶 / 首屏微光与下滑提示 / 图片灯箱 / 错峰入场 ===== */
+/* 阅读进度条 */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:95;pointer-events:none;
+  background:linear-gradient(90deg,var(--px1),var(--px3) 55%,var(--lamp));
+  box-shadow:0 0 8px rgba(127,157,212,.45);transition:width .12s linear}
+/* 回到顶部（置于右下角角色上方，避开底部居中的成就提示） */
+#toTop{position:fixed;right:clamp(12px,2.4vw,26px);bottom:clamp(178px,21vw,208px);z-index:82;
+  display:inline-flex;align-items:center;gap:7px;padding:8px 15px;font-size:12.5px;color:var(--ink-2);
+  background:#1c2340;border:1px solid #46507a;opacity:0;transform:translateY(16px);pointer-events:none;
+  box-shadow:inset 1px 1px 0 rgba(198,212,255,.1),4px 4px 0 rgba(0,0,0,.4);
+  transition:opacity .3s,transform .3s,color .2s,border-color .2s}
+#toTop.on{opacity:1;transform:none;pointer-events:auto}
+#toTop:hover{border-color:var(--c1);color:var(--ink)}
+#toTop svg{width:12px;height:12px;flex:none}
+@media(max-width:620px){#toTop{bottom:158px;right:10px;padding:7px 12px;font-size:11.5px}}
+/* 首屏：下滑提示 */
+.hero-cue{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:3;
+  display:inline-flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:11.5px;letter-spacing:.16em;color:var(--ink-2);opacity:.82;transition:color .2s,opacity .2s}
+.hero-cue:hover{color:var(--hl);opacity:1}
+.hero-cue svg{width:16px;height:16px;animation:cue 1.9s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:translateY(0);opacity:.55}50%{transform:translateY(5px);opacity:1}}
+@media(max-width:620px){.hero-cue{display:none}}
+/* 首屏：缓缓上升的像素微光（留一盏灯） */
+.hero-motes{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.hero-motes i{position:absolute;display:block;width:4px;height:4px;background:var(--warm);opacity:0;
+  animation:mote linear infinite}
+@keyframes mote{0%{transform:translateY(0);opacity:0}12%{opacity:.5}78%{opacity:.32}100%{transform:translateY(-150px);opacity:0}}
+/* 图片灯箱 */
+#lbox{position:fixed;inset:0;z-index:130;display:none;place-items:center;padding:26px;
+  background:rgba(8,11,22,.86);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#lbox.on{display:grid}
+#lbox figure{margin:0;max-width:min(94vw,1020px);text-align:center}
+#lbox img{max-width:100%;max-height:80vh;display:block;margin:0 auto;background:#1a2036;
+  border:2px solid #46507a;box-shadow:inset 1px 1px 0 rgba(198,212,255,.12),8px 8px 0 rgba(0,0,0,.55)}
+#lbox figcaption{margin-top:12px;font-size:12.5px;color:var(--ink-2);line-height:1.7}
+#lbox .lb-close{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;
+  padding:8px 15px;border:1.5px solid #4a5478;background:rgba(10,14,26,.92);color:#cfd6ee;font-size:13px}
+#lbox .lb-close:hover{border-color:var(--sign);color:var(--sign)}
+.pw.photo,.strip figure{cursor:zoom-in}
+.pw.photo{transition:transform .18s cubic-bezier(.22,.61,.36,1),border-color .2s}
+.pw.photo:hover{transform:translateY(-3px);border-color:var(--c1)}
+/* 网格内容错峰淡入（仅动画 opacity，避免与既有 transform/hover 冲突） */
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a){
+  animation:rise .55s cubic-bezier(.22,.61,.36,1) both}
+@keyframes rise{from{opacity:0}to{opacity:1}}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(2){animation-delay:.06s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(3){animation-delay:.12s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(4){animation-delay:.18s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(5){animation-delay:.24s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(6){animation-delay:.3s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(7){animation-delay:.34s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(8){animation-delay:.38s}
+.reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a):nth-child(9){animation-delay:.42s}
+@media(prefers-reduced-motion:reduce){
+  .reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a){animation:none}
+  .hero-cue svg,.hero-motes i{animation:none}
+}
+/* 心理问答 · 折叠问答 */
+.qalist{border-top:1px solid var(--line)}
+.qa{border-bottom:1px solid var(--line)}
+.qa .q{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:none;border:0;
+  padding:15px 4px;cursor:pointer;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+.qa .q:hover{color:var(--c1)}
+.qa .q .arw{flex:none;width:20px;height:20px;border-radius:50%;background:var(--c1);color:#fff;
+  display:grid;place-items:center;font-size:15px;line-height:1;transition:transform .2s}
+.qa.open .q .arw{transform:rotate(45deg)}
+.qa .q i{flex:none;width:22px;height:22px;border-radius:5px;background:color-mix(in srgb,var(--c1) 16%,transparent);
+  color:var(--c1);font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center}
+.qa .a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.qa.open .a{max-height:520px}
+.qa .a p{padding:0 30px 18px;margin:0;color:var(--ink-2);font-size:14px;line-height:1.85}
+/* 心理知识小测 */
+.quiz{margin-top:30px;border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;
+  background:color-mix(in srgb,var(--c1) 7%,transparent)}
+.quiz .qh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.quiz .qh b{font-size:15px;color:var(--ink)}
+.quiz #qProg{font-size:12px;color:var(--muted)}
+.quiz .qbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:12px}
+.quiz .qbar i{display:block;height:100%;width:0;background:var(--c1);transition:width .3s}
+.quiz .qt{font-size:15px;line-height:1.6;color:var(--ink);margin:0 0 12px;min-height:1.6em}
+.quiz .qo{display:grid;gap:9px}
+.quiz .qopt{text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:10px;
+  background:var(--paper);color:var(--ink);font-size:14px;cursor:pointer;transition:.15s}
+.quiz .qopt:hover{border-color:var(--c1);background:color-mix(in srgb,var(--c1) 8%,var(--paper))}
+.quiz .qopt.locked{cursor:default}
+.quiz .qopt.hit{background:color-mix(in srgb,var(--ok,#3a9d6b) 18%,var(--paper));border-color:var(--ok,#3a9d6b);color:#1f6b48}
+.quiz .qopt.miss{background:color-mix(in srgb,var(--no,#c2453d) 16%,var(--paper));border-color:var(--no,#c2453d);color:#9a2c25}
+.quiz .qwhy{margin:12px 0 0;font-size:13.5px;line-height:1.75;color:var(--ink-2)}
+.quiz .qwhy.ok{color:#1f6b48}
+.quiz .qwhy.no{color:#9a2c25}
+.quiz .qnext{margin-top:12px;padding:9px 18px;border:1px solid var(--c1);border-radius:99px;
+  background:var(--c1);color:#fff;font-size:13.5px;cursor:pointer}
+.grid.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.grid.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid.g3{grid-template-columns:1fr}.qa .a p{padding:0 6px 16px}}
+/* ===== 自定义光标：一片停在檐下的暖光点 =====
+   触屏 / 无障碍偏好 / Windows 高对比度下全部交回系统光标。 */
+#cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;z-index:999;
+  pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .3s ease;will-change:transform}
+#cur.on{opacity:1}
+#cur i{position:absolute;inset:0;display:block;border-radius:50%}
+#cur .c1{background:radial-gradient(circle,rgba(255,214,140,.95) 0%,rgba(255,196,110,.42) 34%,rgba(255,180,90,0) 70%)}
+#cur .c2{inset:9px;background:radial-gradient(circle,rgba(255,244,214,.95) 0%,rgba(255,226,160,.35) 45%,rgba(255,220,150,0) 75%)}
+#cur .c3{inset:3px;border:1px solid rgba(255,236,190,.34);background:none;
+  transition:transform .22s cubic-bezier(.2,.9,.3,1.4),opacity .22s ease;opacity:.55}
+#cur.near .c3{transform:scale(1.85);opacity:.95}
+#cur.near .c1{transform:scale(1.25)}
+#cur .c1,#cur .c2{transition:transform .22s ease}
+@media (pointer:coarse){#cur{display:none}}
+@media (prefers-reduced-motion:reduce){#cur{display:none}}
+@media (forced-colors:active){#cur{display:none}}
+html.cur-on,html.cur-on *{cursor:none!important}
+@media (pointer:coarse){html.cur-on,html.cur-on *{cursor:auto!important}}
+
+</style>
+</head>
+<body>
+<div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i><i class="c3"></i></div>
+<canvas id="wx" aria-hidden="true"></canvas>
+<div id="amb" aria-hidden="true"></div>
+<div id="light" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+
+<div class="helpbar" id="helpbar">
+  <div class="hb-brand">
+    <img class="hb-emblem" src="assets/emblem.png" alt="大学生心理健康协会会徽">
+    <span class="hb-name">大学生心理健康协会</span>
+  </div>
+  <nav class="hb-nav" aria-label="主导航">
+    <a class="home" href="#top">檐下</a>
+    <a href="#about">我们</a>
+    <a href="#know">读懂</a>
+    <a href="#ill">疾病</a>
+    <a href="#ask">问答</a>
+    <a href="#day">一天</a>
+    <a href="#tree">树洞</a>
+    <a href="#game">游戏</a>
+  </nav>
+  <button class="hb-ach" id="achBtn" type="button" aria-label="成就">
+    <svg viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor"><rect x="2" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="3"/><rect x="2" y="4" width="4" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="3" y="6" width="2" height="2"/></svg>
+    成就</button>
+  <a class="hb-help" href="#help">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10z"/></svg>
+    <span>现在就想找人说说话</span>
+  </a>
+  <nav class="hb-mnav" aria-label="区块导航">
+    <a class="home" href="#top">檐下</a>
+    <a href="#about">我们</a>
+    <a href="#know">读懂</a>
+    <a href="#ill">疾病</a>
+    <a href="#ask">问答</a>
+    <a href="#day">一天</a>
+    <a href="#self">自己</a>
+    <a href="#with">朋友</a>
+    <a href="#tree">树洞</a>
+    <a href="#manual">手册</a>
+    <a href="#game">游戏</a>
+    <a href="#help">求助</a>
+  </nav>
+</div>
+
+<!-- ===== 首屏 ===== -->
+<header class="hero" id="top" data-weather="clear" data-time="deep" data-w="snow">
+  <div class="sky" aria-hidden="true"><b class="sun"></b><b class="cl"></b><b class="rn"></b><b class="sn"></b></div>
+  <div class="hero-motes" aria-hidden="true">
+    <i style="left:12%;animation-duration:9s;animation-delay:0s"></i>
+    <i style="left:23%;width:3px;height:3px;background:var(--c1);animation-duration:12s;animation-delay:1.5s"></i>
+    <i style="left:37%;animation-duration:10s;animation-delay:.8s"></i>
+    <i style="left:51%;width:5px;height:5px;background:var(--px3);animation-duration:13s;animation-delay:2.4s"></i>
+    <i style="left:64%;animation-duration:11s;animation-delay:.4s"></i>
+    <i style="left:77%;width:3px;height:3px;background:var(--c1);animation-duration:9.5s;animation-delay:3s"></i>
+    <i style="left:88%;animation-duration:12.5s;animation-delay:1.9s"></i>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <span class="eb"><i></i>安徽中医药大学 · 大学生心理健康协会</span>
+      <h1>你不必马上好起来，<br>先<span class="hl">坐一会儿</span></h1>
+      <p class="sub">这里有几件小事，也许今晚就能用上。不用一次看完，看到哪算哪。</p>
+      <div class="btns">
+        <a class="btn-a" href="#know">先看看 <span aria-hidden="true">→</span></a>
+        <a class="btn-b" href="#help">我现在不太好</a>
+      </div>
+      <div class="hero-foot">
+        <div class="seasons-mini" aria-label="一天">
+          <a class="sm" href="#know"><i class="sp"></i>清晨</a>
+          <a class="sm" href="#day"><i class="su"></i>白天</a>
+          <a class="sm" href="#self"><i class="sa"></i>黄昏</a>
+          <a class="sm" href="#tree"><i class="sw"></i>入夜</a>
+          <a class="sm" href="#help"><i class="sw"></i>深夜</a>
+        </div>
+        <p class="tiny">不是诊断，也不是治疗。只是一间可以坐一会儿的屋子。</p>
+      </div>
+    </div>
+    <aside class="hero-side" aria-label="快速入口">
+      <a class="hs" href="#know">
+        <span class="ico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M14 44h30a9 9 0 0 0 0-18 12 12 0 0 0-23 4 8 8 0 0 0-7 14z"/></g></svg></span>
+        <span><b>读懂</b><em>那不是"想太多"，也不是懒</em></span></a>
+      <a class="hs" href="#day">
+        <span class="ico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 8a16 16 0 0 1 0 32 11 11 0 0 1 0-22 6 6 0 0 1 0 12"/></g></svg></span>
+        <span><b>一天</b><em>心情在一天里会变好几次</em></span></a>
+      <a class="hs" href="#tree">
+        <span class="ico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 50c-10 0-18-7-18-16a12 12 0 0 1 18-10 12 12 0 0 1 18 10c0 9-8 16-18 16z"/></g></svg></span>
+        <span><b>树洞</b><em>说点什么，或者什么都不说</em></span></a>
+      <a class="hs" href="#game">
+        <span class="ico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M18 52V16h20v36"/><path d="M8 52h48" opacity=".35"/></g></svg></span>
+        <span><b>游戏</b><em>陪一个人走一段路</em></span></a>
+    </aside>
+  </div>
+  <a class="hero-cue" href="#know" aria-label="往下看看">
+    <span>往下，还有</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </a>
+</header>
+
+<!-- ===== 01 关于我们 ===== -->
+<section class="sec s-about" id="about" data-time="morn" data-w="clear">
+  <div class="bgsym b1" style="color:#d3a044"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 10v10"/><path d="M20 22h24l-4 12H24z"/><path d="M24 44h16M26 52h12" opacity=".55"/></g></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">01</span><h2>关于我们</h2><span class="tbar" data-t="morn"><i></i>上午 · 08–11 · 晴</span></div>
+    <p class="lead reveal">在介绍活动之前，先说清楚我们是干什么的 —— 以及为什么我们做的事情，
+       长成这个样子。</p>
+
+    <div class="about-grid reveal">
+      <div class="about-txt">
+        <img class="emblem" src="assets/emblem.png" alt="大学生心理健康协会会徽" loading="lazy">
+        <h3>这是一间什么样的屋子</h3>
+        <p><b>安徽中医药大学 · 大学生心理健康协会</b>（我们都叫它"心协"）成立于 <b>2000 年 11 月</b>，
+           隶属校社团联合会，以<b>应用心理专业</b>为后盾。不看病、不开药、不做诊断——
+           我们做的事很朴素：<b>让一个人在难过的时候，知道去哪里能找到人。</b></p>
+        <p>我们的宗旨，是宣传和普及心理学知识，唤起大家对心理健康的关注。
+           一路做下来靠的不是大道理，是一次次"陪一会儿"——所以这个网站也没有排行榜、没有打卡。
+           你今天来或不来，它都在这里。</p>
+        <div class="theme-card">
+          <span>我们信奉的一句话</span>
+          <b>你的心灵所想，我的目光所在</b>
+          <p>心协最珍贵的是——<b>你在说，而我在听。</b>天会黑，也会亮；
+             我们做的事，就是留一盏灯，给还没走到的人，也给随时可以回头的人。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="dept-block reveal">
+      <div class="db-head">
+        <h3>心协的四个部门</h3>
+        <p>没有先后顺序——每个部门都在用自己的方式，把"陪一会儿"落到实处。</p>
+      </div>
+      <div class="dept-grid">
+        <div class="dept"><span class="dno">学术部</span>
+          <ul><li>撰写活动策划，完成立项申报与上传</li><li>审核新人产出的策划文档</li><li>协同宣传部制作动员大会 PPT</li></ul></div>
+        <div class="dept"><span class="dno">宣传部</span>
+          <ul><li>心理相关内容的宣传与稿件推送</li><li>活动拍照留痕，收集影音材料用于评优申报</li><li>运营社交平台（说说、朋友圈）</li></ul></div>
+        <div class="dept"><span class="dno">组织部</span>
+          <ul><li>申请活动教室与场地，帐篷桌椅等物资领还</li><li>招新及各类现场的物资搬运</li><li>协助会长团签到（pu / 第二课堂 / 志愿汇）</li></ul></div>
+        <div class="dept"><span class="dno">对外事务部</span>
+          <ul><li>物资申请表填报、对接、采购与保管</li><li>打印海报、签单等外联事务</li><li>经费报销表填写</li></ul></div>
+      </div>
+    </div>
+
+    <div class="act-block reveal">
+      <div class="db-head">
+        <h3>我们做什么</h3>
+        <p>一年里这些事轮着来。每一件都很小，但都有人正好需要。</p>
+      </div>
+      <div class="act-grid">
+        <div class="act"><b>心情驿站</b><p>通过信件的方式，帮同学把说不出的话递出去。</p></div>
+        <div class="act"><b>阳光心愿墙</b><p>写下心愿或烦恼，缓解学业和生活上的压力。</p></div>
+        <div class="act"><b>心理培训</b><p>指导老师为成员开展培训，一起学点心理知识。</p></div>
+      </div>
+      <p class="act-more"><b>还有这些，也一直在做：</b>心理知识竞赛 · 心理剧 · 观影放映 · 知识讲座 · 参观咨询室 · 心理沙龙 · 以物易物</p>
+    </div>
+
+    <div class="photowall reveal">
+      <figure class="pw photo"><img src="assets/lecture-notes.jpg" alt="心理健康活动月 · 心理知识讲座" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/recruit-tent.jpg" alt="招新摊位" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/newspaper-game.jpg" alt="报纸游戏 · 团体破冰" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/quiz-booth.jpg" alt="心理知识竞答" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/movie-night.jpg" alt="观影放映 · 礼堂" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/wall-warm.jpg" alt="温情墙 · 便利贴" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/barter-fair.jpg" alt="爱心义卖 · 校园市集" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/mobilization.jpg" alt="成员培训 · 动员会" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/consult-visit.jpg" alt="外出参观 · 研学走访" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/wish-wall-2025.jpg" alt="阳光心愿墙 · 2025" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/recruit-wishwall.jpg" alt="心愿墙 · 历年活动" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/recruit-crowd-a.jpg" alt="招新现场 · 历年存档" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/recruit-crowd-b.jpg" alt="招新现场 · 历年存档（二）" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/recruit-cards.jpg" alt="招新台前 · 手写卡片" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/quiz-buzzer.jpg" alt="心理知识竞赛 · 抢答环节" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/lecture-2015-a.jpg" alt="心理知识讲座 · 2015" loading="lazy"></figure>
+      <figure class="pw photo"><img src="assets/lecture-2015-b.jpg" alt="心理知识讲座 · 2015（现场之二）" loading="lazy"></figure>
+    </div>
+    <div class="strip reveal" aria-label="海报与历年活动长图（可左右滑动，点开看大图）">
+      <a href="assets/poster-recruit-balloon.jpg" target="_blank" rel="noopener"><figure><img src="assets/poster-recruit-balloon.jpg" alt="手绘招新海报 · 热气球" loading="lazy"><figcaption>手绘招新海报 · 热气球</figcaption></figure></a>
+      <a href="assets/poster-recruit.jpg" target="_blank" rel="noopener"><figure><img src="assets/poster-recruit.jpg" alt="社团招新海报（2021）" loading="lazy"><figcaption>招新海报 · 2021</figcaption></figure></a>
+      <a href="assets/poster-station-mood.jpg" target="_blank" rel="noopener"><figure><img src="assets/poster-station-mood.jpg" alt="心情驿站 · 信纸" loading="lazy"><figcaption>心情驿站 · 信纸</figcaption></figure></a>
+      <a href="assets/poster-lecture.jpg" target="_blank" rel="noopener"><figure><img src="assets/poster-lecture.jpg" alt="心理讲座海报" loading="lazy"><figcaption>心理讲座海报</figcaption></figure></a>
+    </div>
+    <div class="extra reveal" style="border-top-color:#5a4a2a">
+      <h3>你可以在这里做什么</h3>
+      <p class="exsub">不用注册，不用打卡，看完就走也行。</p>
+      <div class="ex-grid">
+        <div class="ex" style="border-color:#5a4a2a"><i>01</i><b>看懂一点</b><p>知道哪些说法是伤人的，哪些是真的能帮上忙。</p></div>
+        <div class="ex" style="border-color:#5a4a2a"><i>02</i><b>存一句话</b><p>遇到的时候，能想起一句"可以这么说"。</p></div>
+        <div class="ex" style="border-color:#5a4a2a"><i>03</i><b>找个人</b><p>上面那个电话是真的，随时可以打。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 02 认识心理 ===== -->
+<section class="sec s-know" id="know" data-time="dawn" data-w="clear">
+  <div class="bgsym b1"><svg viewBox="0 0 64 64"><path class="sym-s" d="M14 44h30a9 9 0 0 0 0-18 12 12 0 0 0-23 4 8 8 0 0 0-7 14z"/></svg></div>
+  <div class="bgsym b2"><svg viewBox="0 0 64 64"><path class="sym-s" d="M6 30h17M23 30c0-9 7-15 16-15s16 6 16 15M41 30h17M6 40h14M20 40c0-6 5-10 11-10s11 4 11 10M42 40h16"/></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">02</span><h2>先弄清楚，那不是"想太多"</h2><span class="tbar" data-t="dawn"><i></i>天亮 · 06–08 · 晴</span></div>
+    <p class="lead reveal">我们不写疾病百科，只写"<b>一个人最近早上起不来，他正在经历什么</b>"。每一条都标注来源。</p>
+    <div class="grid g3 reveal">
+      <article class="cell"><span class="no">01</span><span class="tag">常见误解</span><h3>他不是懒</h3>
+        <p>早上起不来、什么都不想做，往往不是懒，是"没有力气"。这两件事，从外面看很像。</p></article>
+      <article class="cell"><span class="no">02</span><span class="tag">常见误解</span><h3>"你就是太脆弱"</h3>
+        <p>这句话的杀伤力比想象中大。它不是安慰，是在说"你的难受不成立"。</p></article>
+      <article class="cell"><span class="no">03</span><span class="tag">常见误解</span><h3>看起来很好的人</h3>
+        <p>笑得最大声的人，可能是最先撑不住的人。抑郁不总是"垂头丧气"的样子。</p></article>
+      <article class="cell"><span class="no">04</span><span class="tag">真实数据</span>
+        <div class="stat"><b data-num="24.1" data-suf="%" data-dec="1">24.1%</b><span>18–24 岁抑郁风险检出率</span></div>
+        <p>各年龄段里最高的。不是你不够坚强，是这一段路本来就难走。</p>
+        <div class="src">《中国国民心理健康发展报告(2021—2022)》</div></article>
+      <article class="cell"><span class="no">05</span><span class="tag">真实数据</span>
+        <div class="stat"><b data-num="78.2" data-suf="%" data-dec="1">78.2%</b><span>就业是最主要的压力来源</span></div>
+        <p>其次是学业 69.4%、人际 41.1%、经济 23.5%。压垮人的往往不是一件事。</p>
+        <div class="src">《2022 年大学生心理健康状况调查报告》</div></article>
+      <article class="cell"><span class="no">06</span><span class="tag">今晚能做</span><h3>先把"为什么"放下</h3>
+        <p>不用问他"你为什么难受"。今晚可以只发一句："我在，你想说就说，不想说也没事。"</p></article>
+    </div>
+    <div class="extra reveal">
+      <h3>三个信号：也许可以找人聊聊了</h3>
+      <p class="exsub">不是诊断标准 —— 只是"如果这几条你都有，那值得找个人说说"。</p>
+      <div class="ex-grid">
+        <div class="ex"><i>01</i><b>持续得有点久</b><p>低落、提不起劲，已经连续两周左右，而且几乎每天都是这样。</p></div>
+        <div class="ex"><i>02</i><b>连喜欢的事也不想做</b><p>以前能让你开心的事，现在做了也没什么感觉，甚至不想开始。</p></div>
+        <div class="ex"><i>03</i><b>身体先出问题</b><p>睡不着一整晚，或者一直想睡；吃不下，或者一直想吃。身体比嘴诚实。</p></div>
+      </div>
+    </div>
+    <p class="blank reveal">看到这里觉得累，就先去倒杯水。<br><em>这一页不会因为你离开就消失。</em></p>
+  </div>
+</section>
+
+<!-- ===== 03 认识它们（精神疾病介绍） ===== -->
+<section class="sec s-ill" id="ill" data-time="first" data-w="rain">
+  <div class="bgsym b1" style="color:var(--c5)"><svg viewBox="0 0 64 64"><path class="sym-s" d="M32 56V30M32 30c-8 0-16-6-16-14 8 0 16 5 16 14zM32 30c8 0 16-6 16-14-8 0-16 5-16 14z"/></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">03</span><h2>认识它们：那是疾病，不是性格</h2><span class="tbar" data-t="first"><i></i>未醒透 · 04–06 · 雾</span></div>
+    <p class="lead reveal">这些名字常常被当成玩笑话，或者用来骂人。它们其实都是<b>疾病</b>——有原因、有办法、可以治疗。<b>这一页只用于了解，不能用来给自己或给别人下诊断。</b></p>
+    <div class="grid g3 reveal">
+      <article class="cell"><span class="no">01</span><span class="tag">疾病了解</span><h3>抑郁症</h3>
+        <p>低落、对什么都提不起劲、说不出的累，持续两周以上；可能连着睡眠、食欲、注意力一起变了。</p>
+        <p>它不是「懒」，也不是「想太多」。心理治疗和药物都有效，大多数人会好转。</p></article>
+      <article class="cell"><span class="no">02</span><span class="tag">疾病了解</span><h3>焦虑障碍</h3>
+        <p>对日常的事也停不下地担心：心慌、出汗、肌肉绷紧；有时会突然一阵强烈的恐惧，喘不上气、觉得快死了，但检查往往查不出问题。</p>
+        <p>它不是「胆小」。认知行为治疗与药物都有成熟的方案。</p></article>
+      <article class="cell"><span class="no">03</span><span class="tag">疾病了解</span><h3>失眠与睡眠障碍</h3>
+        <p>躺下很久睡不着、夜里反复醒、天没亮就醒，白天又困又累。</p>
+        <p>在大学生里非常常见，多半和作息、压力在一起打转。可以调整，也可以治疗。</p></article>
+      <article class="cell"><span class="no">04</span><span class="tag">疾病了解</span><h3>强迫症</h3>
+        <p>明明知道没必要，还是被同一个念头缠住，只能靠反复检查、反复清洗、反复数数来压住那股焦虑。</p>
+        <p>它不是「爱干净」或「做事仔细」——当事人往往比谁都难受。有专门的疗法很有效。</p></article>
+      <article class="cell"><span class="no">05</span><span class="tag">疾病了解</span><h3>双相情感障碍</h3>
+        <p>情绪在深深地低落和异常地高涨之间来回摆：高涨时精力旺盛、话多、连着几天睡很少也不觉得累。</p>
+        <p>它和单纯的抑郁治法不同，所以准确评估很重要。</p></article>
+      <article class="cell"><span class="no">06</span><span class="tag">疾病了解</span><h3>进食障碍</h3>
+        <p>厌食、贪食、暴食——对体重和体型的担心大到控制住了吃饭和日子。</p>
+        <p>它和意志力没关系，是真的病。越早干预，恢复得越好。</p></article>
+      <article class="cell"><span class="no">07</span><span class="tag">疾病了解</span><h3>创伤后应激反应</h3>
+        <p>经历或目睹过吓人的事之后，反复做噩梦、画面突然闯回来、躲开相关的人和地方、一直绷着。</p>
+        <p>不是「过一阵子就好了」就能带过去，专业帮助很有用。</p></article>
+      <article class="cell"><span class="no">08</span><span class="tag">疾病了解</span><h3>精神分裂症</h3>
+        <p>可能出现幻觉、妄想、说话变乱、慢慢退出人群。</p>
+        <p>它是大脑的疾病，不是「疯了」，更不等于危险。规范治疗后，很多人照样上学、上班、过日子。</p></article>
+      <article class="cell"><span class="no">09</span><span class="tag">请这样说话</span><h3>这些名字不是形容词</h3>
+        <p>「你有点强迫症吧」不是夸奖，「我抑郁了」不该是玩笑。随口拿病名当梗，会让真正在撑的人更不敢开口。</p>
+        <p>换个说法就够了：说他很担心，不说他焦虑症；说你很难过，不说你抑郁了。</p></article>
+    </div>
+    <div class="extra reveal">
+      <h3>三句一定要写在旁边的话</h3>
+      <p class="exsub">了解的目的不是给自己贴标签，是知道「原来有名字，原来能治」。</p>
+      <div class="ex-grid">
+        <div class="ex"><i>01</i><b>诊断只能由精神科医生做出</b><p>这一页不是自查表。真的担心，去挂个号，让医生面诊判断。</p></div>
+        <div class="ex"><i>02</i><b>它们比想象中常见</b><p>全球大约每八个人里，就有一人正与精神障碍共处。你不是唯一一个。</p>
+          <div class="src">世界卫生组织《世界精神卫生报告》（2022）</div></div>
+        <div class="ex"><i>03</i><b>治疗是有用的</b><p>药物、心理治疗、规律作息、有人陪着——大多数情况都会明显好转，越早越好。</p></div>
+      </div>
+      <p class="lead" style="font-size:12.5px;color:var(--muted);margin:16px 0 0">
+        如果上面的某一段像你、或者像你身边的人，往下走到「如果此刻很难」那一节，那里有真的能打通的电话。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 心理问答（含小测） ===== -->
+<section class="sec s-ask" id="ask" data-time="morn" data-w="clear">
+  <div class="bgsym b2"><svg viewBox="0 0 64 64"><path class="sym-s" d="M12 22h40M12 32h30M12 42h22"/></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">04</span><h2>你想问、又不太好意思问的</h2><span class="tbar" data-t="morn"><i></i>上午 · 08–11 · 晴</span></div>
+    <p class="lead reveal">关于心理咨询、精神科、吃药……这些是被问得最多的问题。点一下问题就出答案。<b>这里没有谁替你做决定，只有比较靠得住的说法。</b></p>
+
+    <div class="qalist reveal">
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>去学校心理咨询，会被记进档案、被辅导员知道吗？</b></button>
+        <div class="a"><p>有保密原则。咨询记录不属于学籍档案，也不会随意告诉老师同学——唯一的例外是出现自伤或伤人的紧急风险，这时咨询师有责任联系能帮助保护你的人。这是行业规范，不是「打小报告」。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>是不是「心理有病」的人才需要咨询？</b></button>
+        <div class="a"><p>不是。多数走进咨询室的人，和你我没什么两样：睡不着、想不通、关系里卡住了、或者只是想更懂自己一点。就像不是只有感冒才能去医院。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>跟朋友说说不就行了吗，为什么还要咨询？</b></button>
+        <div class="a"><p>朋友的支持很重要，谁都替代不了。咨询师多做的是两件事：受过训练（知道怎么问、怎么带你慢慢拆开），以及有稳定的边界（不会因为你难受就跟着乱，也不会把你的事说出去）。两者并不冲突，可以一起有。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>怎么判断自己该不该去精神科？</b></button>
+        <div class="a"><p>一个粗糙但好用的标准：这样的状态<b>持续两周以上</b>，并且明显影响了吃饭、睡觉、上课或和人相处，就值得去。如果出现伤害自己的念头，不要等两周，现在就去。挂号和看别的科没什么两样。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>精神科的药会上瘾吗？会把人吃傻吗？</b></button>
+        <div class="a"><p>在医生指导下按量服用，通常不会成瘾，也不会让人变傻——恰恰相反，难受的时候脑子转不动，多半是症状本身造成的。真正要紧的是：<b>别自己加减药量、别突然停</b>，有任何不舒服就复诊说，医生会调。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>朋友说他很难受，我该说什么？</b></button>
+        <div class="a"><p>先把情绪接住就行：「我在，你愿意说我就听，不想说也没事。」少讲道理，别急着给方案，更不要说「别人比你惨」「你想开点」——这些话听起来像在说他的难受不成立。陪着，本身就是有用的。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>我最近一直很低落，是不是抑郁症？</b></button>
+        <div class="a"><p>低落是情绪，抑郁症是疾病，这两件事不能划等号。网上的量表只能提醒你「也许该找人聊聊了」，不能用来确诊。想知道答案，最靠谱的路是去精神科面诊——确定不是，你也能松口气。</p></div></div>
+      <div class="qa"><button class="q" type="button" aria-expanded="false"><span class="arw" style="order:2;margin-left:auto">+</span><i>Q</i><b>心理咨询是不是很贵？</b></button>
+        <div class="a"><p>学校心理咨询中心对本校学生是免费的，这是它的设置目的之一。校外的咨询价格差别很大，也有公益热线、医院心理科按门诊收费等选择。别因为担心钱就一直拖着——先去问问学校这条路，往往一分钱不花。</p></div></div>
+    </div>
+
+    <div class="quiz reveal" id="quiz" aria-live="polite">
+      <div class="qh"><b>心理知识小测</b><span id="qProg">共 15 题</span></div>
+      <div class="qbar"><i id="qBar"></i></div>
+      <p class="qt" id="qTitle">准备好了就点一下下面的选项，答错也会有解释。</p>
+      <div class="qo" id="qOpts"></div>
+      <div id="qWhy"></div>
+    </div>
+    <p class="lead reveal" style="font-size:12.5px;color:var(--muted);margin:14px 0 0">
+      还有想问又不敢问的？可以匿名写在树洞里，也可以直接打「如果此刻很难」那一节的电话 —— 不用等到想清楚再开口。
+    </p>
+  </div>
+</section>
+
+<!-- ===== 03 一天的心情 ===== -->
+<section class="sec s-season" id="day" data-time="noon" data-w="clear">
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx" style="color:#6f9ab5">05</span><h2>一天的心情变化</h2><span class="tbar" data-t="noon"><i></i>正午 · 11–14 · 晴</span></div>
+    <p class="lead reveal">心情跟天气一样，在一天里会变好几次 —— <b>早上和深夜，往往不是同一个人。</b>
+       看清它什么时候来，比逼它别来有用得多。</p>
+    <div class="four reveal">
+      <article class="sq q-d1">
+        <div class="qico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M4 46h56"/><path d="M12 46a20 20 0 0 1 40 0"/><path d="M22 46a10 10 0 0 1 20 0"/></g></svg></div>
+        <span class="qbar"></span>
+        <span class="qmon">05 – 08</span>
+        <h3>清晨 · 还没醒透</h3>
+        <p class="q1">闹钟响的时候，身体比脑子先知道"今天也有点难"。什么都不想做，是真的。</p>
+        <p class="qdo"><b>可以做：</b>别急着列今天的清单。先洗把脸，坐下来再说。</p>
+      </article>
+      <article class="sq q-d2">
+        <div class="qico"><svg viewBox="0 0 64 64"><g class="sym-s"><circle cx="32" cy="30" r="11"/><path d="M32 8v6M32 46v6M8 30h6M50 30h6M15 13l4 4M45 43l4 4M49 13l-4 4M19 43l-4 4"/></g></svg></div>
+        <span class="qbar"></span>
+        <span class="qmon">08 – 17</span>
+        <h3>白天 · 像别人一样</h3>
+        <p class="q1">上课、说话、笑。看起来和平时没两样 —— 但撑着的力气，只有自己知道用了多少。</p>
+        <p class="qdo"><b>可以做：</b>中午找个没人的地方待十分钟。不是偷懒，是充电。</p>
+      </article>
+      <article class="sq q-d3">
+        <div class="qico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M8 44a24 24 0 0 1 48 0"/><path d="M4 52h56" stroke-dasharray="3 6"/></g></svg></div>
+        <span class="qbar"></span>
+        <span class="qmon">17 – 21</span>
+        <h3>黄昏 · 一个人走回去</h3>
+        <p class="q1">天开始暗，人群散开。这段路最容易让人突然觉得"我今天好像什么都做不好"。</p>
+        <p class="qdo"><b>可以做：</b>把注意力放回身体——走慢一点，看看天，听听歌。</p>
+      </article>
+      <article class="sq q-d4">
+        <div class="qico"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 8a16 16 0 0 1 0 32 11 11 0 0 1 0-22 6 6 0 0 1 0 12"/></g></svg></div>
+        <span class="qbar"></span>
+        <span class="qmon">21 – 03</span>
+        <h3>深夜 · 情绪才敢出来</h3>
+        <p class="q1">白天压住的那些，到这时候一起涌上来。白天能忍的事，晚上往往忍不住。</p>
+        <p class="qdo"><b>可以做：</b>今晚先不做任何重大决定。等天亮再想。</p>
+      </article>
+    </div>
+
+    <div class="mood reveal" id="mood">
+      <h3>那现在，你像什么？</h3>
+      <p class="exsub">不用准确。点一个就行 —— 它是会变的，这很正常。</p>
+      <div class="mood-row">
+        <button class="mo" type="button" data-k="cloud"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M14 44h30a9 9 0 0 0 0-18 12 12 0 0 0-23 4 8 8 0 0 0-7 14z"/></g></svg><span>说不上来</span></button>
+        <button class="mo" type="button" data-k="sun"><svg viewBox="0 0 64 64"><g class="sym-s"><circle cx="32" cy="30" r="11"/><path d="M32 8v6M32 46v6M8 30h6M50 30h6M15 13l4 4M45 43l4 4M49 13l-4 4M19 43l-4 4"/></g></svg><span>还行</span></button>
+        <button class="mo" type="button" data-k="rain"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M14 40h34a8 8 0 0 0 0-16 11 11 0 0 0-21 3 7 7 0 0 0-13 13z"/><path d="M22 48l-3 7M32 48l-3 7M42 48l-3 7"/></g></svg><span>低落</span></button>
+        <button class="mo" type="button" data-k="fog"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M6 30h17M23 30c0-9 7-15 16-15s16 6 16 15M41 30h17M6 40h14M20 40c0-6 5-10 11-10s11 4 11 10M42 40h16"/></g></svg><span>看不清</span></button>
+        <button class="mo" type="button" data-k="night"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 8a16 16 0 0 1 0 32 11 11 0 0 1 0-22 6 6 0 0 1 0 12"/></g></svg><span>睡不着</span></button>
+        <button class="mo" type="button" data-k="dawn"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M4 46h56"/><path d="M12 46a20 20 0 0 1 40 0"/><path d="M22 46a10 10 0 0 1 20 0"/></g></svg><span>好一点了</span></button>
+        <button class="mo" type="button" data-k="wind"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M32 10v6M32 48v6M18 18l4 4M42 42l4 4M46 18l-4 4M22 42l-4 4"/><path d="M22 32h20"/></g></svg><span>起伏</span></button>
+        <button class="mo" type="button" data-k="after"><svg viewBox="0 0 64 64"><g class="sym-s"><path d="M8 42a24 24 0 0 1 48 0"/><path d="M4 50h56" stroke-dasharray="3 6"/></g></svg><span>过去了</span></button>
+      </div>
+      <p class="mood-say" id="moodSay"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 自助 ===== -->
+<section class="sec s-self" id="self" data-time="aft" data-w="cloud">
+  <div class="bgsym b1" style="color:var(--c2)"><svg viewBox="0 0 64 64"><g class="sym-s"><circle cx="32" cy="30" r="5"/><circle cx="32" cy="30" r="12" opacity=".7"/><circle cx="32" cy="30" r="19" opacity=".45"/><circle cx="32" cy="30" r="26" opacity=".25"/></g></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">06</span><h2>自己撑不住的时候</h2><span class="tbar" data-t="aft"><i></i>午后 · 14–17 · 多云</span></div>
+    <p class="lead reveal">这里的每一件都<b>不承诺疗效</b>。它们只是——在你今晚不做任何决定之前，陪你把这一小时过完。</p>
+    <div class="grid g2 reveal">
+      <article class="cell"><span class="no">01</span><span class="tag">呼吸</span><h3>把呼吸慢下来一次</h3>
+        <p>不是为了放松，是让身体知道"现在没有危险"。吸气 4 秒、停 2 秒、呼气 6 秒，做 8 次。</p></article>
+      <article class="cell"><span class="no">02</span><span class="tag">落地</span><h3>说出身边的五样东西</h3>
+        <p>脑子停不下来时，把注意力拉回身体：看见的 5 样、听见的 4 种、能碰到的 3 样。</p></article>
+      <article class="cell"><span class="no">03</span><span class="tag">写信</span><h3>写给一个不会读的人</h3>
+        <p>把想说的话写下来，不必寄出去。写的过程本身，就是让那句话从胸口挪到纸上。</p></article>
+      <article class="cell"><span class="no">04</span><span class="tag">边界</span><h3>今天只做一件事</h3>
+        <p>不列清单，不做计划。今天只选一件最小的、能完成的事：喝一杯水也算。</p></article>
+    </div>
+
+    <div class="breathe reveal">
+      <div class="borb" id="borb"><span id="borbT">准备</span></div>
+      <div class="btxt">
+        <h3>不如现在就试一次</h3>
+        <p>跟着圆一起呼吸：吸气 4 秒 —— 停 2 秒 —— 呼气 6 秒，一共 5 轮。
+           不是为了放松，只是让身体知道"现在没有危险"。随时可以停。</p>
+        <button class="bbtn" id="bbtn" type="button">开始 5 轮</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 陪伴 ===== -->
+<section class="sec s-with" id="with" data-time="dusk" data-w="cloud">
+  <div class="bgsym b1" style="color:var(--c3);opacity:.12"><svg viewBox="0 0 64 64"><g class="sym-s"><circle cx="24" cy="32" r="13"/><circle cx="40" cy="32" r="13"/></g></svg></div>
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">07</span><h2>如果你的朋友不太好</h2><span class="tbar" data-t="dusk"><i></i>黄昏 · 17–20 · 多云</span></div>
+    <p class="lead reveal">这一节最简单，也最难。真正把人拉回来的常常不是开导，是<b>每天陪他走一段路</b>。</p>
+    <div class="grid g3 reveal">
+      <article class="cell say"><span class="no">01</span><span class="tag">可以说</span><h3>"我在。"</h3>
+        <p>不需要解决问题。你只需要让他知道，现在这一刻，他不是一个人。</p></article>
+      <article class="cell say"><span class="no">02</span><span class="tag">可以说</span><h3>"不想说也没事。"</h3>
+        <p>给他不说话的许可。很多人不是不想说，是怕一开口就收不住。</p></article>
+      <article class="cell say"><span class="no">03</span><span class="tag">可以说</span><h3>"这不是你的错。"</h3>
+        <p>把"应该"两个字拿掉。他已经被"应该"压了很久了。</p></article>
+      <article class="cell avoid"><span class="no">04</span><span class="tag">别这样说</span><h3>"想开点就好了"</h3>
+        <p>说这句话等于告诉他"你的问题不够大"。他会笑着点头，然后不再和你说话。</p></article>
+      <article class="cell avoid"><span class="no">05</span><span class="tag">别这样说</span><h3>"别人行你怎么不行"</h3>
+        <p>最常见的伤人话。它把一个人的困难，变成了他的失败。</p></article>
+      <article class="cell keep"><span class="no">06</span><span class="tag">要记得</span><h3>陪伴的人也会累</h3>
+        <p>一直陪着别人的人，自己也需要被陪着。这不是自私，是必要条件。</p>
+        <div class="src">朋辈支持实务：需注重对朋辈成员的心理疏导</div></article>
+    </div>
+
+    <div class="extra reveal">
+      <h3>想关心他，但不知道怎么开口？</h3>
+      <p class="exsub">下面这几句可以直接用 —— 它们不解决问题，但能让对方知道"你在"。</p>
+      <div class="ex-grid">
+        <div class="ex"><i>可以发</i><b>"我注意到你最近好像有点累。"</b><p>只说观察，不评判。这一句往往比"你怎么了"更容易被接住。</p></div>
+        <div class="ex"><i>可以约</i><b>"要不要一起走走？不用说什么。"</b><p>把"聊天"变成"一起做件小事"，压力会小很多。</p></div>
+        <div class="ex"><i>可以提</i><b>"要我陪你去找个人聊聊吗？"</b><p>陪他去，而不是让他自己去 —— 这一步的差别很大。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 树洞 ===== -->
+<section class="sec s-tree" id="tree" data-time="night" data-w="rain">
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">08</span><h2>说点什么，或者什么都不说</h2><span class="tbar" data-t="night"><i></i>入夜 · 20–23 · 雨</span></div>
+    <p class="lead reveal">这里不给排名、不给点赞、不显示谁来过。写下的那句话会贴在墙上，别人看不到是谁写的。</p>
+    <div class="wall reveal">
+      <div class="note"><b>某个人</b>今天没去上课。但我洗了脸。</div>
+      <div class="note"><b>某个人</b>我妈打电话来，我说"挺好的"。这次没哭。</div>
+      <div class="note"><b>某个人</b>有人问我吃了吗，我说吃了。其实没有。</div>
+      <div class="note"><b>某个人</b>在图书馆坐了一天，一个字没看进去，但我去了。</div>
+      <div class="note"><b>某个人</b>我想说谢谢，但没说出口。</div>
+      <div class="note"><b>某个人</b>今天出门看见了太阳，站了一会儿。</div>
+      <div class="note"><b>某个人</b>室友问我怎么了，我说没事。其实想被再问一句。</div>
+      <div class="note"><b>某个人</b>我把那句话删了又打，打了又删。最后没发。</div>
+      <div class="note"><b>某个人</b>今天按时吃了饭。这算一件事。</div>
+      <div id="myNotes"></div>
+    </div>
+    <div class="twrite reveal">
+      <textarea id="tw" maxlength="60" rows="2" placeholder="也想说一句？写在这里……"></textarea>
+      <button id="twb" type="button">贴到墙上</button>
+    </div>
+    <p class="lead reveal" style="font-size:12px;color:var(--muted);margin:10px 0 0">
+      只存在你自己的浏览器里，不会上传、不会有人看到。
+    </p>
+  </div>
+</section>
+
+<!-- ===== 07 关系手册 ===== -->
+<section class="sec s-manual" id="manual" data-time="deep" data-w="rain">
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">09</span><h2>你会记下一本手册</h2><span class="tbar" data-t="deep"><i></i>深夜 · 23–04 · 雨</span></div>
+    <p class="lead reveal">在《异端星》里，你看到的每件事会自动记进一本手册。
+       它不给你答案 —— 只是让你后来能回头看见：<b>你当时理解的是什么，以及你理解错了什么。</b></p>
+
+    <div class="grid g2 reveal" style="border-top:0;gap:18px;--accent:var(--c1)">
+      <div class="retro">
+        <div class="rbar"><span class="rb"></span><span class="rb x"></span><span>关系手册 · 那一夜</span><span style="margin-left:auto">01:15</span></div>
+        <div class="rbody">
+          <div class="manual">
+            <div class="who"><span class="nm">何木</span>
+              <div class="ln"><span class="d">这一夜 · 便利店</span><span>面前摊着一张纸，在写字</span></div>
+              <div class="ln"><span class="d">后半夜 · 便利店</span><span>纸上划掉两行半，剩下"我挺好的，你们别担心"</span></div>
+              <div class="ln seen"><span class="d">后半夜 · 街角</span><span>（移开视线才看到）他把纸折起来，没扔</span></div>
+              <div class="ln"><span class="d">天亮前 · 便利店</span><span>揉右手腕。上半夜也揉过同一个位置</span></div>
+            </div>
+            <div class="who"><span class="nm">白诰</span>
+              <div class="ln"><span class="d">这一夜 · 放映厅</span><span>第十三分钟那段，他每次都沉默</span></div>
+              <div class="ln void"><span class="d">— — —</span><span>（这一段还空着。你还不知道为什么。）</span></div>
+            </div>
+            <div class="who"><span class="nm">未解</span>
+              <div class="ln void"><span class="d">— — —</span><span>01:02 那十三分钟，他在哪？</span></div>
+              <div class="ln void"><span class="d">— — —</span><span>白诰说的"十三分钟"，和何木有关吗？</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="rfoot"><span>已记录 6 条</span><span>空缺 3 条</span></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="drawing" style="flex:1">
+          <svg viewBox="0 0 300 150" role="img" aria-label="线稿：一只眼睛与虚线">
+            <path class="u" d="M36 80 q60-52 120 0"/>
+            <path class="u" d="M36 80 q60 42 120 0"/>
+            <circle class="u" cx="96" cy="80" r="17"/>
+            <circle cx="96" cy="80" r="6.5" fill="var(--ink)" opacity=".72"/>
+            <circle cx="90" cy="73" r="2.6" fill="#fff" opacity=".92"/>
+            <path class="th" d="M42 64 l-6-9 M60 53 l-3-10 M79 49 l-1-10 M96 48 l0-10 M113 49 l1-10 M132 53 l3-10 M150 64 l6-9"/>
+            <path class="u" d="M36 80 l-7-3 M36 80 l-7 3"/>
+            <path class="th" d="M176 58 h86 M176 78 h66 M176 98 h76"/>
+            <path d="M186 122 h62" stroke="var(--c3)" stroke-width="2" stroke-dasharray="4 5" fill="none"/>
+            <text x="176" y="142" style="font-size:8px;fill:var(--muted)">移开视线后，才看得到的</text>
+          </svg>
+          <figcaption>看着他的时候，他会说"没事"</figcaption>
+        </div>
+        <div class="retro">
+          <div class="rbar"><span class="rb"></span><span class="rb"></span><span>记录的两条规则</span></div>
+          <div class="rbody" style="font-size:12.5px;color:var(--ink-2);line-height:1.9">
+            <b style="color:var(--ink);font-weight:600">一、只记事实，不记结论。</b><br>
+            手册写"他揉了揉手腕"，不写"他很难受"。<br><br>
+            <b style="color:var(--ink);font-weight:600">二、空缺是留着的。</b><br>
+            手册不会替你补上。有些空一直到你不再玩，也还是空的。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 08 游戏（像素夜） ===== -->
+<section class="sec s-game" id="game" data-time="deep" data-w="rain">
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">10</span><h2>《异端星 · 荧惑》</h2><span class="tbar" data-t="deep"><i></i>深夜 · 23–04 · 雨</span></div>
+    <p class="lead reveal">协会自己做的一个像素叙事游戏。讲的是<b>几个人在很难的那段日子里怎么过</b>——
+       一个雨夜，一条街，四个睡不着的人各自守着一处。你走过去，陪着，把这一夜过完。</p>
+    <p class="lead reveal" style="font-size:12.5px;color:#8f8ca8;margin-top:-14px">这一作会碰到失眠、长久低落、失去亲人这些不轻松的内容——我们不回避它，回避才让人更孤单。随时可以放下，关掉网页也没关系。</p>
+
+    <div class="game-grid">
+      <div class="reveal">
+        <div class="pixelwin">
+          <div class="pbar"><span class="pd"></span><span class="pd2"></span><span>异端星 · 序章 · 出租屋</span><span style="margin-left:auto">01:15</span></div>
+          <div class="pstage">
+            <button class="playwrap" id="playWrap" type="button" aria-label="点击开始游玩《异端星》">
+              <img class="shot" src="assets/shots/02-prologue.png" alt="《异端星》真机画面：雨夜 01:15 的出租屋，水木和醒来" loading="lazy">
+              <span class="playtag"><i>▶</i> 点这里 · 不用下载，直接玩</span>
+            </button>
+          </div>
+          <div class="pfoot">
+            <span>不要求你解开什么</span>
+            <button class="pgo" type="button">进入</button>
+          </div>
+        </div>
+        <p class="pcap">上面是真机画面截图 —— 雨夜 01:15 的出租屋。点一下画面，不用下载，直接就能玩。</p>
+
+        <!-- 那一夜的人（游戏内立绘） -->
+        <div class="crew" aria-label="那一夜会遇到的人">
+          <figure class="you"><img src="assets/hero/portrait.png" alt="水木和立绘" loading="lazy"><b>水木和</b><em>你</em></figure>
+          <figure><img src="assets/npc/hemu.png" alt="何木立绘" loading="lazy"><b>何木</b><em>便利店 · 被遗忘的人</em></figure>
+          <figure><img src="assets/npc/zi.png" alt="籽的立绘" loading="lazy"><b>籽</b><em>琴房 · 说不出口的感谢</em></figure>
+          <figure><img src="assets/npc/baigao.png" alt="白诰立绘" loading="lazy"><b>白诰</b><em>放映厅 · 想保护却伤了人</em></figure>
+          <figure><img src="assets/npc/wenxu.png" alt="燕安滕立绘" loading="lazy"><b>燕安滕</b><em>天台 · 接受无法改变的事</em></figure>
+          <figure><img src="assets/npc/aji.png" alt="诺斯图立绘" loading="lazy"><b>诺斯图</b><em>街角 · 反谜</em></figure>
+        </div>
+        <p class="pcap">四个人，四种撑不下去的方式。街角还蹲着个只说反话的诺斯图，和一只陪你坐会儿的白猫依芽——你不用治好谁，走过去、陪着，就好。</p>
+      </div>
+
+      <div class="reveal">
+        <div class="notes">
+          <div class="r"><span class="k">同一班人</span><span class="v">游戏的主角<b>水木和</b>就站在官网右下角；上面角色墙里的何木、籽、白诰、燕安滕、诺斯图，都是那一夜的人。</span></div>
+          <div class="r"><span class="k">同一种夜色</span><span class="v">官网和游戏是同一套像素夜色的气质——暗底、骨白、一点暖光，不是两个割裂的设计。</span></div>
+          <div class="r"><span class="k">颜色都很省</span><span class="v">两边都信奉"少即是多"：只在重要的地方上色，比如那扇亮着的门、右下角那盏灯。</span></div>
+          <div class="r"><span class="k">互不打扰</span><span class="v">不玩也可以把官网看完。<b>游戏是加上的，不是前提。</b></span></div>
+        </div>
+        <div class="btns">
+          <a class="btn-a" href="异端星_荧惑.html" id="openGame" target="_blank" rel="noopener">打开完整游戏 <span aria-hidden="true">→</span></a>
+          <a class="btn-b" href="#know">先看看这些内容</a>
+        </div>
+        <div class="extra" style="border-top-color:#3a4262">
+          <h3 style="font-size:15.5px">它在讲什么</h3>
+          <div class="ex-grid" style="margin-top:12px">
+            <div class="ex" style="border-color:#3a4262;background:rgba(255,255,255,.03)"><i>01</i><b>四个人，一个雨夜</b><p>何木、籽、白诰、燕安滕——都在很难的那段日子里，各自撑着。</p></div>
+            <div class="ex" style="border-color:#3a4262;background:rgba(255,255,255,.03)"><i>02</i><b>三个字：雪 · 露 · 星</b><p>那一夜的十三分钟里藏着三个字。凑齐了，你才听得懂那三句话。</p></div>
+            <div class="ex" style="border-color:#3a4262;background:rgba(255,255,255,.03)"><i>03</i><b>陪，是要费力气的</b><p>你的心力有限，它不会告诉你还剩多少。走不动了，也是一种走法。</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 11 求助 ===== -->
+<section class="sec s-help" id="help" data-time="deep" data-w="rain" style="padding-top:calc(var(--sec-y)*.8)">
+  <div class="wrap">
+    <div class="sec-top reveal"><span class="idx">11</span><h2>如果此刻很难</h2><span class="tbar" data-t="deep"><i></i>深夜 · 23–04 · 雨</span></div>
+    <p class="lead reveal">下面这些渠道是真实存在的，随时可以打。如果情况紧急，请直接联系身边的人，或者拨打 120。</p>
+    <div class="helpcard reveal">
+      <article class="hcard">
+        <div class="hico"><svg viewBox="0 0 64 64"><path class="sym-s" d="M32 50c-10 0-18-7-18-16a12 12 0 0 1 18-10 12 12 0 0 1 18 10c0 9-8 16-18 16z"/></svg></div>
+        <div class="num">12356</div><h3>心理援助热线</h3>
+        <p>24 小时，全国。不用判断自己"够不够格"打，想说就可以打。</p></article>
+      <article class="hcard">
+        <div class="hico"><svg viewBox="0 0 64 64"><path class="sym-s" d="M18 40c0-9 6-16 14-16s14 7 14 16"/><path class="sym-s" d="M22 46h20" opacity=".7"/><path class="sym-s" d="M26 52h12" opacity=".45"/></svg></div>
+        <div class="num" style="font-size:16px">校内</div><h3>心理健康教育与咨询中心</h3>
+        <p>面向全校学生。可以预约咨询，也可以只是去坐一会儿。</p>
+        <div class="src">预约：拨 68129325，或在「今日校园」App 心理咨询板块预约</div></article>
+    </div>
+    <div class="extra reveal" style="border-top-color:rgba(224,122,112,.35)">
+      <h3>如果你正在陪别人</h3>
+      <p class="exsub">陪人的人也需要被接住。这三条，是说给你的。</p>
+      <div class="ex-grid">
+        <div class="ex" style="border-color:rgba(224,122,112,.35)"><i>01</i><b>你不需要解决它</b><p>你解决不了，也不该由你解决。陪着，本身就是作用。</p></div>
+        <div class="ex" style="border-color:rgba(224,122,112,.35)"><i>02</i><b>你也会撑不住</b><p>可以累，可以躲一会儿，可以先照顾自己。这不是自私。</p></div>
+        <div class="ex" style="border-color:rgba(224,122,112,.35)"><i>03</i><b>有危险就打 120</b><p>如果他提到伤害自己，别一个人扛 —— 立刻找身边的大人、老师或医生。</p></div>
+      </div>
+    </div>
+    <p class="lead reveal" style="margin:26px 0 0;font-size:13px;color:var(--ink-2)">
+      本网站不是诊断工具，也不是治疗机构。如果这里的内容让你不确定，请去找专业的人聊一聊——那是更可靠的做法。
+    </p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div style="max-width:30ch">
+      <b>安徽中医药大学 · 大学生心理健康协会</b><br>
+      本站由协会成员自己做的，内容会持续更新。<br>
+      成立于 2000 年 11 月 · 隶属校社团联合会 · 应用心理专业为后盾
+      <div style="margin-top:16px;color:var(--muted)">© 2026 安徽中医药大学大学生心理健康协会</div>
+      <div class="wipe">
+        <button id="wipeBtn" type="button" class="wipe-b" aria-expanded="false">清空我在本站留下的痕迹</button>
+        <div id="wipeBox" class="wipe-box" hidden>
+          <p>想清掉哪一部分，自己勾。只会删下面勾中的。</p>
+          <label><input type="checkbox" data-k="xinxie_notes"> 树洞墙上我写的话</label>
+          <label><input type="checkbox" data-k="xljk_save,xljk_archive,xljk_endings"> 《异端星》的存档与结局</label>
+          <label><input type="checkbox" data-k="xinxie_ach"> 成就记录</label>
+          <label><input type="checkbox" data-k="xinxie_quiz"> 小测答过的题目</label>
+          <div class="wipe-acts">
+            <button type="button" id="wipeGo">清空所选</button>
+            <button type="button" id="wipeNo">取消</button>
+          </div>
+          <p id="wipeMsg" class="wipe-msg"></p>
+        </div>
+      </div>
+    </div>
+    <div class="disclaim">
+      <strong>这里不是诊断，也不是治疗。</strong>
+      网站上的内容仅供了解与陪伴，不能替代专业评估与治疗。每篇内容均注明出处；如情况紧急，请立即联系身边的人或拨打 120。求助入口在本站右上角，任何时候都在。
+    </div>
+  </div>
+</footer>
+
+<div id="ach" role="status" aria-live="polite">
+  <svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor"><rect x="2" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="3"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="6" width="2" height="2"/></svg>
+  <span><b>成就解锁</b><span id="achT"></span></span>
+</div>
+<div id="achp"><div class="card">
+  <button class="close" id="achClose" aria-label="关闭">✕</button>
+  <h3>成 就</h3>
+  <p class="sub">看点什么、停一会儿，就会解锁一个。不看也没关系。</p>
+  <div id="achList"></div>
+  <div class="foot"><span id="achN"></span><span>只是留个记号，没有排行</span></div>
+</div></div>
+
+<div id="gp" hidden>
+  <button id="gpClose" type="button" aria-label="关闭游戏">✕ 关闭</button>
+  <iframe id="gpFrame" title="《异端星》· 荧惑" src="about:blank" allow="fullscreen"></iframe>
+</div>
+
+<div id="lbox" role="dialog" aria-modal="true" aria-label="图片查看">
+  <button class="lb-close" type="button" aria-label="关闭">✕ 关闭</button>
+  <figure><img src="" alt=""><figcaption></figcaption></figure>
+</div>
+
+<script>
+/* 自定义光标：进入网站后系统箭头换成一点停在檐下的暖光。 */
+(function(){
+  var cur=document.getElementById('cur');
+  if(!cur)return;
+  var fine=window.matchMedia&&window.matchMedia('(pointer:fine)').matches;
+  var calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!fine||calm){ cur.remove(); return; }
+  var tx=0,ty=0,cx=0,cy=0,on=false,raf=0;
+  document.documentElement.classList.add('cur-on');
+  function loop(){
+    cx+=(tx-cx)*0.22; cy+=(ty-cy)*0.22;
+    cur.style.transform='translate3d('+cx+'px,'+cy+'px,0)';
+    raf=(Math.abs(tx-cx)>0.4||Math.abs(ty-cy)>0.4)?requestAnimationFrame(loop):0;
+  }
+  function move(e){
+    tx=e.clientX; ty=e.clientY;
+    if(!on){on=true;cur.classList.add('on');cx=tx;cy=ty;}
+    if(!raf)raf=requestAnimationFrame(loop);
+    var t=e.target;
+    var near=t&&t.closest&&t.closest('a,button,.pgo,.wxbtn,.witem,[role="button"],label,input,select,textarea');
+    cur.classList.toggle('near',!!near);
+  }
+  window.addEventListener('pointermove',move,{passive:true});
+  window.addEventListener('pointerdown',function(){cur.style.transform+='';cur.classList.add('down')},{passive:true});
+  window.addEventListener('pointerup',function(){cur.classList.remove('down')},{passive:true});
+  document.addEventListener('pointerleave',function(){cur.classList.remove('on');on=false});
+  document.addEventListener('pointerenter',function(e){ if(e.pointerType==='mouse')move(e) });
+  /* 键盘 Tab 焦点也该有个光标反馈 */
+  document.addEventListener('focusin',function(e){
+    var r=e.target&&e.target.getBoundingClientRect&&e.target.getBoundingClientRect();
+    if(!r)return;
+    tx=r.left+r.width/2; ty=r.top+r.height/2;
+    if(!on){on=true;cur.classList.add('on');cx=tx;cy=ty}
+    if(!raf)raf=requestAnimationFrame(loop);
+    cur.classList.add('near');
+  });
+  document.addEventListener('focusout',function(){cur.classList.remove('near')});
+})();
+</script>
+
+<script>
+(function(){
+  var gp=document.getElementById('gp'),fr=document.getElementById('gpFrame');
+  if(!gp)return;
+  function open(){ if(!gp.hidden)return; gp.hidden=false; fr.src='异端星_荧惑.html'; document.body.style.overflow='hidden';
+    if(window.__ach)window.__ach('door'); }        /* 推门成就 = 真的推开了，不是路过这一屏 */
+  function close(){ if(gp.hidden)return; gp.hidden=true; fr.src='about:blank'; document.body.style.overflow=''; }
+  var pw=document.getElementById('playWrap');
+  if(pw)pw.addEventListener('click',open);
+  var pgo=document.querySelector('.pgo');
+  if(pgo)pgo.addEventListener('click',open);
+  document.getElementById('gpClose').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape')close(); });
+})();
+</script>
+
+<div class="wxctl" id="wxctl">
+  <div class="wxmenu wx-day" id="wxMenu" role="menu">
+    <span class="wx-cap">一天</span>
+    <button type="button" data-w="rain"  data-s="first">雾<small>未醒透 · 04–06</small></button>
+    <button type="button" data-w="clear" data-s="dawn">晴<small>天亮 · 06–08</small></button>
+    <button type="button" data-w="clear" data-s="morn">晴<small>上午 · 08–11</small></button>
+    <button type="button" data-w="clear" data-s="noon">晴<small>正午 · 11–14</small></button>
+    <button type="button" data-w="cloud" data-s="aft">多云<small>午后 · 14–17</small></button>
+    <button type="button" data-w="cloud" data-s="dusk">多云<small>黄昏 · 17–20</small></button>
+    <button type="button" data-w="rain"  data-s="night">雨<small>入夜 · 20–23</small></button>
+    <button type="button" data-w="rain"  data-s="deep">雨<small>深夜 · 23–04</small></button>
+    <div class="sep"></div>
+    <button type="button" id="wxAuto">回到自动（跟着时间走）</button>
+  </div>
+  <button class="wxbtn" id="wxBtn" type="button" aria-label="切换天气">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M14 40h34a8 8 0 0 0 0-16 11 11 0 0 0-21 3 7 7 0 0 0-13 13z"/><path d="M22 48l-3 7M32 48l-3 7M42 48l-3 7"/></svg>
+    <span id="wxName">雪</span><em id="wxTime">深夜</em></button>
+  <button class="wxbtn" id="sndBtn" type="button" aria-label="背景环境音 开关">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 24h10l14-10v36L24 40H14z"/><path d="M46 22a11 11 0 0 1 0 20M53 16a20 20 0 0 1 0 32"/></svg>
+    <span>声音</span><em>关</em></button>
+</div>
+<div class="dock-say" id="dockSay" aria-live="polite"></div>
+<a class="dock" id="dock" href="#game" aria-label="进入《异端星》">
+  <span class="tip">推门进去</span>
+  <div class="dock-h f-d" id="dockH" role="img" aria-label="水木和"></div>
+  <svg class="dock-d" viewBox="0 0 120 178" shape-rendering="crispEdges" aria-hidden="true">
+    <rect x="4" y="4" width="112" height="156" fill="#39415f"/>
+    <rect x="10" y="10" width="100" height="150" fill="#2b3350"/>
+    <rect x="10" y="10" width="100" height="150" fill="#c79c4c"/>
+    <rect x="10" y="10" width="62" height="150" fill="#5c4c3c"/>
+    <rect x="10" y="10" width="62" height="5" fill="#6f5d49"/>
+    <rect x="10" y="155" width="62" height="5" fill="#463a2e"/>
+    <rect x="64" y="82" width="5" height="15" fill="#d8ae52"/>
+    <rect x="76" y="10" width="34" height="150" fill="#ffe6a8"/>
+  </svg>
+</a>
+<button id="toTop" type="button" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  回到顶部
+</button>
+
+<script>
+(function(){
+  'use strict';
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (function(){
+    var els=document.querySelectorAll('.reveal');
+    if(reduce||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+    },{rootMargin:'0px 0px -10% 0px',threshold:.05});
+    els.forEach(function(e){io.observe(e)});
+  })();
+  (function(){
+    var cv=document.getElementById('wx');if(!cv)return;
+    var ctx=cv.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W=0,H=0,S=1,t=0,mode='clear',modeSky='deep',cur=null,nxt=null,fade=1;
+    function rnd(a,b){return a+Math.random()*(b-a)}
+    function size(){S=Math.min(window.devicePixelRatio||1,1.6);
+      W=cv.width=Math.max(1,Math.floor(innerWidth*S));H=cv.height=Math.max(1,Math.floor(innerHeight*S));
+      cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}
+    /* ---- 风：一条全局缓慢摆动的风轴，所有层的横移都挂在它上面 ---- */
+    var wind={v:0,gust:0,ph:rnd(0,6.283)};
+    function windTick(){
+      wind.ph+=0.0042;
+      wind.gust=Math.sin(wind.ph)*0.6+Math.sin(wind.ph*2.37+1.1)*0.3+Math.sin(wind.ph*0.53)*0.4;
+      wind.v=wind.gust;
+    }
+    /* 三层景深：越靠前的层越大、越快、越模糊、越有存在感 */
+    var LAYERS=[
+      {d:0.34,n:0.42,sz:0.60,spd:0.52,al:0.42,blur:0.9},
+      {d:0.66,n:0.34,sz:0.95,spd:0.86,al:0.72,blur:0.45},
+      {d:1.00,n:0.24,sz:1.55,spd:1.28,al:1.00,blur:0}
+    ];
+    function mkLayer(m,cfg){
+      var n=Math.max(6,Math.round(cfg.n*(m==='rain'?300:(m==='snow'?420:90)))),P=[],i;
+      for(i=0;i<n;i++){
+        if(m==='rain')P.push({x:rnd(-.3,1.3)*W,y:rnd(0,1)*H,
+          l:rnd(9,26)*S*cfg.sz,v:rnd(11,20)*S*cfg.spd,a:rnd(.10,.34)*cfg.al,rot:rnd(-.16,.05)});
+        else if(m==='snow'){var rr=Math.random(),r0=rr<0.12?rnd(2.7,4.3):(rr<0.46?rnd(1.6,2.7):rnd(.8,1.6));
+          P.push({x:rnd(0,1)*W,y:rnd(0,1)*H,r:r0*S*cfg.sz,v:rnd(.45,2.0)*S*cfg.spd,
+                 ph:rnd(0,6.283),a:(rr<0.12?rnd(.6,.95):rnd(.32,.78))*cfg.al,sw:rnd(.6,1.7)})}
+        else P.push({x:rnd(0,1)*W,y:rnd(0,1)*H,r:rnd(.6,1.9)*S*cfg.sz,
+          v:rnd(.09,.40)*S*cfg.spd,ph:rnd(0,6.283),a:rnd(.10,.40)*cfg.al});
+      }
+      return {cfg:cfg,P:P};
+    }
+    function mk(m){
+      var B={L:[],cl:[],sp:[]};
+      LAYERS.forEach(function(c){B.L.push(mkLayer(m,c))});
+      /* 云带：横向飘的低对比色块，雨/雪天最明显 */
+      var nc=m==='rain'?7:(m==='cloud'?9:(m==='snow'?4:3));
+      for(var i=0;i<nc;i++)B.cl.push({x:rnd(-.4,1.2)*W,y:rnd(-.05,.62)*H,
+        w:rnd(.24,.72)*W,h:rnd(.07,.20)*H,v:rnd(.10,.42)*S,a:rnd(.05,.15)*(m==='clear'?.55:1),ph:rnd(0,6.283)});
+      /* 雨溅：地面附近偶尔弹起的小水花 */
+      if(m==='rain')for(var j=0;j<26;j++)B.sp.push({x:rnd(0,1)*W,y:rnd(.86,1.04)*H,ph:rnd(0,6.283),sp:rnd(.25,1),r:rnd(1.4,3.4)*S});
+      return B;
+    }
+    function drawClouds(B,al){
+      for(var i=0;i<B.cl.length;i++){var c=B.cl[i];
+        ctx.globalAlpha=c.a*al;
+        var g=ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,Math.max(c.w,c.h)*.62);
+        g.addColorStop(0,'rgba(190,204,232,.85)');g.addColorStop(1,'rgba(190,204,232,0)');
+        ctx.fillStyle=g;
+        ctx.beginPath();ctx.ellipse(c.x,c.y,c.w,c.h,0,0,6.283);ctx.fill();
+        c.x+=(c.v+Math.sin(t*.006+c.ph)*.22*S+wind.v*.30*S);
+        if(c.x-c.w>H*.5)c.x=-c.w*1.4;
+      }
+    }
+    function drawSplash(B,al){
+      for(var i=0;i<B.sp.length;i++){var p=B.sp[i];
+        var k=(Math.sin(t*.022+p.ph*3.1)+1)/2;
+        var a=Math.max(0,1-k*2.4);
+        if(a<=0)continue;
+        ctx.globalAlpha=a*.34*al;
+        ctx.strokeStyle='#cfe0ff';ctx.lineWidth=Math.max(1,S*.8);
+        ctx.beginPath();
+        ctx.ellipse(p.x,p.y,p.r*(.4+k*1.3),p.r*(.18+k*.42),0,0,6.283);
+        ctx.stroke();
+      }
+    }
+    function draw(S_,al){
+      if(!S_||al<=0)return;
+      var L=S_.B,m=S_.m;
+      if(!L||!L.L||!L.L.length)return;   /* 结构不完整就别画，别把后面的代码一起带崩 */
+      var i,cfg;
+      ctx.globalCompositeOperation='source-over';
+      /* 远层：画得虚一点，模拟景深散焦 */
+      for(var li=0;li<L.L.length;li++){
+        cfg=L.L[li].cfg;
+        if(cfg.blur>0.3&&'filter' in ctx)ctx.filter='blur('+(cfg.blur*1.4*S).toFixed(2)+'px)';
+        var P=L.L[li].P,blurWas=ctx.filter;
+        if(m==='rain'){
+          ctx.strokeStyle=li===2?'#dbe6ff':'#aec4ff';
+          ctx.lineWidth=Math.max(1,S*cfg.sz*.9);ctx.lineCap='round';
+          var lean=0.30+wind.v*0.20;
+          for(i=0;i<P.length;i++){var p=P[i];
+            ctx.globalAlpha=p.a*al;
+            ctx.beginPath();ctx.moveTo(p.x,p.y);
+            ctx.lineTo(p.x-p.l*lean,p.y-p.l);ctx.stroke();
+            p.y+=p.v; p.x-=p.v*lean+wind.v*2.6*S*cfg.spd;
+            if(p.y>H+40){p.y=-40;p.x=rnd(-.3,1.3)*W}
+          }
+        }else if(m==='snow'){
+          for(i=0;i<P.length;i++){var q=P[i];
+            ctx.globalAlpha=q.a*al*(.52+.48*Math.sin(t*.02+q.ph));
+            ctx.fillStyle='#fff';
+            ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,6.283);ctx.fill();
+            q.y+=q.v*(1+Math.abs(wind.v)*.4);
+            q.x+=(Math.sin(t*.013+q.ph)*q.sw+wind.v*2.2*S)*S;
+            if(q.y>H+12){q.y=-12;q.x=rnd(0,1)*W}
+            if(q.x<-20)q.x=W+18;
+          }
+        }else{
+          var col=m==='clear'?'#f2d6a4':'#aeb9de';
+          for(i=0;i<P.length;i++){var g2=P[i];
+            ctx.globalAlpha=g2.a*al;ctx.fillStyle=col;
+            ctx.beginPath();ctx.arc(g2.x,g2.y,g2.r,0,6.283);ctx.fill();
+            g2.y-=g2.v;g2.x+=(Math.sin(t*.008+g2.ph)*.3+wind.v*.5)*S;
+            if(g2.y<-12){g2.y=H+12;g2.x=rnd(0,1)*W}
+          }
+        }
+        if(blurWas)ctx.filter='none';
+      }
+      ctx.globalAlpha=1;
+    }
+    function setMode(m,sky,instant){
+      if(m===mode&&(!sky||sky===modeSky)&&!instant)return;
+      mode=m;if(sky)modeSky=sky;
+      var h=document.getElementById('top');if(h)h.setAttribute('data-weather',m);
+      if(sky){document.body.setAttribute('data-sky',sky);
+        var SM={first:0,dawn:1,morn:1,noon:2,aft:2,dusk:3,night:4,deep:4}[sky],el=document.querySelectorAll('.hero-foot .sm');
+        for(var q=0;q<el.length;q++)el[q].classList.toggle('on',q===SM)}
+      if(window.__wxMark)window.__wxMark();
+      if(instant||reduce){cur={B:mk(m),m:m};nxt=null;fade=1;return}
+      nxt={B:mk(m),m:m};fade=0}
+    function loop(){t++;windTick();ctx.clearRect(0,0,W,H);
+      if(nxt){fade+=1/170;if(fade>=1){cur=nxt;nxt=null;fade=1}}
+      if(cur){var a1=nxt?1-fade:1;
+        drawClouds(cur.B,a1);draw(cur,a1);if(cur.m==='rain')drawSplash(cur.B,a1)}
+      if(nxt){drawClouds(nxt.B,fade);draw(nxt,fade);if(nxt.m==='rain')drawSplash(nxt.B,fade)}
+      requestAnimationFrame(loop)}
+    size();cur={B:mk('snow'),m:'snow'};mode='snow';setMode('snow','deep',true);
+    addEventListener('resize',function(){size();cur={B:mk(mode),m:mode};nxt=null;fade=1},{passive:true});
+    if(!reduce)loop();
+    /* ============ 一天的时间线 ============
+       一整天按时间走完，每个时段配一种"心情天气"：
+       一个人一天的心情，跟天气一样会变好几次。所以滚到哪一块，
+       天光和天气就变成那一刻的样子 —— 从清早到深夜，走完一天。
+       first  未醒透 04–06  雾     睁眼但还没醒，冷、灰、没有形状
+       dawn   天亮   06–08  晴     光是淡的，什么都还看不清
+       morn   上午   08–11  晴     一天里最清醒的一段，能做点事
+       noon   正午   11–14  晴     亮到发白，反而有点晃神
+       aft    午后   14–17  多云   太阳偏了，气开始闷
+       dusk   黄昏   17–20  多云   一天最容易觉得"我什么都做不好"
+       night  入夜   20–23  雨     白天压住的开始往上涌
+       deep   深夜   23–04  雨     情绪才敢出来，也最需要人 */
+    var HOUR_SKY=[
+      {h:4,sky:'first',w:'rain',   n:'未醒透',t:'04 – 06',note:'雾'},
+      {h:6,sky:'dawn', w:'clear',  n:'天亮',  t:'06 – 08',note:'晴'},
+      {h:8,sky:'morn', w:'clear',  n:'上午',  t:'08 – 11',note:'晴'},
+      {h:11,sky:'noon',w:'clear',  n:'正午',  t:'11 – 14',note:'晴'},
+      {h:14,sky:'aft', w:'cloud',  n:'午后',  t:'14 – 17',note:'多云'},
+      {h:17,sky:'dusk',w:'cloud',  n:'黄昏',  t:'17 – 20',note:'多云'},
+      {h:20,sky:'night',w:'rain',  n:'入夜',  t:'20 – 23',note:'雨'},
+      {h:23,sky:'deep',w:'rain',   n:'深夜',  t:'23 – 04',note:'雨'}
+    ];
+    function skyOfHour(h){
+      var s=HOUR_SKY[0];
+      for(var i=0;i<HOUR_SKY.length;i++)if(h>=HOUR_SKY[i].h)s=HOUR_SKY[i];
+      return s;
+    }
+    var SKYNAME={first:'未醒透',dawn:'天亮',morn:'上午',noon:'正午',aft:'午后',dusk:'黄昏',night:'入夜',deep:'深夜'};
+    var WXNAME={clear:'晴',cloud:'多云',rain:'雨',snow:'雪'};
+    /* 按现在几点开场：先按本地时间落在那一刻，之后往下滚动才继续往前走 */
+    var k=4,auto=true,tid=null;
+    (function(){
+      var now=new Date();
+      k=0;
+      for(var i=0;i<HOUR_SKY.length;i++)if(now.getHours()>=HOUR_SKY[i].h)k=i;
+      setMode(HOUR_SKY[k].w,HOUR_SKY[k].sky,true);
+    })();
+    function next(){clearTimeout(tid);if(!auto)return;
+      tid=setTimeout(function(){k=(k+1)%HOUR_SKY.length;setMode(HOUR_SKY[k].w,HOUR_SKY[k].sky);next()},34000+Math.random()*18000)}
+    next();
+    window.__wxSet=function(m,sky){setMode(m,sky)};
+    (function(){
+      var btn=document.getElementById('wxBtn'),menu=document.getElementById('wxMenu'),
+          nm=document.getElementById('wxName');if(!btn)return;
+      var NAMES={clear:'晴',cloud:'多云',rain:'雨',snow:'雪'};
+      function mark(){
+        var h=document.getElementById('top'),w=(h&&h.getAttribute('data-weather'))||mode,
+            sky=document.body.getAttribute('data-sky')||'deep';
+        /* 一天里同一个天气会出现多次（如雨有入夜/深夜），所以天气+时段都要对上才算选中 */
+        [].forEach.call(menu.querySelectorAll('button[data-w]'),function(b){
+          b.classList.toggle('on',!auto&&b.getAttribute('data-w')===w&&b.getAttribute('data-s')===sky)});
+        var a=document.getElementById('wxAuto');if(a)a.classList.toggle('on',auto);
+        nm.textContent=NAMES[w]||'';
+        var tm=document.getElementById('wxTime');
+        if(tm)tm.textContent=(SKYNAME[sky]||'')+(auto?'':'（自选）')}
+      window.__wxMark=mark;mark();
+      btn.addEventListener('click',function(e){e.stopPropagation();mark();menu.classList.toggle('on')});
+      menu.addEventListener('click',function(e){
+        var b=e.target.closest('button');if(!b)return;
+        if(b.id==='wxAuto'){
+          auto=true;mark();menu.classList.remove('on');
+          if(window.__wxSync)window.__wxSync();
+          return}
+        if(!b.hasAttribute('data-w'))return;
+        auto=false;clearTimeout(tid);
+        setMode(b.getAttribute('data-w'),b.getAttribute('data-s'));
+        mark();menu.classList.remove('on');
+      });
+      document.addEventListener('click',function(){menu.classList.remove('on')});
+    })();
+    /* 滚动只做"往后推进"，绝不往前回退 —— 一天的顺序必须是从早到晚。
+       关键：页面一打开时的时段由本地时间决定（上面那个 IIFE 已经落好位），
+       这里的首帧 pick() 曾经用首页 data-time="deep" 把它覆盖成深夜，
+       所以现在只在「用户真的往下滚过」之后才允许接手。 */
+    (function(){
+      var secs=[].slice.call(document.querySelectorAll('[data-time]'));
+      if(!secs.length)return;
+      var idle=null,curSec=null,running=false,userScrolled=false;
+      function apply(el){
+        if(!auto)return;
+        if(el===curSec)return;
+        curSec=el;
+        setMode(el.getAttribute('data-w')||'clear',el.getAttribute('data-time')||'deep');
+        if(window.__wxMark)window.__wxMark()}
+      function pick(){
+        if(!userScrolled)return;          /* 还没滚过 → 时段交给本地时间 */
+        var mid=innerHeight*0.42,best=null;
+        for(var i=0;i<secs.length;i++){var r=secs[i].getBoundingClientRect();
+          if(r.top<=mid&&r.bottom>mid)best=secs[i]}
+        if(best)apply(best)}
+      function cycle(){
+        clearTimeout(tid);
+        if(!auto){running=false;return}
+        tid=setTimeout(function(){
+          if(!auto){running=false;return}
+          k=(k+1)%seq.length;curSec=null;
+          setMode(seq[k].w,seq[k].sky);
+          if(window.__wxMark)window.__wxMark();
+          cycle()},34000+Math.random()*18000)}
+      function arm(){
+        clearTimeout(idle);
+        if(running)return;
+        idle=setTimeout(function(){if(auto){running=true;cycle()}},42000)}
+      window.__wxSync=function(){curSec=null;pick()};
+      addEventListener('scroll',function(){
+        if(!userScrolled&&scrollY>40)userScrolled=true;   /* 记下"人真的开始往下滚了" */
+        pick();arm()},{passive:true});
+      addEventListener('resize',pick,{passive:true});
+    })();
+  })();
+  /* 光：滚动驱动的角度 —— 每滚一屏光斑换一个方向，过渡由 CSS 平滑；翻得快会"追不上"→ 拖影 */
+  (function(){
+    var el=document.getElementById('light');if(!el)return;
+    var C={dawn:[146,196,226,.30,'152% 122%'],noon:[255,238,196,.26,'106% 96%'],
+           dusk:[255,166,84,.40,'162% 126%'],night:[148,176,236,.20,'122% 106%'],
+           deep:[122,142,206,.16,'112% 100%']};
+    var AX=[50,88,16,78],AY=[2,30,72,96];
+    function paint(){
+      var max=Math.max(1,(document.documentElement.scrollHeight-innerHeight));
+      var p=Math.min(1,Math.max(0,(window.pageYOffset||0)/max));
+      var t=p*(AX.length-1),i=Math.min(AX.length-2,Math.floor(t)),f=t-i,e=f*f*(3-2*f);
+      el.style.setProperty('--lx',(AX[i]+(AX[i+1]-AX[i])*e).toFixed(2)+'%');
+      el.style.setProperty('--ly',(AY[i]+(AY[i+1]-AY[i])*e).toFixed(2)+'%');
+      var c=C[document.body.getAttribute('data-sky')||'deep'];
+      if(c){el.style.setProperty('--lc','rgba('+c[0]+','+c[1]+','+c[2]+','+c[3]+')');
+            el.style.setProperty('--ls',c[4]||'132% 112%')}}
+    addEventListener('scroll',paint,{passive:true});
+    addEventListener('resize',paint,{passive:true});
+    try{new MutationObserver(paint).observe(document.body,{attributes:true,attributeFilter:['data-sky']})}catch(e){}
+    paint();
+  })();
+  (function(){
+    var el=document.getElementById('dockH');if(!el)return;
+    var dock=document.getElementById('dock'),say=document.getElementById('dockSay');
+    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var lastM=0,lk=null,st=null;
+    function look(f){if(reduce)return;
+      el.classList.remove('f-d','f-l','f-r');el.classList.add('f-'+f);
+      el.classList.remove('turn');void el.offsetWidth;el.classList.add('turn')}
+    if(!reduce){
+      (function loop(){
+        setTimeout(function(){
+          if(Date.now()-lastM>2800){
+            var r=Math.random(),f=r<0.42?'l':(r<0.84?'r':'d');
+            look(f);
+            setTimeout(function(){if(Date.now()-lastM>2800)look('d')},2000+Math.random()*1600)}
+          loop()},8000+Math.random()*7000)})();
+      addEventListener('mousemove',function(e){
+        var cx=innerWidth/2,dx=e.clientX-cx;
+        lastM=Date.now();clearTimeout(lk);
+        if(Math.abs(dx)<70){look('d');return}
+        look(dx<0?'l':'r');
+        lk=setTimeout(function(){look('d')},1500)},{passive:true});
+      var py=window.pageYOffset||0,tt=null;
+      addEventListener('scroll',function(){
+        var y=window.pageYOffset||0,dy=y-py;py=y;
+        var v=Math.max(-3,Math.min(3,-dy*0.16));
+        dock.style.setProperty('--dtilt',v.toFixed(2)+'deg');
+        clearTimeout(tt);tt=setTimeout(function(){dock.style.setProperty('--dtilt','0deg')},170);
+      },{passive:true});
+    }
+    var LINES=['嗯，我在呢','慢一点也没关系','今天也辛苦了','要歇一会儿吗','树洞在那边呢','记得喝口水','先深呼吸一下','不用急，慢慢来'];
+    var last=-1;
+    dock.addEventListener('click',function(){
+      look(Math.random()<.5?'l':'r');setTimeout(function(){look('d')},900);
+      if(!say)return;
+      var i;do{i=Math.floor(Math.random()*LINES.length)}while(i===last&&LINES.length>1);
+      last=i;say.textContent=LINES[i];say.classList.add('on');
+      clearTimeout(st);st=setTimeout(function(){say.classList.remove('on')},2600)});
+  })();
+  (function(){
+    var els=[].slice.call(document.querySelectorAll('.stat b[data-num]'));
+    if(!els.length||!('IntersectionObserver' in window))return;
+    var io=new IntersectionObserver(function(es){es.forEach(function(x){
+      if(!x.isIntersecting)return;var el=x.target;io.unobserve(el);
+      var T=parseFloat(el.getAttribute('data-num')),suf=el.getAttribute('data-suf')||'',
+          dec=parseInt(el.getAttribute('data-dec')||'0',10),t0=performance.now(),dur=1200;
+      function f(t){var p=Math.min(1,(t-t0)/dur);p=1-Math.pow(1-p,3);
+        el.textContent=(T*p).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)}
+      requestAnimationFrame(f);
+    })},{threshold:.6});
+    els.forEach(function(e){io.observe(e)});
+  })();
+  (function(){
+    var w=document.getElementById('myNotes'),ta=document.getElementById('tw'),b=document.getElementById('twb');
+    if(!b)return;
+    var KEY='xinxie_notes';
+    function load(){var a=[];try{a=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){}
+      a.forEach(function(t){add(t,false)})}
+    function add(t,save){
+      var d=document.createElement('div');d.className='note';
+      d.innerHTML='<b>我</b>'+t.replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c]});
+      w.appendChild(d);
+      if(save){var a=[];try{a=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){}
+        a.unshift(t);localStorage.setItem(KEY,JSON.stringify(a.slice(0,12)));}
+    }
+    b.addEventListener('click',function(){
+      var t=(ta.value||'').trim();if(!t)return;
+      add(t,true);ta.value='';if(window.__ach)window.__ach('mood');
+    });
+    load();
+  })();
+  /* 清空本地痕迹：分项勾选，只删选中的，且**不刷新页面**（刷新会跳回顶部，
+     正在看的内容就没了）。音乐/操作提示这类偏好不提供清除——它们不是"痕迹"。 */
+  (function(){
+    var btn=document.getElementById('wipeBtn'),box=document.getElementById('wipeBox'),
+        go=document.getElementById('wipeGo'),no=document.getElementById('wipeNo'),
+        msg=document.getElementById('wipeMsg');
+    if(!btn||!box)return;
+    function close(){box.hidden=true;btn.setAttribute('aria-expanded','false');msg.textContent=''}
+    btn.addEventListener('click',function(){
+      var open=box.hidden;
+      box.hidden=!open;btn.setAttribute('aria-expanded',open?'true':'false');
+      if(!open)msg.textContent='';
+    });
+    no.addEventListener('click',close);
+    function picked(){
+      return [].slice.call(box.querySelectorAll('input[type=checkbox]'))
+        .filter(function(c){return c.checked})
+        .map(function(c){return c.getAttribute('data-k').split(',')});
+    }
+    function syncBtn(){go.disabled=!picked().length}
+    box.addEventListener('change',syncBtn);syncBtn();
+    go.addEventListener('click',function(){
+      var groups=picked();if(!groups.length)return;
+      var keys=[],n=0;
+      groups.forEach(function(g){g.forEach(function(k){keys.push(k)})});
+      keys.forEach(function(k){
+        try{ if(localStorage.getItem(k)!==null){localStorage.removeItem(k);n++;} }catch(e){}
+      });
+      /* 页面上的痕迹立刻消失，不用刷新 */
+      if(localStorage.getItem('xinxie_notes')===null){
+        var w=document.getElementById('myNotes'); if(w)w.innerHTML='';
+      }
+      if(window.__achReset)window.__achReset();
+      if(window.__quizReset)window.__quizReset();
+      msg.textContent=n?('已清空 '+n+' 项。'):'这几项本来就是空的。';
+      box.querySelectorAll('input[type=checkbox]').forEach(function(c){c.checked=false});
+      syncBtn();
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!box.hidden)close()});
+  })();
+  (function(){
+    var box=document.getElementById('mood');if(!box)return;
+    var SAY={
+      cloud:'说不上来，也是可以的。不用现在就给自己下定义。',
+      sun:'那就把这一点留住 —— 记住它长什么样，下次还能找回来。',
+      rain:'低落的一天。不用撑伞，先躲一下雨，也行的。',
+      fog:'看不清就先不看。雾里走路，慢一点就好。',
+      night:'睡不着的夜最长。先别急着逼自己睡着，躺着也算休息。',
+      dawn:'天亮了，哪怕只亮了一点点，也算。',
+      wind:'情绪在起伏，说明这还是活的。它会来，也会走。',
+      after:'过去了。回头看看，你其实是走过来的。'
+    };
+    box.addEventListener('click',function(e){
+      var b=e.target.closest('.mo');if(!b)return;
+      [].forEach.call(box.querySelectorAll('.mo'),function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      var s=document.getElementById('moodSay');
+      s.textContent=SAY[b.getAttribute('data-k')]||'';
+      s.classList.remove('on');void s.offsetWidth;s.classList.add('on');
+      if(window.__ach)window.__ach('mood');
+    });
+  })();
+  (function(){
+    var o=document.getElementById('borb'),t2=document.getElementById('borbT'),b=document.getElementById('bbtn');
+    if(!b)return;
+    var seq=[[4,'吸气'],[2,'停'],[6,'呼气']],i=0,round=0,run=false,tm=null;
+    function stop(){run=false;clearTimeout(tm);o.style.transitionDuration='1s';o.style.transform='scale(.62)';t2.textContent='准备';b.textContent='开始 5 轮'}
+    function step(){
+      if(!run)return;
+      if(round>=5){o.style.transitionDuration='1s';o.style.transform='scale(.62)';t2.textContent='完成';b.textContent='再来一次';run=false;if(window.__ach)window.__ach('breath');return}
+      var d=seq[i][0],nm=seq[i][1];
+      t2.textContent=nm+' '+d;
+      o.style.transitionDuration=d+'s';
+      o.style.transform=nm==='呼气'?'scale(.62)':(nm==='吸气'?'scale(1)':'scale(1)');
+      i++;if(i>=3){i=0;round++}
+      tm=setTimeout(step,d*1000);
+    }
+    b.addEventListener('click',function(){
+      if(run){stop();return}
+      run=true;round=0;i=0;b.textContent='停下';step();
+    });
+  })();
+  (function(){
+    var ACHS=[
+      {id:'sit',   t:'第一次坐下',   d:'你推开了这间屋子的门，就这么坐下了。不用理由，也不用急着走。'},
+      {id:'read',  t:'读懂了一点',   d:'你在"那不是想太多"这一段停留了足够久——有些难受不是想太多，也不是懒。'},
+      {id:'read2', t:'把病名放下',   d:'你认真读完了"认识它们"。病名不是形容词，也不是你这个人。'},
+      {id:'ask',   t:'问了出口',     d:'你把那些不太好意思问的问题，一个一个点开了。'},
+      {id:'day',   t:'陪着一天',     d:'你在"一天的心情变化"前停了一会儿，看它怎么涨怎么落。'},
+      {id:'hold',  t:'承认撑不住',   d:'你在"自己撑不住的时候"停留了足够久。这不丢人。'},
+      {id:'friend',t:'知道怎么开口', d:'你读完了"如果朋友不太好"，存下了几句真的说得出口的话。'},
+      {id:'tree',  t:'说了点什么',   d:'你在树洞墙前停留了一会儿，看见许多人把说不出口的话留在了这里。'},
+      {id:'book',  t:'翻过那本手册', d:'你翻开了关系手册，看了一眼别人是怎么记下来的。'},
+      {id:'door',  t:'推开了门',     d:'你点开了《异端星》，走进那个下雨的夜——陪几个人走一段路。'},
+      {id:'lamp',  t:'留了一盏灯',   d:'你读完了"关于我们"：这间屋子是谁、从哪年来、为什么亮着，连同那四个部门。'},
+      {id:'help',  t:'知道去哪找人', d:'你记住了 12356——真到难的那一刻，这个号码是真的能打通的。'},
+      {id:'mood',  t:'说了一句',     d:'你告诉这里，你现在像什么。说不上来，其实也算说了一种。'},
+      {id:'breath',t:'跟着呼吸一次', d:'你真的跟着那个圆慢慢慢下来，做了 5 轮。身体会记得这种"现在没有危险"的感觉。'},
+      {id:'stay',  t:'坐了很久',     d:'你在这里待满了 3 分钟。不点、不赶，只是坐着——这本身就很难得。'}
+    ];
+    var got={},toastT=0,el=document.getElementById('ach'),elT=document.getElementById('achT'),
+        list=document.getElementById('achList'),cnt=document.getElementById('achN');
+    /* 成就记在 localStorage：以前只存在内存里，一刷新就全灭、重新滚一遍又全亮。 */
+    var AKEY='xinxie_ach';
+    try{got=JSON.parse(localStorage.getItem(AKEY)||'{}')||{};}catch(e){got={}}
+    function save(){try{localStorage.setItem(AKEY,JSON.stringify(got))}catch(e){}}
+    function render(){
+      list.innerHTML='';
+      ACHS.forEach(function(a){
+        var r=document.createElement('div');r.className='achrow'+(got[a.id]?' on':'');
+        r.innerHTML='<svg class="ico" viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor"><rect x="2" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="3"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="6" width="2" height="2"/></svg><span><b>'+a.t+'</b><em>'+(got[a.id]?a.d:'还没解锁')+'</em></span>';
+        list.appendChild(r);
+      });
+      var n=0;ACHS.forEach(function(a){if(got[a.id])n++});
+      cnt.textContent='已解锁 '+n+' / '+ACHS.length;
+    }
+    function unlock(id,silent){
+      if(got[id])return;var a=null;ACHS.forEach(function(x){if(x.id===id)a=x});if(!a)return;
+      got[id]=1;save();render();
+      if(silent)return;                       /* 回填历史进度时不弹 toast */
+      elT.textContent=a.t;el.classList.add('on');
+      clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},3400);
+    }
+    /* 解锁不再靠"路过"——必须真的在那块内容里停留够久，或真的动手做了一件事。
+       停留计时离开该区块就取消，读一半划走不算。 */
+    var dwel={};
+    function watch(id,aid,frac,ms){
+      var e=document.getElementById(id);if(!e)return;
+      ms=ms||9000;
+      var io=new IntersectionObserver(function(es){es.forEach(function(x){
+        if(x.isIntersecting){ if(!dwel[aid])dwel[aid]=setTimeout(function(){unlock(aid)},ms); }
+        else if(dwel[aid]){clearTimeout(dwel[aid]);dwel[aid]=null}
+      })},{threshold:frac||.45});
+      io.observe(e);
+    }
+    setTimeout(function(){unlock('sit')},2600);
+    /* 每块停留更久：读"认识它们/问答"这种，得真的读一会儿 */
+    watch('know','read',.45,12000);
+    watch('ill','read2',.45,14000);
+    watch('ask','ask',.45,12000);
+    watch('day','day',.45,12000);
+    watch('with','friend',.45,12000);
+    watch('self','hold',.45,12000);
+    watch('tree','tree',.45,8000);
+    watch('manual','book',.45,10000);
+    watch('about','lamp',.45,10000);
+    watch('help','help',.3,9000);
+    setTimeout(function(){unlock('stay')},180000);
+    render();
+    document.getElementById('achBtn').addEventListener('click',function(){render();document.getElementById('achp').classList.add('on')});
+    document.getElementById('achClose').addEventListener('click',function(){document.getElementById('achp').classList.remove('on')});
+    document.getElementById('achp').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
+    window.__ach=unlock;
+    window.__achReset=function(){
+      got={};save();render();
+      [].slice.call(document.querySelectorAll('[id^=ach]')).forEach(function(e){
+        if(e.classList)e.classList.remove('on')});
+    };
+  })();
+  (function(){
+    var ids=['about','know','ill','ask','day','self','with','tree','manual','game','help'],secs=[],
+        navs=[].slice.call(document.querySelectorAll('.hb-nav a,.hb-mnav a'));
+    ids.forEach(function(id){var e=document.getElementById(id);if(e)secs.push(e)});
+    if(navs.length&&secs.length){addEventListener('scroll',function(){
+      var y=scrollY+innerHeight*.34,cur=secs[0].id;
+      secs.forEach(function(e){if(e.offsetTop<=y)cur=e.id});
+      navs.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur)});
+    },{passive:true})}
+  })();
+  (function(){
+    var bar=document.getElementById('helpbar'), last=0;
+    function syncBarH(){ var h=bar.offsetHeight; if(h>0)document.documentElement.style.setProperty('--hbH',h+'px'); }
+    addEventListener('scroll',function(){
+      var y=scrollY; bar.classList.toggle('scrolled',y>8);
+      if(y>last&&y>200)bar.classList.add('hide');else bar.classList.remove('hide');
+      last=y;
+    },{passive:true});
+    addEventListener('resize',syncBarH,{passive:true});
+    try{ new MutationObserver(syncBarH).observe(bar,{attributes:true,attributeFilter:['class']}); }catch(e){}
+    syncBarH();
+  })();
+})();
+</script>
+<script>
+/* 官网背景环境音：随天气变化的生成式声景（雨/雪/多云/晴各有音量与音色），纯 WebAudio，默认关闭 */
+(function(){
+  var btn=document.getElementById('sndBtn');
+  if(!btn)return;
+  var ctx=null, master=null, lp=null, ng=null, lfg=null, started=false, on=false;
+  function makeNoise(c){
+    var len=c.sampleRate*2, buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0), last=0;
+    for(var i=0;i<len;i++){ var w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.2; }
+    return buf;
+  }
+  /* 开机提示音：轻柔两声小钟，直连输出（不受主音量淡入影响），给"已经打开"的明确反馈 */
+  function chime(t0){
+    if(!ctx)return;
+    [659.25,987.77].forEach(function(f,i){
+      var o=ctx.createOscillator(), g=ctx.createGain(), peak=i?0.13:0.17;
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(peak,t0+0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+1.7);
+      o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0+1.8);
+    });
+  }
+  /* 每种天气的声景：低通频率 / 雨噪增益 / 起伏深度 */
+  var WX={
+    rain: {f:1500, g:0.50, lfo:520},
+    snow: {f:620,  g:0.20, lfo:170},
+    cloud:{f:1060, g:0.30, lfo:330},
+    clear:{f:2300, g:0.06, lfo:110}
+  };
+  function curW(){ var t=document.getElementById('top'); return (t&&t.getAttribute('data-weather'))||'rain'; }
+  function applyWeather(w){
+    if(!lp||!ctx)return;
+    var p=WX[w]||WX.rain, t=ctx.currentTime;
+    lp.frequency.cancelScheduledValues(t);
+    lp.frequency.setValueAtTime(lp.frequency.value,t);
+    lp.frequency.linearRampToValueAtTime(p.f, t+1.4);
+    ng.gain.setTargetAtTime(p.g, t, 0.7);
+    if(lfg)lfg.gain.setTargetAtTime(p.lfo, t, 0.7);
+  }
+  function build(){
+    var AC=window.AudioContext||window.webkitAudioContext; if(!AC)return false;
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=0.0001; master.connect(ctx.destination);
+    /* 雨声：粉噪 → 低通，缓慢 LFO 让雨势起伏（参数随天气变） */
+    var src=ctx.createBufferSource(); src.buffer=makeNoise(ctx); src.loop=true;
+    lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500; lp.Q.value=0.5;
+    ng=ctx.createGain(); ng.gain.value=0.5;
+    src.connect(lp); lp.connect(ng); ng.connect(master);
+    var lfo=ctx.createOscillator(); lfo.frequency.value=0.07;
+    lfg=ctx.createGain(); lfg.gain.value=520; lfo.connect(lfg); lfg.connect(lp.frequency); lfo.start();
+    /* 暖底：两个微失谐正弦 + 一个五度，垫着，像远处屋里的灯（不随天气变） */
+    [110,110.6,165].forEach(function(f,i){
+      var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+      var g=ctx.createGain(); g.gain.value=i===2?0.05:0.085; o.connect(g); g.connect(master); o.start();
+    });
+    src.start();
+    return true;
+  }
+  function set(onv){
+    if(onv){
+      if(!started){ if(!build())return; started=true; }
+      if(ctx.state==='suspended')ctx.resume();
+      on=true;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setTargetAtTime(0.9,ctx.currentTime,0.5);
+      applyWeather(curW());
+      chime(ctx.currentTime+0.02);
+      btn.classList.add('on'); btn.querySelector('em').textContent='开';
+    }else{
+      on=false; if(master)master.gain.setTargetAtTime(0.0001,ctx.currentTime,0.4);
+      btn.classList.remove('on'); btn.querySelector('em').textContent='关';
+    }
+  }
+  /* 天气自动/手动切换 → 声景跟着变 */
+  var top=document.getElementById('top');
+  if(top){ try{ new MutationObserver(function(){ applyWeather(top.getAttribute('data-weather')); }).observe(top,{attributes:true,attributeFilter:['data-weather']}); }catch(e){} }
+  function toggle(){ set(!on); }
+  btn.addEventListener('click',toggle);
+  /* 触屏兜底：部分手机浏览器 click 合成延迟或丢失，touchend 直接开（去抖防双触发） */
+  var _lt=0;
+  btn.addEventListener('touchend',function(e){
+    e.preventDefault(); var n=Date.now(); if(n-_lt<400)return; _lt=n; toggle();
+  },{passive:false});
+})();
+</script>
+<script>
+/* 展示增强：阅读进度 / 回到顶部 / 图片灯箱（纯原生，无依赖） */
+(function(){
+  'use strict';
+  /* 阅读进度条 */
+  (function(){
+    var p=document.getElementById('prog'); if(!p)return;
+    function up(){
+      var de=document.documentElement,max=Math.max(1,de.scrollHeight-(window.innerHeight||0));
+      var r=Math.min(1,Math.max(0,(window.pageYOffset||de.scrollTop||0)/max));
+      p.style.width=(r*100).toFixed(2)+'%';
+    }
+    addEventListener('scroll',up,{passive:true});addEventListener('resize',up,{passive:true});up();
+  })();
+  /* 回到顶部 */
+  (function(){
+    var b=document.getElementById('toTop'); if(!b)return;
+    function up(){b.classList.toggle('on',(window.pageYOffset||0)>600);}
+    addEventListener('scroll',up,{passive:true});up();
+    b.addEventListener('click',function(){
+      try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}
+    });
+  })();
+  /* 图片灯箱：照片墙 + 海报横滑条，点开看大图 */
+  (function(){
+    var box=document.getElementById('lbox'); if(!box)return;
+    var img=box.querySelector('img'),cap=box.querySelector('figcaption');
+    function open(src,alt){img.src=src;img.alt=alt||'';cap.textContent=alt||'';box.classList.add('on');document.body.style.overflow='hidden';}
+    function close(){box.classList.remove('on');document.body.style.overflow='';}
+    document.addEventListener('click',function(e){
+      if(!e.target||!e.target.closest)return;
+      var t=e.target.closest('.pw.photo, .strip a'); if(!t)return;
+      var im=t.querySelector('img'); if(!im)return;
+      e.preventDefault();
+      var c=t.querySelector('figcaption');
+      open(im.getAttribute('src'),(c&&c.textContent)||im.getAttribute('alt')||'');
+    });
+    box.addEventListener('click',function(e){
+      if(e.target===box||(e.target.closest&&e.target.closest('.lb-close')))close();
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  })();
+
+  /* 心理问答：点击问题展开/收起答案 */
+  (function(){
+    var list=document.querySelector('.qalist'); if(!list)return;
+    list.addEventListener('click',function(e){
+      var btn=e.target.closest('.q'); if(!btn)return;
+      var item=btn.closest('.qa'); if(!item)return;
+      var open=item.classList.contains('open');
+      item.classList.toggle('open');
+      btn.setAttribute('aria-expanded',open?'false':'true');
+    });
+  })();
+
+  /* 心理知识小测：15 题（题目来自协会提供的题库，逐题可选、附解析） */
+  (function(){
+    var elT=document.getElementById('qTitle'), elO=document.getElementById('qOpts'),
+        elW=document.getElementById('qWhy'), elP=document.getElementById('qProg'), elB=document.getElementById('qBar');
+    if(!elT||!elO)return;
+    var QUIZ=[
+      {q:'心理学之父是谁？',o:['冯特','弗洛伊德','罗杰斯','马斯洛'],a:0,w:'1879 年，冯特在德国莱比锡建立了第一个心理学实验室，心理学由此成为一门独立的科学。'},
+      {q:'心理学正式诞生于哪一年？',o:['1879','1987','1978','1897'],a:0,w:'1879 年，冯特在莱比锡建立第一个心理学实验室，被看作心理学独立的起点。'},
+      {q:'弗洛伊德用来做反射实验的动物是什么？',o:['狗','猫','小鼠','兔子'],a:0,w:'弗洛伊德以狗等动物做反射与相关的实验研究，这是他建立理论体系的重要基础。'},
+      {q:'精神分析学派创始人是谁？',o:['弗洛伊德','荣格','斯金纳','阿德勒'],a:0,w:'弗洛伊德创立精神分析；荣格、阿德勒后来各自发展出不同的方向。'},
+      {q:'哪个学派研究潜意识、梦与精神创伤？',o:['精神分析','人本主义','构造主义','行为主义'],a:0,w:'精神分析关注潜意识、梦与早期经验；人本主义更关注人的成长潜能。'},
+      {q:'斯坦福监狱实验，模拟的是什么场景？',o:['监狱','医院','学校','商场'],a:0,w:'1971 年津巴多做的研究，模拟监狱环境，看「角色」会如何改变人的行为。'},
+      {q:'越努力不去想白熊，白熊越在脑海里出现，这是什么？',o:['白熊效应（反弹效应）','证实偏差','晕轮效应','锚定效应'],a:0,w:'越想压抑某个念头，它越反弹，这叫白熊效应，也叫反弹效应。'},
+      {q:'因为一个人某一点好，就觉得他方方面面都好，这叫？',o:['晕轮效应','刻板印象','投射效应','皮格马利翁效应'],a:0,w:'一个优点「照亮」了整体印象，叫晕轮效应（光环效应）。'},
+      {q:'“心理学就是读心术，能看穿别人在想什么。”这个说法？',o:['错','对'],a:0,w:'心理学研究行为与心理规律，不是读心术，更看不穿具体的想法。'},
+      {q:'“遗忘不是完全消失，很多记忆只是暂时提取不出来。”这个说法？',o:['对','错'],a:0,w:'很多遗忘是「提取失败」，不是彻底没了；线索对了，记忆还能被唤起。'},
+      {q:'“人在群体里责任感会变强、不容易偷懒。”这个说法？',o:['错','对'],a:0,w:'恰恰相反：群体里更容易「社会懈怠」，个体的责任被分散了。'},
+      {q:'“情绪一定由事件本身决定，想法不会影响情绪。”这个说法？',o:['错','对'],a:0,w:'按合理情绪理论，影响情绪的核心往往是我们的想法，而不是事件本身。'},
+      {q:'“智商高的人，情商一定高。”这个说法？',o:['错','对'],a:0,w:'智商是认知能力，情商是理解与调节情绪、经营关系的能力，两套并不挂钩。'},
+      {q:'“安慰剂效应：相信药物有效，即使没有药效，身体也会改善。”这个说法？',o:['对','错'],a:0,w:'「相信会好」本身就能带来真实的生理改善，这就是安慰剂效应。'},
+      {q:'“近因效应：越是久远的事，记忆越深刻。”这个说法？',o:['错','对'],a:0,w:'近因效应是「最近发生的事」印象更深；很久远的事更深刻，那叫首因效应。'}
+    ];
+    var i=0,right=0;
+    /* 已答题数记在本地：清空"小测"后要真的归零，且刷新后不被"恢复" */
+    var QKEY='xinxie_quiz',done=0;
+    try{done=parseInt(localStorage.getItem(QKEY)||'0',10)||0;}catch(e){done=0}
+    function saveQ(){try{localStorage.setItem(QKEY,String(done))}catch(e){}}
+    function render(){
+      if(i>=QUIZ.length){
+        elT.innerHTML='小测完成：你答对了 <b>'+right+'</b> / '+QUIZ.length+' 题。';
+        elO.innerHTML=''; elW.innerHTML='<p class="qwhy ok">谢谢参与——这些冷知识，记住几个都算赚到。</p>';
+        var rb=document.createElement('button'); rb.type='button'; rb.className='qnext';
+        rb.textContent='再测一次';
+        rb.addEventListener('click',reset);
+        elW.appendChild(rb);
+        elB.style.width='100%'; elP.textContent='完成'; return;
+      }
+      var q=QUIZ[i];
+      elT.innerHTML='<b>第 '+(i+1)+' 题</b>　'+q.q;
+      elO.innerHTML=''; elW.innerHTML='';
+      elP.textContent='第 '+(i+1)+' / '+QUIZ.length+' 题';
+      elB.style.width=Math.round(i/QUIZ.length*100)+'%';
+      q.o.forEach(function(t,k){
+        var b=document.createElement('button'); b.type='button'; b.className='qopt'; b.textContent=t;
+        b.addEventListener('click',function(){answer(k);});
+        elO.appendChild(b);
+      });
+    }
+    /* 重新测：题号、答对数、进度条、解析全部归零，从第一题重来 */
+    function reset(){
+      i=0;right=0;done=0;saveQ();
+      elB.style.width='0%'; elW.innerHTML=''; elO.innerHTML='';
+      render();
+    }
+    function answer(k){
+      var q=QUIZ[i]; if(elO.querySelector('.qopt.locked'))return;
+      var opts=elO.querySelectorAll('.qopt');
+      opts.forEach(function(b){b.classList.add('locked');b.disabled=true;});
+      var ok=(k===q.a); if(ok)right++;
+      done++;saveQ();
+      opts[k].classList.add(ok?'hit':'miss');
+      if(!ok)opts[q.a].classList.add('hit');
+      elB.style.width=Math.round((i+1)/QUIZ.length*100)+'%';
+      var p=document.createElement('p'); p.className='qwhy '+(ok?'ok':'no');
+      p.innerHTML=(ok?'答对了。':'正确答案：'+q.o[q.a]+'。')+' '+q.w;
+      elW.appendChild(p);
+      var last=(i+1>=QUIZ.length);
+      var nx=document.createElement('button'); nx.type='button'; nx.className='qnext';
+      nx.textContent=(last?'查看结果':'下一题');
+      nx.addEventListener('click',function(){i++;render();});
+      elW.appendChild(nx);
+      if(last){
+        var rb=document.createElement('button'); rb.type='button'; rb.className='qnext';
+        rb.textContent='重新测一次'; rb.style.marginLeft='10px';
+        rb.addEventListener('click',reset);
+        elW.appendChild(rb);
+      }
+    }
+    window.__quizReset=function(){ reset(); };
+    render();
+  })();
+})();
+</script>
+</body>
+</html>
