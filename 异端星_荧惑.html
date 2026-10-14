@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>异端星 · 荧惑</title>
 <style>
 /* ==========================================================
@@ -36,10 +36,17 @@
   --barH:38px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;height:100%}
+html,body{overscroll-behavior:none;   /* 别在手机上拉出橡皮筋，画面会被拽动 */
+  -webkit-tap-highlight-color:transparent}   /* 点按钮别闪一下灰块 */
 body{background:var(--p-bg);color:var(--p-txt);font-family:var(--ui);font-size:15.5px;line-height:2.05;
   letter-spacing:.015em;overflow-x:hidden;-webkit-font-smoothing:antialiased;
   background-image:radial-gradient(120% 90% at 50% 0%,rgba(90,80,140,.10),rgba(0,0,0,0) 62%)}
+/* 手机上长按会弹出「复制/分享」、双击会缩放、拖动会选中文字 —— 全是误操作，一并关掉。
+   注意只关界面元素，对话框正文保留可选（玩家想复制台词时还能选）。 */
+body.touch{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+body.touch .hud .talk .t,body.touch .veil .in,body.touch .book{user-select:text;-webkit-user-select:text}
+body.touch canvas,body.touch .pad,body.touch .top{touch-action:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit;letter-spacing:inherit}
 img{max-width:100%;display:block}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges}
@@ -313,11 +320,11 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 .pixbtn.ghost{border-color:#4b4560;color:var(--p-mut);box-shadow:none}
 
 /* 吐司 */
-.toast{position:fixed;left:50%;bottom:82px;transform:translate(-50%,14px);
+.toast{position:fixed;left:50%;bottom:82px;transform:translate(-50%,14px) scale(.94);
   z-index:99;background:var(--p-gold);color:var(--p-ink);font-size:12px;padding:10px 20px;
-  opacity:0;pointer-events:none;transition:.3s steps(4,end);max-width:86vw;text-align:center;
+  opacity:0;pointer-events:none;transition:opacity .3s steps(4,end),transform .34s cubic-bezier(.2,.9,.3,1);max-width:86vw;text-align:center;
   letter-spacing:.06em;border:var(--hair) solid var(--p-ink);text-shadow:none}
-.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.on{opacity:1;transform:translate(-50%,0) scale(1)}
 
 /* 底部常驻操作条 */
 .hintbar{position:fixed;left:0;right:0;bottom:0;z-index:70;background:var(--p-bg);
@@ -340,8 +347,18 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 /* ===== 自定义光标：夜里的一粒暖光 =====
    这个游戏是深夜、雨、路灯。所以光标不该是系统白箭头 —— 换成一粒会呼吸的暖金光。
    只换"看得见的那一点"，命中判定照旧交给浏览器；触屏与减少动效下完全不启用。 */
-#cur{position:absolute;left:0;top:0;z-index:4;pointer-events:none;display:none;
+/* 必须挂在 body 层 + position:fixed + 最高层级：
+   以前它关在 .stage（z-index:10 的层叠上下文、overflow:hidden）里且自身 z-index:4，
+   结果对话框(60)/菜单(80~96)/顶栏(60) 全都压在它上面 —— 面板一开光标就"消失"。
+   现在固定在视口上、永远最顶层。 */
+#cur{position:fixed;left:0;top:0;z-index:999;pointer-events:none;display:none;
   width:20px;height:20px;margin:-10px 0 0 -10px}
+/* 可见性由 body.pcur 常驻控制（以前这里只有 display:none 而没有任何显示规则，
+   而 body.pcur 又把系统光标 cursor:none 藏掉 → 鼠标在游戏里彻底看不见）。
+   不能用 .on 当显示开关 ——
+   at() 里 .on 是「悬停在 UI 上」的意思，鼠标一挪到画布上 on 就被摘掉，
+   光标又没了（这正是「有时看得见有时看不见」的另一半原因）。 */
+body.pcur #cur{display:block}
 body.pcur{cursor:none}
 body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none}
 /* 之前是三层 + 强发光 + mix-blend-mode:screen，太花也太重（大面积混合模式合成）。
@@ -379,14 +396,9 @@ body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none
 /* 虚拟摇杆（触屏） */
 .pad{position:absolute;left:0;right:0;bottom:0;z-index:60;display:none;
   justify-content:space-between;align-items:flex-end;padding:12px 14px;pointer-events:none}
-.pad .dpad{position:relative;width:132px;height:132px;pointer-events:auto}
 .pad .pb{position:absolute;width:44px;height:44px;background:rgba(21,18,33,.85);color:var(--p-txt);
   border:var(--hair) solid var(--p-line);box-shadow:none;font-size:13.5px}
 .pad .pb:active{background:var(--p-gold);color:var(--p-ink)}
-.pad .pb[data-k=up]{left:44px;top:0}
-.pad .pb[data-k=left]{left:0;top:44px}
-.pad .pb[data-k=right]{left:88px;top:44px}
-.pad .pb[data-k=down]{left:44px;top:88px}
 .pad .pb.e{position:relative;width:66px;height:66px;font-size:15px;pointer-events:auto}
 .pad .pb.e em{font-style:normal;font-size:10.5px;opacity:.75}
 .pad .pbtns{display:flex;gap:8px;align-items:flex-end;pointer-events:auto}
@@ -443,6 +455,36 @@ body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
 @supports (padding-bottom: env(safe-area-inset-bottom)){
   body.touch .hintbar .in{padding-bottom:calc(5px + env(safe-area-inset-bottom))}
 }
+
+/* ===== 手机横屏后的安全区 =====
+   页面被 rotate(90deg) 转过来之后，屏幕四条边和 CSS 的上下左右是错位的：
+     CSS 的「上」= 屏幕右边，「下」= 屏幕左边，「左」= 屏幕底部，「右」= 屏幕顶部。
+   所以把 env() 按这个对应关系转一遍再用，刘海和小黑杠才不会压住顶栏或摇杆。 */
+html.rot90{
+  --sat:env(safe-area-inset-right,0px);
+  --sab:env(safe-area-inset-left,0px);
+  --sal:env(safe-area-inset-bottom,0px);
+  --sar:env(safe-area-inset-top,0px);
+}
+@supports (padding-top: env(safe-area-inset-top)){
+  html.rot90 .top .in{padding-top:calc(3px + var(--sat));padding-right:calc(8px + var(--sar))}
+  html.rot90 .pad{padding-left:calc(12px + var(--sal));padding-right:calc(12px + var(--sar))}
+  html.rot90 .hintbar .in{padding-bottom:calc(5px + var(--sal))}
+}
+
+/* ===== 触控热区：手指没有鼠标那么准 =====
+   iOS/Android 的可点区域建议不小于 44px。顶栏按钮和底部条在手机上全部抬到这个数，
+   并且用 ::after 把热区向外扩（视觉上不变大，实际更好点）。 */
+/* 注意：不能给 .pad .pb 加 position:relative —— 方向键是 relative 到 .dpad 的绝对定位，
+   一旦改成 relative，left/top 就从"定位"变成"偏移"，整个摇杆会散架。
+   它们本身已有 44~66px，直接用固定尺寸就够手指点。 */
+body.touch .top .tb{min-width:42px;min-height:34px}
+body.touch .top .tb{position:relative}          /* .tb 原本是 static，加 relative 不影响布局 */
+body.touch .top .tb::after{content:'';position:absolute;inset:-6px -4px}
+body.touch .hintbar button{min-height:34px;padding:4px 12px}
+body.touch .hud .opts .opt{min-height:44px}
+/* 关闭/合上这类按钮在角上，手机上要更靠内一点，别贴着边沿 */
+body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px}
 /* 手机底部操作条：键盘提示无意义，只留「需要帮忙」和心力，条子变薄 */
 @media(max-width:700px){
   .hintbar .kb{display:none}
@@ -474,6 +516,9 @@ body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
   opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 .hud .talk.on{opacity:1;visibility:visible}
 .hud .talk.fade{opacity:0}
+/* 结束提示：一段话讲完、没有选项时，淡出前先落这一行 —— 别悄无声息地收框 */
+.hud .talk p.eend{margin:9px 0 2px;text-align:center;font-size:11px;letter-spacing:.32em;
+  color:var(--p-mut);opacity:.9;animation:none;caret-color:transparent}
 /* 贴着他站：字淡下去 —— 他声音小了，你听不清 */
 .hud .talk.near p{animation:none;opacity:.5}
 .hud .talk.near .tface{opacity:.5}
@@ -548,6 +593,28 @@ body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
 .hud .talk .thead.dim .tname{background:#4b4560;color:var(--p-txt)}
 .hud .talk.view .thead .tname{background:var(--p-pur);color:#fff}
 .hud .talk .thead~p{margin-left:54px}
+/* ===== UI 活起来：按压波纹 + 场景转场 + 面板浮起 + 开关呼吸（只动 transform/opacity，不动毛玻璃/滤镜，不卡） ===== */
+.rfx{position:relative;overflow:hidden}
+.rfx>.rp{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.42),rgba(255,255,255,0) 70%);
+  opacity:.6;transform:scale(0);animation:rp .52s cubic-bezier(.2,.7,.3,1) forwards;will-change:transform,opacity}
+@keyframes rp{to{transform:scale(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.rfx>.rp{display:none}}
+/* 顶栏开关：开启时一层缓慢呼吸的暖光（只动 opacity，合成层，不卡） */
+.top .tb.on{position:relative}
+.top .tb.on::after{content:'';position:absolute;inset:-2px;border-radius:9px;
+  box-shadow:0 0 0 1px var(--p-line);opacity:.2;animation:tglow 2.8s ease-in-out infinite;pointer-events:none}
+@keyframes tglow{0%,100%{opacity:.18}50%{opacity:.6}}
+/* 场景切换：进场轻轻落定（translateY+opacity，GPU 合成，不动 canvas 像素） */
+.stage.enter{animation:stageIn .42s cubic-bezier(.22,.61,.36,1)}
+@keyframes stageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* 出门面板：从下轻轻浮起 */
+.panel.on .pin{animation:panelIn .32s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes panelIn{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .stage.enter,.panel.on .pin{animation:none}
+  .top .tb.on::after{display:none}
+}
 /* 选项：hover 金箭头 */
 .hud .opts .opt{padding-left:26px;position:relative}
 .hud .opts .opt::before{content:'';position:absolute;left:9px;top:50%;transform:translateY(-50%);
@@ -582,6 +649,14 @@ kbd{border-bottom-width:2px !important;box-shadow:0 1px 0 rgba(0,0,0,.6)}
   background-size:24px 8px}
 #lbT.on::after{top:10px}
 #lbB.on::before{bottom:10px}
+/* 黑边演出时：底部/右上的常驻 UI 整体让出黑条的高度 —— 否则 z-index:80 的黑条
+   会把 z-index:40 的对话框连底盖住（对话演到一半，字被黑边吃掉） */
+body.lb-on .hud{bottom:calc(12.5vh + 38px)}
+body.lb-on .hintbar{bottom:12.5vh}
+body.lb-on .pad{bottom:12.5vh}
+body.lb-on .crowd{top:calc(12.5vh + 8px)}
+/* 位移和黑边同步（同一条 steps(7) 曲线），别一格一格错开 */
+.hud,.hintbar,.pad,.crowd{transition:bottom .5s steps(7),top .5s steps(7)}
 #tcard{position:fixed;inset:0;z-index:82;display:flex;flex-direction:column;align-items:center;
   justify-content:center;background:rgba(7,6,12,.93);opacity:0;pointer-events:none;transition:opacity .5s}
 #tcard.on{opacity:1}
@@ -1193,6 +1268,9 @@ body.touch .hud .talk p.waitc::after{content:''}
 </style>
 </head>
 <body>
+<!-- 自定义光标：挂在最外层、不被任何面板盖住。
+     必须写在脚本之前 —— 脚本是内联同步执行的，放后面它取到的就是 null。 -->
+<div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i></div>
 
 <!-- ======= 顶栏 ======= -->
 <div class="top">
@@ -1205,7 +1283,7 @@ body.touch .hud .talk p.waitc::after{content:''}
       </div>
       <div class="hero-s" id="heroS">还撑得住</div>
     </div>
-    <span class="day" id="tDay">第 1 天<em>DAY 01 / 20</em></span>
+    <span class="day" id="tDay">第 1 天<em>DAY 01 / 15</em></span>
     <span class="pl" id="tPhase">白天</span>
     <span class="pl" id="goal" title="这条街上，你见过那四个人里的几个">见过 0 / 4</span>
     <span class="pl" id="goal2" title="那一夜十三分钟里的三个字——雪、露、星。凑齐了，你才听得懂那三句话">那十三分钟 0 / 3</span>
@@ -1222,7 +1300,7 @@ body.touch .hud .talk p.waitc::after{content:''}
     <button class="tb" id="btnHerPhone" type="button"><span class="lb">记录</span><span class="ic">📱</span></button>
     <button class="tb" id="btnBook" type="button"><span class="lb">手册</span><span class="ic">📖</span></button>
     <button class="tb" id="btnMusic" type="button"><span class="lb">乐</span><span class="ic">♪</span></button>
-    <button class="tb" id="btnAuto" type="button"><span class="lb">自动</span><span class="ic">关</span></button>
+    <button class="tb" id="btnAuto" type="button"><span class="lb">自动</span><span class="ic">开</span></button>
     <button class="tb" id="btnMenu" type="button"><span class="lb">歇一下</span><span class="ic">☰</span></button>
     <button class="tb" id="btnRot" type="button"><span class="lb">转屏</span><span class="ic">⟳</span></button>
     <button class="tb" id="btnFs" type="button"><span class="lb">全屏</span><span class="ic">⛶</span></button>
@@ -1234,7 +1312,6 @@ body.touch .hud .talk p.waitc::after{content:''}
 <div class="stage" id="stage">
   <canvas id="world"></canvas>
   <!-- 自定义光标：一粒会呼吸的暖光，和官网同源。触屏/减少动效时不启用 -->
-  <div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i></div>
   <div class="scan"></div>
   <div class="vig"></div>
   <div class="under">
@@ -1511,7 +1588,7 @@ body.touch .hud .talk p.waitc::after{content:''}
 
 <!-- ======= 「把手机横着拿」提示 ======= -->
 <div class="rothint" id="rothint" role="status">
-  <span><b>把手机横着拿</b> · 画面已经是横屏了</span>
+  <span><b>画面已经横过来了</b> · 顺着把手机横着拿就行</span>
   <button class="x" id="rothintX" type="button">竖着玩</button>
 </div>
 
@@ -1539,7 +1616,7 @@ body.touch .hud .talk p.waitc::after{content:''}
    0. 常量与工具
    ========================================================================= */
 var KEY='xljk_save';  /* UNIFY_KEY */
-var DAYS=20;
+var DAYS=15;
 var $=function(s){return document.querySelector(s)};
 var sceneEl=(function(){var e=$('#scene');return e||document.createElement('div')})(), talkEl=$('#talk'), optsEl=$('#opts');
 var silEl=$('#sil'), silFill=$('#silFill'), silTip=$('#silTip');
@@ -1602,13 +1679,81 @@ var DAYNPC={
         '（今天没放片子。他在整理铁盒，盒子按年份排好了。）',
         '（今天机器有点吵。他拿螺丝刀拧了一会儿。）',
         '（今天他多倒了一杯水，放在旁边的座位上。）'],
- wenxu:['（今天他带了茶上来。两个杯子。）',
+ yat:['（今天他带了茶上来。两个杯子。）',
         '（今天他在补栏杆上的漆。补了一半。）',
         '（今天他把外套搭在栏杆上，人站在旁边。）',
-        '（今天他来得比平时早。手里空着。）']
+        '（今天他来得比平时早。手里空着。）'],
+ aji:['（今天他蹲在纸箱边上，帽兜没拉起来。）',
+      '（今天他在刷墙上的涂鸦。刷到一半，放弃了。）',
+      '（今天他多带了一串关东煮。不知道给谁。）',
+      '（今天他在打电话。你走近，他就挂了。）'],
+ chideng:['（今天他带了两颗糖。糖纸是旧的，折痕很深。）',
+      '（今天他在看一张过期的车票。看了很久，放回口袋。）',
+      '（今天他的保温杯是满的。盖子拧得比哪回都紧。）',
+      '（今天他来得早。站台上只有他一个。）']
 };
+/* 第 2 周目起，初次见面那天的状态：你已经认得他，台词带「重逢」的松弛 */
+var DAYNPC2={
+ hemu:[ '（今天他又在补货。看见你，他把箱子往边上挪了挪，给你让路。）',
+        '（今天他对保质期。抬头冲你点了一下头，又低下头。）',
+        '（今天收音机开着，他调小声了点，像怕你听不见又怕吵着你。）',
+        '（今天那把塑料凳空着。他说：你坐，不用站着。）'],
+ zi:[   '（今天她擦琴键。看见你，她把抹布往旁边一放，没停手。）',
+        '（今天那个键还卡着。她弹过去，像早习惯了你听着。）',
+        '（今天那支铅笔还在。她削好了，搁谱架边上等你用。）',
+        '（今天她开了大灯。说：你来了，亮着弹也行。）'],
+ baigao:['（今天他换灯泡。椅子上还摊着工具，他招呼你坐空着的那个。）',
+        '（今天他整理铁盒。你一进来，他往边上挪了挪，给你看的位置。）',
+        '（今天机器又有点吵。他拧着螺丝，头也不抬：来了？）',
+        '（今天那杯水还在。他说：坐，别站着。）'],
+ yat:[  '（今天他带茶。看见你上来，他把手里那杯往前推了推。）',
+        '（今天他补漆。你一来，他让开半边栏杆给你靠。）',
+        '（今天外套还搭着。他说：风大，你披着。）',
+        '（今天他照例早来。抬头看你一眼：又来了。）'],
+ aji:[  '（今天他蹲纸箱边。你一蹲下，他往旁边挪了挪，给你腾地。）',
+        '（今天他刷墙。你走近，他指了指那半行字：还认得出？）',
+        '（今天那串关东煮，他多带了一串。直接递你：吃。）',
+        '（今天他挂了电话。看你一眼：你来了，我挂了。）'],
+ chideng:['（今天他带糖。见你，他把一颗塞你手里：甜的不嫌多。）',
+        '（今天他看车票。抬头看你：又陪我等？）',
+        '（今天保温杯满着。他拧开盖子递你：喝一口？）',
+        '（今天他早来。长椅空着半边，他拍了拍：坐。）']
+};
+/* ===== 今晚在不在 =====
+   以前这个骰子掷在 enterRoom() 里 —— 而 renderScene() 就是 enterRoom 的别名，
+   对话中途一调用就重掷一次，人会当着你的面消失；更糟的是对话判定
+   （ROOMS[].inter 里 act:'npc' 是写死的常量）根本不看这个骰子，
+   于是"立绘没了，人还能聊"。
+   现在改成：每晚开场掷一次，整夜不变；绘制和对话都读同一份结果。 */
+var ABSENT={
+ hemu:  ['（便利店的灯亮着，柜台后面没人。）','（门没锁。他大概在后面搬货。）','（你等了一会儿。还是只有冰柜在响。）'],
+ zi:    ['（琴房的窗是黑的。）','（门虚掩着，里面没有声音。）','（今天没有琴声。）'],
+ baigao:['（放映厅的卷帘门拉下来了。）','（银幕是黑的。机器没开。）','（里面没人。椅子都空着。）'],
+ yat: ['（天台上没有人。）','（栏杆上搭着一件外套，人不在。）','（风很大。上面空的。）'],
+ aji:   ['（后巷空着。纸箱旁边有一串吃剩的关东煮。）','（墙根潮了一圈。有人蹲过。）','（今天他不在。你站了一会儿，自己出来了。）'],
+ chideng:['（站台空着。长椅上有什么东西，被雨打湿了。）','（今晚他没来等车。）','（站牌的灯亮着。人不在。）']
+};
+function rollHere(){
+  S.here=S.here||{};
+  var d=S.day||1, prev=S.herePrev||{};
+  ['hemu','zi','baigao','yat','aji','chideng'].forEach(function(w){
+    var met=(S.times&&S.times[w]>0);
+    var gone=false;
+    /* 第一次见面前不缺席 —— 别让人白跑一趟还不认识他 */
+    /* 好感 3 以上基本都在；连着两夜缺席也避开（不然会以为人没了） */
+    if(met && (S.rel[w]||0)<4 && prev[w]!==d-1 && rnd()<0.14) gone=true;
+    S.here[w]={d:d, gone:gone};
+    if(gone) prev[w]=d;
+  });
+  S.herePrev=prev;
+}
+function hereTonight(who){
+  var h=S.here&&S.here[who];
+  if(!h||h.d!==(S.day||1))return true;      /* 没掷过就当在，别把人挡在门外 */
+  return !h.gone;
+}
 function dailyState(who){
-  var pool=DAYNPC[who]; if(!pool)return null;
+  var pool=(((S.loop||1)>=2 && typeof DAYNPC2!=='undefined' && DAYNPC2[who])?DAYNPC2[who]:DAYNPC[who]); if(!pool)return null;
   var mem=(S.dailyNpc&&S.dailyNpc[who]);
   if(mem&&mem.d===S.day&&mem.i!=null)return pool[mem.i];
   var last=mem?mem.i:null, i=0, t=0;
@@ -1627,8 +1772,9 @@ var FIGS={
   hemu  :{hair:'#4a3b32',skin:'#e8b98f',cloth:'#d97b3c',pant:'#4a3b32',shoe:'#241d18',eye:'#2b2b33',tired:1},
   zi    :{hair:'#4f7fd0',skin:'#f2d0ae',cloth:'#e0e4ef',pant:'#39406b',shoe:'#22243a',eye:'#2b2b33',long:1,book:'#c2453d'},
   baigao:{hair:'#b9bcc4',skin:'#ecd0b0',cloth:'#b7a8d8',pant:'#3a3550',shoe:'#241f33',eye:'#2b2b33'},
-  wenxu :{hair:'#6fae72',skin:'#f0cba8',cloth:'#cfd8c8',pant:'#4a5240',shoe:'#262a1f',eye:'#2b2b33',glass:1},
+  yat :{hair:'#6fae72',skin:'#f0cba8',cloth:'#cfd8c8',pant:'#4a5240',shoe:'#262a1f',eye:'#2b2b33',glass:1},
   aji   :{hair:'#7a5aa0',skin:'#e9c6a2',cloth:'#5d3f7a',pant:'#2f2440',shoe:'#191423',eye:'#3a2b4a',hood:1},
+  chideng:{hair:'#2e2c34',skin:'#e0b894',cloth:'#3a4a6b',pant:'#262b42',shoe:'#1c1a24',eye:'#2b2b33',scarf:'#a0554f',gray:1},
   yibu  :{hair:'#f2efe6',skin:'#f6f3ea',cloth:'#e8e2d4',pant:'#d8d2c2',shoe:'#c9c2b0',eye:'#3a2f23'}
 };
 function R(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
@@ -1636,7 +1782,6 @@ function R(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),Mat
 function Rf(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(x,y,w,h);}
 /* 稳定伪随机：同一个种子每次画出来一样（不然纹理每帧乱跳） */
 function hash1(n){var x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);}
-function dark(g,a){R(g,0,0,PW,PH,'rgba(5,7,18,'+a+')');}
 function pool(g,cx,cy,r,a){
   if(!(a>0))return;
   g.globalCompositeOperation='lighter';
@@ -1651,31 +1796,8 @@ function pool(g,cx,cy,r,a){
   }
   g.globalCompositeOperation='source-over';
 }
-function drawFig(g,id,x,y,t,o){
-  o=o||{}; var p=FIGS[id]||FIGS.hero;
-  var bob=(o.walk&&(Math.sin(t*0.22)>0))?1:((Math.sin(t*0.07)>0)?0:1)*(o.still?0:1);
-  var y0=y-24+bob;
-  R(g,x-5,y-1,10,2,'rgba(0,0,0,.42)');
-  R(g,x-4,y0+16,3,8,p.pant); R(g,x+1,y0+16,3,8,p.pant);
-  R(g,x-4,y0+22,3,2,p.shoe); R(g,x+1,y0+22,3,2,p.shoe);
-  R(g,x-5,y0+7,10,10,p.cloth);
-  R(g,x-7,y0+8,2,7,p.cloth); R(g,x+5,y0+8,2,7,p.cloth);
-  R(g,x-7,y0+14,2,2,p.skin); R(g,x+5,y0+14,2,2,p.skin);
-  if(p.scarf){R(g,x-5,y0+6,10,2,p.scarf); R(g,x+3,y0+8,2,5,p.scarf);}
-  if(p.hood){R(g,x-5,y0+1,10,3,'#4a3260');}
-  R(g,x-4,y0-2,8,8,p.skin);
-  R(g,x-4,y0-2,8,3,p.hair);
-  R(g,x-5,y0-1,1,6,p.hair); R(g,x+4,y0-1,1,6,p.hair);
-  if(p.long){R(g,x-5,y0+1,1,8,p.hair); R(g,x+4,y0+1,1,8,p.hair);}
-  var bl=(t%70)<4;
-  if(p.glass){R(g,x-4,y0+2,8,4,'rgba(230,220,200,.50)');
-    R(g,x-3,y0+3,2,bl?1:2,'#2b2b33'); R(g,x+1,y0+3,2,bl?1:2,'#2b2b33'); R(g,x-1,y0+3,2,1,'#2b2b33');}
-  else{R(g,x-3,y0+3,2,bl?1:2,p.eye); R(g,x+1,y0+3,2,bl?1:2,p.eye);}
-  if(p.tired){R(g,x-3,y0+5,2,1,'rgba(80,60,52,.55)'); R(g,x+1,y0+5,2,1,'rgba(80,60,52,.55)');}
-  if(p.book){R(g,x+6,y0+12,4,5,p.book); R(g,x+7,y0+13,2,3,'#f0ead8');}
-  if(o.mood==='sad'){R(g,x-1,y0+6,2,1,'#2b2b33');}
-  if(o.mood==='away'){g.globalAlpha=.4;}
-}
+/* drawFig 已删：它是被废掉的「场景 canvas」方案用的画人函数，
+   实际渲染走 sprite 管线，这条路径从未上线。 */
 /* ---- 天气 ---- */
 function weatherFx(g,t,w){
   var i,x,y;
@@ -1762,6 +1884,7 @@ function win(g,x,y,w,h,rain){
 var SCENES={
  street:{
   name:'荧惑',
+  lights:[{x:53,y:70,r:11,a:.42}],
   draw:function(g,t,st){   /* 注意：签名与其他场景一致 (g, 帧tick, SC)。此前写成 (g,st,t) 导致 st.night=NaN，整条街被刷成上一笔的米色 */
     var i, _nn=st.night||0;   /* 时段：0 下午 · 0.34 傍晚 · 0.62 夜里 · 0.86 深夜 */
     /* 天：比别的场景暗，雨云 */
@@ -1805,13 +1928,16 @@ var SCENES={
     Rf(g,57.4,60.5,3.6,0.22,'rgba(255,255,255,.14)');
     Rf(g,20,55.4,9,0.5,'rgba(150,180,215,.22)'); Rf(g,20.4,55.6,8.2,0.3,'rgba(200,222,246,.16)');
     /* 沿街五家门面 */
+    /* 六家门面：为了给后巷腾一个门洞，前面五家各自收窄了一点。
+       宽度写进 SW，别再用三元表达式特判 —— 加第七家时不用改判断。 */
     var SHOP=[
-      [2,'#4a3a2e','flat'],[30,'#dfe8f2','store'],[54,'#5b4630','piano'],
-      [78,'#3a3242','cinema'],[102,'#2b3a52','roof']
+      [1,'#4a3a2e','flat'],[26,'#dfe8f2','store'],[49,'#5b4630','piano'],
+      [72,'#3a3242','cinema'],[95,'#2b3a52','roof'],[113,'#2f2c33','alley']
     ];
+    var SW={flat:24,store:21,piano:21,cinema:21,roof:16,alley:7};
     for(i=0;i<SHOP.length;i++){
       var sx=SHOP[i][0], lit=SC&&SC.opened&&SC.opened[SHOP[i][2]];
-      var w=(SHOP[i][2]==='roof')?17:(SHOP[i][2]==='flat'?26:22);
+      var w=SW[SHOP[i][2]]||22;
       /* —— 店面以上的楼体：近处的楼把远处的剪影挡掉，才有"一条街"的感觉 —— */
       var _fw=w+2, _fTop=(SHOP[i][2]==='roof')?20:7, _fH=28-_fTop;
       R(g,sx-1,_fTop,_fw,_fH,'#14151f');                                        /* 楼体 */
@@ -1918,7 +2044,7 @@ var SCENES={
       R(g,px,60,pw,2,'rgba(140,170,205,.14)');
       R(g,px+1,61,pw-2,1,'rgba(120,150,185,.09)');
     }
-    /* 猫：一只白猫蹲在路边（她说，这条街上的人都见过） */
+    /* 猫：一只白猫蹲在路边（大家都说，这条街上的人都见过它） */
     Rf(g,68,64,5,5,'#d7d0c0'); Rf(g,68,64,5,1,'#ece6d8');
     Rf(g,69,61,3,3,'#e6e0d2');
     Rf(g,69,60,1,1,'#e6e0d2'); Rf(g,71,60,1,1,'#e6e0d2');
@@ -1960,6 +2086,16 @@ var SCENES={
     /* 地上的纸屑与落叶 */
     Rf(g,22,68,1.6,1.2,'#c9c0ab'); Rf(g,58,70,1.4,1,'#8a7256');
     Rf(g,86,66,1.8,1.2,'#7fa86b'); Rf(g,104,72,1.4,1,'#c9c0ab');
+    /* —— 公交站：站牌 + 长椅。迟灯等车的地方（他等的不是车）—— */
+    R(g,52,72,2,16,'#33364a');                                  /* 站牌杆 */
+    R(g,49,68,8,5,'#2c3554'); R(g,50,69,6,3,'#3a4a6b');         /* 站牌 */
+    Rf(g,50,69.6,6,1,'#ffd489');                                /* 牌上那行字：夜里唯一还亮着的一行 */
+    Rf(g,53,66.4,1,1,'#ffd489');                                /* 牌顶小灯 */
+    R(g,30,82,18,2,'#4a3f5c'); R(g,30,82,18,1,'#5a4a6b');       /* 椅面 */
+    R(g,30,79,18,3,'#3a3350'); R(g,30,79,18,1,'#4a4266');       /* 靠背 */
+    R(g,31,84,1,4,'#241f33'); R(g,46,84,1,4,'#241f33');         /* 椅腿 */
+    R(g,30,86,18,1,'rgba(0,0,0,.30)');                          /* 椅下阴影 */
+    Rf(g,33,80.4,12,0.5,'rgba(150,180,215,.12)');               /* 椅上没干的水 */
     /* 店招霓虹：一闪一闪 */
     if((t>>4)%3!==0){R(g,32,26,18,2,'#ffd489'); R(g,65,26,14,2,'#5ba3a0');}
     /* 雨 */
@@ -2186,6 +2322,57 @@ var SCENES={
     R(g,34,64,2,2,'#2c2440'); R(g,60,64,2,2,'#2c2440'); R(g,86,64,2,2,'#2c2440');
     R(g,0,72,PW,2,'#2a2440'); R(g,0,72,PW,1,'#383054');
   }},
+ alley:{name:'后巷',
+  lights:[{x:26,y:52,r:12,a:.5},{x:60,y:82,r:18,a:.30},{x:96,y:62,r:10,a:.28}],
+  draw:function(g,t,st){
+    var i,x,y, night=st.night>0.4;
+    /* 顶上只有一线天：巷子很窄 */
+    R(g,0,0,PW,6,night?'#0d1124':'#33415f');
+    /* 两侧楼体 */
+    R(g,0,0,30,PH,'#1b1a26'); R(g,90,0,30,PH,'#191823');
+    /* 左墙：砖缝 */
+    for(i=0;i<30;i+=4)Rf(g,i,6,0.22,PH-6,'rgba(0,0,0,.20)');
+    for(i=8;i<PH;i+=5)Rf(g,0,i,30,0.2,'rgba(0,0,0,.24)');
+    /* 便利店的后窗：暖，是这条巷子里唯一的光 */
+    R(g,20,44,12,14,'#2b2436'); R(g,21,45,10,12,'#ffd489'); R(g,21,45,10,2,'#fff2d0');
+    R(g,25,45,1,14,'#2b2436'); R(g,21,50,10,1,'#2b2436');
+    /* 涂鸦：底下有一行被人涂掉了 */
+    R(g,12,50,16,16,'#2a2438');
+    Rf(g,14,53,12,1.4,'#c2453d'); Rf(g,14,56,9,1.2,'#5ba3a0'); Rf(g,14,59,11,1.2,'#ffd489');
+    Rf(g,14,62,12,1.8,'#141320');
+    Rf(g,14,62.2,12,0.4,'rgba(200,210,225,.10)');
+    /* 右墙 + 消防梯 */
+    for(i=90;i<PW;i+=4)Rf(g,i,6,0.22,PH-6,'rgba(0,0,0,.20)');
+    for(i=8;i<PH;i+=5)Rf(g,90,i,30,0.2,'rgba(0,0,0,.24)');
+    for(y=44;y<68;y+=6){ R(g,88,y,16,1,'#3a3350'); R(g,88,y,1,6,'#2c2440'); R(g,103,y,1,6,'#2c2440'); }
+    R(g,90,44,1,24,'#4a4266'); R(g,102,44,1,24,'#4a4266');
+    Rf(g,91,52,11,0.4,'rgba(190,205,235,.10)');
+    /* 巷子地面：湿沥青 */
+    R(g,30,40,60,PH-40,'#0e0f18');
+    for(x=30;x<90;x+=4.6)Rf(g,x,40,0.22,PH-40,'rgba(150,180,215,.05)');
+    for(y=42;y<PH;y+=4)Rf(g,30,y,60,0.18,'rgba(150,180,215,.045)');
+    /* 铁皮垃圾桶（贴左墙） */
+    R(g,30,58,13,10,'#2f3a34'); R(g,30,58,13,2,'#46544c');
+    R(g,31,56,11,2,'#3a4640'); R(g,30,68,13,1,'#181c1a');
+    Rf(g,35,61,2,4,'#5ba3a0');
+    /* 纸箱（里面有声音） */
+    R(g,50,64,14,10,'#6b5a48'); R(g,50,64,14,1,'#8a7256'); R(g,50,66,14,1,'#4a3a28');
+    Rf(g,53,68,2,1,'#e6dcc8'); Rf(g,58,69,2,1,'#e6dcc8');
+    /* 旧电话亭（贴右墙） */
+    R(g,72,58,14,16,'#232033'); R(g,73,59,12,12,'#3a3550'); R(g,73,59,12,1,'#4a4266');
+    R(g,78,74,2,3,'#2c2440'); Rf(g,75,61,8,6,'rgba(150,180,215,.16)');
+    if((t>>5)%4!==0)Rf(g,76,62,2,1,'#ffd489');
+    /* 积水：映着那扇后窗 */
+    Rf(g,62,74,16,5,'rgba(150,180,215,.18)');
+    Rf(g,64,75,10,2,'rgba(255,214,150,.14)');
+    /* 光：后窗漏进来的暖光 · 消防梯那盏冷灯 */
+    lg(g,40,72,22,7,'255,206,130',.30);
+    lg(g,96,62,14,6,'150,182,232',.16);
+    lg(g,60,84,26,7,'255,206,130',.20);
+    /* 纸屑 */
+    Rf(g,44,70,1.6,1.1,'#c9c0ab'); Rf(g,70,80,1.4,1,'#8a7256');
+    weatherFx(g,t,st.weather);
+  }},
  roof:{name:'天台',
   lights:[{x:60,y:66,r:20,a:.35}],
   draw:function(g,t,st){
@@ -2267,12 +2454,6 @@ function lg(g,cx,cy,rx,ry,c,a){
 
 /* 旧接口保留（不再使用 SVG 线稿） */
 var SC={place:'flat',who:null,away:false,night:.2,weather:'rain',mood:null,t:0,fx:86};
-/* 这一块原本是"场景 canvas"方案：scInit 建一块 canvas 挂进 #scene，
-   paintScene 每帧往里画天气和人物。
-   现在实际渲染走的是另一套（天气/人物由各自的绘制函数直接上屏），
-   scInit 从来没被调用过 —— 属于被否掉的旧方案，留着只会让人以为还有一条渲染路径。
-   已删除。paintScene 由调试 API（__yd30px / __yd30.paint）调用，保留。 */
-function paintScene(){ return null; }
 function renderScene(place,who,away){
   try{ enterRoom(place||'flat', who||null); }catch(e){}
 }
@@ -2305,6 +2486,7 @@ function setMood(m){SC.mood=m;}
 function faceCrop(im,who){
   if(who&&who!=='hero'){
     if(who==='hemu')return[22,72,84,84];      /* 何木：头像略往下沉一点 */
+    if(who==='aji')return[24,42,80,80];       /* 诺斯图：帽兜压得低，脸比其他人靠上 */
     return[24,58,80,80];                       /* 其他 NPC：脸部统一构图 */
   }
   var w=im.naturalWidth||1, sw=w*0.66, sy=Math.max(0,(im.naturalHeight||1)*0.32-sw/2);
@@ -2340,7 +2522,7 @@ function paintHero(){
     st.className='hero-s'+(t==='crit'?' crit':(t==='tired'?' tired':''));
   }
 }
-window.__yd30px={get SC(){return SC},paintScene:paintScene,setNight:setNight,setWeather:setWeather,setMood:setMood};
+window.__yd30px={get SC(){return SC},setNight:setNight,setWeather:setWeather,setMood:setMood};
 
 /* 角色的线稿小人（站在场景里） */
 
@@ -2384,7 +2566,13 @@ hemu:{
     '（他把找零放在柜台上，一枚一枚摆好，又退回去重数了一遍。）',
     '「我值夜班，本来谁都不用陪。……你来也行。」',
     '「街角那个弹琴的，我每晚都听得见。就是没上去过。」',
-    '（他说这话的时候，往琴房的方向看了一眼。）'
+    '（他说这话的时候，往琴房的方向看了一眼。）',
+    '「我妈每周三寄一箱吃的来。腊肉、笋干、一罐她自己腌的蒜。她说一个人也要好好吃饭。」',
+    '「那孩子以前总买关东煮，不要辣。后来有阵子没来了。我留了一串，放凉了。」',
+    '（他低头笑了笑。）「有回我少收了人五十块。那人隔天特意绕回来补。我记到现在。」',
+    '「夜里两点最冷清。连巷口的猫都不来。」',
+    '「我在这条街快三年了。熟客的脸比谁都熟，就是叫不出名字。」',
+    '（他擦柜台。）「这布是我妈给的旧毛巾。她嫌我一个人住不讲卫生。」'
   ],
   /* 移开视线才看到的 */
   micro:'他把写过的纸折了两折，塞回抽屉。没有扔。',
@@ -2438,7 +2626,7 @@ hemu:{
         {t:'「也许。」',c:'-5',d:{rel:1,sp:-5,f:'hemu_maybe'},r:['（他点点头。）','（就只是点点头。）']}
       ]},
     /* —— 内疚：他替一个问不出口的人问了一句话 —— */
-    {need:6,once:'hemu_n5',lines:[
+    {need:5,once:'hemu_n5',lines:[
       '（他今天一直在擦那个已经很干净的台面。）',
       '「我一直想替一个人问你一句。」',
       '（他扫条码的手停了一下。）',
@@ -2450,7 +2638,7 @@ hemu:{
         {t:'（把手机静音的事告诉他）',c:'-6',sub:'钥匙就在你手里',speak:'hemu',when:function(){return hasClue('wx_mute')&&!S.flags.spoken_hemu},
          r:['（你说了。他听得很慢。）','「静音。」','（他把这两个字念了一遍。）','「……不是不想来。」','（他忽然转过身去，背对着你站了一会儿。）','（再转回来的时候，眼睛是红的，但他笑了。）','「一年了。」','「谢谢你。」']},
       ]},
-    {need:7,once:'hemu_n6',lines:[
+    {need:6,once:'hemu_n6',lines:[
       '（今天他把抽屉拉开了。）',
       '（里面那张写了三遍的纸，还在。）',
       '「我想去把它寄了。」',
@@ -2478,6 +2666,43 @@ hemu:{
     '「我也是。」',
     '「——我说这个干嘛。」',
     '（他把那张写废的纸，重新铺平了。）'
+  ],
+  /* 第 2 周目起：更松弛、更私人的闲谈（loopPool 会按周目拼进 idle 池） */
+  idle2:[
+    '「你又来了。今天不买烟？」',
+    '（他把那瓶水往你这边推了推。）「这瓶，给你留的。」',
+    '「我妈这周寄了笋干。说让我分给朋友。算上你一个。」',
+    '「那条街上的人，我都认得脸。就一个人，我记了三年也没敢问名字。」',
+    '（他擦柜台。）「这布是我妈给的旧毛巾。你上次说它干净，我信了。」',
+    '「那孩子后来来过一次。站门口，没进。我追出去，人拐进巷子了。」',
+    '（他笑了一声。）「你来了，我倒不嫌这店空了。」',
+    '「冰柜响了一整夜。你来了，它响得没那么吵。」',
+    '（他低头看手机。）「还是没消息。但今天不碍事。」',
+    '「我值到六点。你陪我聊到打烊也行。」'
+  ],
+  idle3:[
+    '（他从围裙口袋摸出那封信。）「地址我到现在也没有。但今天，我没把它塞回去。」',
+    '「我想跟她道个歉。又想不出，该为哪件事。」',
+    '（他按了按右手腕。）「这道疤，小时候摔的。后来每次慌，都先摸这儿。」',
+    '「那孩子……其实不是孩子了。可我张不开口改口。」',
+    '（他小声：）「你来了之后，我才敢把这店当个有人来的地方。」',
+    '「我妈问我有没有朋友。我说有。这句话，是你来了我才敢说的。」',
+    '（他把抽屉拉开一条缝，又合上。）「有些话，写下来就轻了。轻了，反而说不出口。」',
+    '「你别学我一个人待着。待久了，连笑都忘了怎么笑。」'
+  ],
+  greet2:['「你又来了。」','「今天不买烟？」','「我还以为你今天不来了。」','「来了就站着？坐那把凳子。」','「……来了。」'],
+  /* 沉默到头的更深层：deep 已说「发消息没回、那孩子没回」，这里往里再走一步 */
+  deep2:[
+    '（他手上的活儿停了。抹布攥得很紧。）',
+    '「那孩子……其实不是不想来。」',
+    '「是她来的那天，我没在。」',
+    '「我那天也发了消息。两封信，对着发，谁都没收到。」',
+    '（他把手机翻过来，屏幕朝下。）',
+    '「后来我才知道，她就站在巷口，看见我店里的灯熄了。」',
+    '「她没进来。我也没出去。」',
+    '（他停了很久。）',
+    '「这不是谁的错。就是……两封信都没送到。」',
+    '「你来了，我才敢把这话说出来。」'
   ],
   deepGain:'这一夜 · 便利店 · 他说：那天他发过消息，对方没回。他一直以为是不想来。',
   aboutHim:'（他管那个人不叫名字，就说「那孩子」。说的时候会先笑一下。）',
@@ -2515,7 +2740,11 @@ zi:{
     '「你不用一直站着。琴房就这么大。」',
     '「我小时候练琴，我妈在门外听。她听不出错音，可她每次都鼓掌。」',
     '「便利店那个，每天买同一个饭团。我认得他的脚步声。」',
-    '「这条街上的人，我大多不认识。声音倒是都认得。」'
+    '「这条街上的人，我大多不认识。声音倒是都认得。」',
+    '「教我那人姓沈。她搬走那天，我正卡在第三小节。我想弹完再去送，没追上。」',
+    '（她把琴盖推开一条缝。）「楼下那个听琴的，脚步很轻。来了就站窗根。我不忍心弹错给她听。」',
+    '「我中学坐你后面，你老把椅子往后靠。有回靠太狠，我谱子掉地上了。」',
+    '「我妈走后，琴房是我还愿意进的唯一的房间。」'
   ],
   micro:'她弹到那一小节就停住——不是弹错，是从来没弹下去过。',
   micro2:'她把谱架上最上面那张纸压在下面。那张纸上没有谱号。',
@@ -2569,7 +2798,7 @@ zi:{
         {t:'【移开视线】',c:'-1',look:true}
       ]},
     /* —— 未完成：她把“弹完”当成了告别的条件 —— */
-    {need:6,once:'zi_n5',lines:[
+    {need:5,once:'zi_n5',lines:[
       '（她今天先弹了后面那一小段。）',
       '（再回头弹开头。）',
       '「我一直觉得，得从第一小节弹到最后一小节，才算弹完。」',
@@ -2581,7 +2810,7 @@ zi:{
         {t:'（把白诰的事说给她听）',c:'-6',sub:'有个人也把一件事扛了一年',speak:'zi',when:function(){return hasClue('bg_tape')&&!S.flags.spoken_zi},
          r:['（你说了那个放映厅的人。）','（她听完，没接话。）','「他没去送。」','「我也没去送。」','（她把手放在琴盖上。）','「原来不止我一个。」']},
       ]},
-    {need:7,once:'zi_n6',lines:[
+    {need:6,once:'zi_n6',lines:[
       '（她没有弹。）','（她坐在琴凳上，看着那一小节。）',
       '「教我的人，我后来再没见过。」',
       '「这一小节，我一直空着。」'],
@@ -2613,8 +2842,42 @@ zi:{
     '「……你别多想。」',
     '（她立刻把琴盖上了。）'
   ],
+  /* 第 2 周目起：更松弛、更私人的闲谈 */
+  idle2:[
+    '「你又来了。今天想听哪段？」',
+    '（她弹到那一小节，停了一下。）「这段，我留着等你来接。」',
+    '「沈老师走那天，我来不及送。后来每首曲子，都当送她的。」',
+    '（她擦琴键。）「你上次站门口那回，我弹错了一个音。你没说，我记得。」',
+    '「窗外那个人，其实是个老人。每天这个点路过，站一会儿。」',
+    '（她笑。）「你来了，我这几晚弹得比平时多。」',
+    '「这架琴的旧，是沈老师留下的。我擦它，像擦他的手。」',
+    '（她合上琴盖，手指最后离开。）「这个动作，我练了十年。」',
+    '「我复制一份谱子。是给一个总也不来的人留的。我不知道为什么留。」',
+    '「雨天好。外面听不见里面，我弹错了也不怕。」'
+  ],
+  idle3:[
+    '（她轻声。）「那首写不完的曲子，其实写完了。最后一句，我不敢弹。」',
+    '「我怕弹完，就真的没人要接了。」',
+    '（她低头。）「沈老师走那天，我在琴房等到关门。她没来。」',
+    '「窗外那个人，我去门口看过一次。是个老人，背很弯。」',
+    '（她手指发抖。）「手抖不是冷。是那天等得太久，冻在骨头里了。」',
+    '「你坐琴凳之后，我才敢坐到琴边。以前都是站着弹的。」',
+    '（她合上谱子。）「这份复印件，我想哪天塞进他门缝。又怕他早搬了。」'
+  ],
+  greet2:['「你又来了。」','「今天想听什么？」','「站着不累吗？」','「来了。坐吧。」','「……你来了。」'],
+  deep2:[
+    '（她手停在琴键上。）',
+    '「沈老师走那天，我弹了一整夜。」',
+    '「弹到天亮，那首曲子还是停在那一句。」',
+    '「不是弹不完。是不敢弹完。」',
+    '（她手指轻轻按下去，又抬起来。）',
+    '「弹完了，就真的没有人接了。」',
+    '「你来了，我好像……敢弹最后一句了。」',
+    '（她没弹。她只是把手放在你手上。）',
+    '「可我还是没弹。等哪天吧。」'
+  ],
   deepGain:'这一夜 · 琴房 · 她没去送那个教她弹琴的人。她说她在练这首曲子，没弹完。',
-  aboutHim:'（她说，以前每天这个点，窗外会有个人停下来听。后来不来了。她没问过是谁。）',
+  aboutHer:'（她说，以前每天这个点，窗外会有个人停下来听。后来不来了。她没问过是谁。）',
   halfGain:'这一夜 · 琴房 · 她有一首写不完的曲子。原因她没说。'
 },
 
@@ -2652,7 +2915,10 @@ baigao:{
     '「这卷胶片脆了，动一下就断。」',
     '「你坐后排就行。别介意我偶尔回头看一眼。」',
     '「天亮以前这条街，就剩我和便利店里那盏灯。」',
-    '（他把窗帘拉开一条缝，往外看了一眼。）'
+    '（他把窗帘拉开一条缝，往外看了一眼。）',
+    '「那片子叫《长夜行车》。我守了一年，就为守那十三分钟。」',
+    '（他摩挲放映机。）「我师父教我开机那天说：机器比人可靠。我后来才懂，他是在说自己。」',
+    '「有回一个小姑娘在厅里睡着了。我关了机器，没叫醒她。让她多睡会儿。」'
   ],
   micro:'他盯着银幕上第十三分钟的位置。画面早就过去了，他还在看。',
   micro2:'他伸手摸了摸放映机，像在确认它还在不在。',
@@ -2704,7 +2970,7 @@ baigao:{
         {t:'「那就跳着吧。」',c:'-5',sub:'接受它不是完整的，也是接受',d:{rel:2,sp:-5,f:'bg_accept'},r:['（放映机的光在他脸上晃了一下。）','（然后他点点头。）','（这是一年来，第一次有人这么说。）']}
       ]},
     /* —— 道德伤害：他一个人把那天的事扛了一年 —— */
-    {need:6,once:'bg_n5',lines:[
+    {need:5,once:'bg_n5',lines:[
       '（他把铁盒拿出来，又放回去。）',
       '「如果那天我没剪。」',
       '（他把话咽了回去。）',
@@ -2715,7 +2981,7 @@ baigao:{
         {t:'（把琴房那个人的事说给他听）',c:'-6',sub:'有人也有一件没做完的事',speak:'baigao',when:function(){return hasClue('zi_parts')&&!S.flags.spoken_baigao},
          r:['（你说了那个弹琴的人。）','（他一直听着，没有打断。）','「她也没去送。」','（他低头看着那个铁盒。）','「……那她比我诚实。」','（他第一次，把盒子放在了明面上。）']},
       ]},
-    {need:7,once:'bg_n6',lines:[
+    {need:6,once:'bg_n6',lines:[
       '（放映厅今天没放片。）',
       '（地上摆着一卷胶片。）',
       '「这一卷，我一直没敢接。」',
@@ -2748,11 +3014,43 @@ baigao:{
     '（灯灭了。他只说了一句。）',
     '「——因为我也在等。」'
   ],
+  /* 第 2 周目起：更松弛、更私人的闲谈 */
+  idle2:[
+    '「你又来了。今天放哪段？」',
+    '（他调试机器。）「第十三分钟，我每晚都放一遍。就那一小段。」',
+    '「师父临走前说，胶片留着，给以后想看的人。我守着，就是守这句话。」',
+    '（他擦杯子。）「那个姑娘，散场总不肯走。后来她不来了，听说去外地了。」',
+    '「这厅的屋顶，雨天最吵也最安静。你来了，吵也听得下去。」',
+    '（他指空座。）「你上次坐那儿。今天还空着，给你留着。」',
+    '「《长夜行车》是我师父拍的。胶片旧了，可画面比新的清楚。」',
+    '（他低声。）「银幕亮着的时候，我不用说话。你来了，我也不用对着它自言自语。」',
+    '「那盏灯，是她走前调试的。我每次换灯泡，都照她调的角度。」',
+    '「你坐。别站着。站着像在等散场。」'
+  ],
+  idle3:[
+    '（他擦机器。）「第十三分钟那句话，是她说的。我把她剪掉了，又留着。」',
+    '「留着，是因为那句话，本来该我对谁说。」',
+    '（他拧紧螺丝。）「手不占着点什么，我就会去想那个人。」',
+    '「胶片我留着，不是舍不得。是还没想好，剪掉算不算忘。」',
+    '（他望空座。）「那个姑娘坐那儿的时候，这厅才像个厅。」',
+    '（他低声。）「师父走后，这条街就剩我这间还亮着。我不敢关。」',
+    '「你来了，我才敢放给自己看第二遍。以前只敢放一遍，怕看第二遍就撑不住。」'
+  ],
+  greet2:['「又来了。」','「今天放哪段？」','「……你坐。」','「来了。位置还给你留着。」','「又看见你了。」'],
+  deep2:[
+    '（机器停了。银幕黑下来一瞬。）',
+    '「第十三分钟里那个人，是我。」',
+    '「那段话，我借了片子里的人嘴，说给一个不会再来看的人听。」',
+    '（他擦杯子。）「这杯子，是给她倒的。每晚一杯，倒了一年。」',
+    '「她没喝过。可我不倒，就好像她还会来。」',
+    '「你来了，这厅总算不只剩我一个人对着银幕说话。」',
+    '（他重新放起那段。）「听，就是这一句。我剪了又留，留了又剪。」'
+  ],
   deepGain:'这一夜 · 放映厅 · 第十三分钟他剪过一次。他以为是在护着谁。',
   halfGain:'这一夜 · 放映厅 · 第十三分钟有问题。他没说是谁。'
 },
 
-wenxu:{
+yat:{
   name:'燕安滕', en:'YAN ANTENG', place:'roof', open:10, kind:'m', fx:200, fy:250,
   theme:'接受无法改变的事情',
   cite:'我妹妹可帕玲以前说过，有个人总会陪她走一段路。她说的那个人，我一直没找到——后来我才想，也许他就在我楼下站着，只是我没下去。',
@@ -2787,7 +3085,10 @@ wenxu:{
     '「这条街夜里其实很吵。只是没人说话。」',
     '「我妹妹以前说，她喜欢有风的地方。」',
     '「楼下弹琴的、守放映厅的、便利店那个——我在上面都看得见。」',
-    '（他笑了一下。）','「他们看不见我。这样也好。」'
+    '（他笑了一下。）','「他们看不见我。这样也好。」',
+    '（他望着街对面那扇窗。）「可帕玲的房间，灯还亮着。她走后我再没进去过。钥匙在我兜里。」',
+    '「我妹爱在阳台上养多肉。死了好几盆，就活了一棵。我到现在还浇。」',
+    '（他摸口袋。）「她的手机我充着电。就怕哪天它响了，没电接不住。」'
   ],
   micro:'他低头看街对面某一扇窗。看了很久。那扇窗一直没亮。',
   micro2:'他把票根攥在手心，攥到纸都皱了。',
@@ -2867,7 +3168,7 @@ wenxu:{
         {t:'「他听到了。」',c:'-5',sub:'她需要相信这一句，你也需要',d:{rel:2,sp:-5,f:'wx_heard'},r:['（他没有点头，也没有摇头。）','（他只是又站了一会儿。）']}
       ]},
     /* —— 接受：他把“接受”这两个字重新说了一遍 —— */
-    {need:6,once:'wx_n5',lines:[
+    {need:5,once:'wx_n5',lines:[
       '「我以为接受，就是不再想她。」',
       '（他扶着栏杆，没作声。）',
       '「做不到。每天都会想起来。」',
@@ -2876,10 +3177,10 @@ wenxu:{
       opts:[
         {t:'（和他一起看天）',c:'—',sub:'今天云厚，没有星',d:{rel:2,sp:-3},r:['（两个人一起抬头。）','（天上什么都没有。）','（他还是站着。）']},
         {t:'「站得住，也算数。」',c:'-5',sub:'这不是安慰，是事实',d:{rel:3,sp:-5,f:'wx_stand'},r:['（他看了你很久，像在确认你不是随口说的。）','「……嗯。」','（他把手从栏杆上拿开，站直了。）']},
-        {t:'（把那条没回的消息告诉他）',c:'-6',sub:'钥匙就在你手里',speak:'wenxu',when:function(){return hasClue('hemu_msg')&&!S.flags.spoken_wenxu},
+        {t:'（把那条没回的消息告诉他）',c:'-6',sub:'钥匙就在你手里',speak:'yat',when:function(){return hasClue('hemu_msg')&&!S.flags.spoken_yat},
          r:['（你说了便利店里那个人。）','（你说了那条消息，和他以为的答案。）','（很长的沉默。）','「他发过。」','「那天他发过。」','（他扶着栏杆，站直了。）','「……那我就知道了。他不是没来。」','「他是来过的。只是没到。」']},
       ]},
-    {need:7,once:'wx_n6',lines:[
+    {need:6,once:'wx_n6',lines:[
       '（他今天没有看那扇窗。）',
       '「我以前每个周三都来。」',
       '「总觉得，多站一会儿，就离她近一点。」',
@@ -2932,103 +3233,538 @@ wenxu:{
     '「今天……带伞了。」',
     '（他把第二把伞，留在了栏杆上。）'
   ],
+  /* 第 2 周目起：更松弛、更私人的闲谈 */
+  idle2:[
+    '「你又上来了。」',
+    '（他往旁边挪。）「风大，靠里点。」',
+    '（他摸出钥匙。）「可帕玲的房间，我每周三进去坐十分钟。就坐，不动。」',
+    '「她走之前那周，说想养盆多肉。我养了，替她浇了三年水。」',
+    '（他望着天边。）「今晚星不多。可帕玲以前数到第三颗就睡着了。」',
+    '（他拍拍栏杆。）「这道刻痕，是她刻的。我补漆都绕着它。」',
+    '「你来了，我倒不像在替谁守着了。像有人陪着守。」',
+    '（他递茶。）「喝一口。今天晾过，不烫了。」',
+    '「每周三她给我打电话。现在周三上来了，当是接她的电话。」',
+    '（他低声。）「那三句话，我背了无数遍。真要转交，又怕交错了人。」'
+  ],
+  idle3:[
+    '（他望天。）「你来了，可帕玲要是看见也好。她喜欢有人陪我上来。」',
+    '（他摸钥匙。）「房间我一次没动过。怕一动，就承认她真不回来了。」',
+    '「那盆多肉，我不敢换盆。怕换了我认不出是她那盆。」',
+    '（他停了停。）「三句话里，有一句是说给我的：别一个人扛。」',
+    '「我扛了三年。你来了，我好像能放下一句。」',
+    '（他轻声。）「她走那天，我其实在楼下。我上去了，又下来了——怕看见她最后的样子。」',
+    '（他握紧钥匙。）「这把钥匙，是我这辈子攥得最紧的东西。」'
+  ],
+  greet2:['「你又上来了。」','「……风大。」','「今晚星不多。」','「上来了。坐。」','「……你来了。」'],
+  deep2:[
+    '（他靠在栏杆上，风把头发吹乱。）',
+    '「可帕玲走那天，我本来在楼下等她上来。」',
+    '「她叫我上来。我上去了，看见她坐在那儿，像睡着了。」',
+    '「我没有叫醒她。我怕一叫，就叫不醒了。」',
+    '（他攥着钥匙。）',
+    '「她留了三句话给我，让我转交。我守了三年，没找着该交给谁。」',
+    '「你来了，我好像……知道该交给谁了。」',
+    '（他把钥匙轻轻放在栏杆上。）',
+    '「这三句话：①我那天本来要来找你 ②你不在，很多事我都接不住 ③我没忘。你替我，记着她。」'
+  ],
   deepGain:'这一夜 · 天台 · 燕安滕把可帕玲托付的三句话转交给你：①我那天本来要来找你 ②你不在，很多事我都接不住 ③我没忘。',
   saidOfYou:'（可帕玲常在饭桌上提起一个人。燕安滕一直以为，那只是普通同学。）',
   aboutHer:'（他说，他妹妹最后那半年，一直穿长袖。他问过她热不热。她说不热。）',
   halfGain:'这一夜 · 天台 · 他提到他妹妹可帕玲。他没说那天晚上发生了什么。'
+},
+
+/* —— 诺斯图：反谜。别人都藏着话，他直接把答案告诉你——而你反而不敢信。
+      他后巷墙根蹲着，啃关东煮，说这条街「戏太假」，可他一夜都没走。
+      因为他就是那个「什么都看见了，什么都没做」的人。 —— */
+aji:{
+  name:'诺斯图', en:'NOSU', place:'alley', open:4, kind:'m',
+  theme:'一直没有伸手的人',
+  cite:'便利店那个，天台上那个，放映厅那个——他们好歹还有人等。我谁都没有。',
+  greet:[
+    {c:'0-1',lines:['（后巷墙根蹲着个人，帽兜拉得很低。）','（听见脚步，他抬了抬眼皮。）','「哟。」','「街上碰见过。又卡这条街上了？」']},
+    {c:'2-3',lines:['（他往旁边挪了挪，让出半块干地。）','「来了。」','「今天不赶你。」']},
+    {c:'4+',lines:['（他还是那个姿势，像没挪过窝。）','「来了？今天多买了一串。」','（他把关东煮递过来。没问你吃不吃。）']}
+  ],
+  idle:[
+    '「听哥一句：那便利店老哥，你直接走，别听他念叨。」',
+    '「天台那个？你上去就是听他慢慢说。别去。」',
+    '「放映厅那个最没劲，守着破机器一年，图什么。」',
+    '「琴房那个？你站门口听就行，别进去。进去她就不弹了。」',
+    '「这条街我熟。我在这儿蹲的时间，比你年纪都大。」',
+    '「别问我叫什么。问了也白问。」',
+    '「我说话你别全信。我自己都懒得信自己。」',
+    '「你要是睡不着，就当我陪你站会儿。别的我也不敢说。」',
+    '「别谢我。谢过我的人，后来都没什么好下场。」',
+    '「你口袋里那几颗东西，集齐了又能怎么样。」',
+    '「下雨天别抬头。抬头眼睛会进水。」',
+    '「你跟那个人，到最后也没说清楚吧。……别瞪我，我瞎猜的。」',
+    '（他说这话的时候，眼睛没看你。）',
+    '「你别老盯着那扇窗看。窗户不会自己开。」',
+    '「这条街上，谁都在等一个电话。就是没人先打。」',
+    '「我看你走第六遍了。……我没说这条街，我说你这个人。」',
+    '「趁还来得及。」',
+    '（他把关东煮的竹签往纸箱上一插。插得很准。）',
+    '「蹲着比站着好。站着像等人，蹲着像放弃。」',
+    '（他在数路灯。一盏一盏数过去，数到街口那盏，停了很久。）',
+    '「后巷凉快。街上那些门，看着就热。」',
+    '「我这人，除了嘴，哪都懒得动。」',
+    '（他帽兜里有光动了一下。是手机。他没接。）',
+    '「便利店的灯整夜不关。关一次能怎么样。」',
+    '「琴房那个，琴声断的那天，我听见了。」',
+    '「三楼那扇窗，我租了两年。房租贵，就为能看见这条街。」',
+    '（他咬关东煮。）「我以前也等过人。等得比你还久。后来我不等了，改看别人等。」',
+    '「这条街上我数过七个路灯。坏的那盏，正对着她家窗。」'
+  ],
+  /* 移开视线才看到的 */
+  micro:'他把帽兜摘了。后脑勺有一道疤，很长。',
+  micro2:'他从口袋里摸出一张折了四折的纸，看了一眼，又塞回去。',
+  microNote:'（那张纸的边角，被他摸得起了毛。）',
+  nodes:[
+    {need:0,once:'aji_n1',lines:[
+      '（他蹲在纸箱边上，帽兜拉得很低。）',
+      '「街上那次，就算认识了。」',
+      '「我这个人，蹲在这儿，不干什么正事。」',
+      '「你要是不嫌弃，蹲一会儿。脏地方，不收费。」'],
+      opts:[
+        {t:'「你天天都在这儿？」',c:'-1',d:{rel:1,sp:-1},r:['「差不多。」','「这条街我熟。」','「我在这儿蹲的时间，比你年纪都大。」']},
+        {t:'（学他的样子蹲下）',c:'+2',d:{rel:2,sp:-1},r:['（他看了你一眼。）','「……你还真蹲。」','（他往旁边挪了挪，给你让出半块干地。）']},
+        {t:'「你说话能好听点吗。」',c:'-1',d:{rel:1,sp:-1},r:['「不能。」','「好听的话，街上听得还不够多吗。」']},
+        {t:'【沉默】蹲着',c:'—',silent:true}
+      ]},
+    /* —— 反谜：他什么都直说，你反而不敢信 —— */
+    {need:2,once:'aji_n2',lines:[
+      '「听哥一句：那便利店老哥，你直接走，别听他念叨。」',
+      '「他那人，一件事能翻来覆去说一年。」',
+      '（他把关东煮咬了一口，汤溅在袖子上，也没擦。）',
+      '「——话我放这儿。信不信随你。」'],
+      opts:[
+        {t:'「你又知道了？」',c:'-1',d:{rel:1,sp:-2},r:['「我知道什么？」','「我什么都不知道。」','（他说这话时没看你。）']},
+        {t:'「我凭什么听你的。」',c:'+2',d:{rel:2,sp:-2},r:['（他笑了。）','「就凭这个。」','「这条街上，没人比我更清楚他们在等什么。」','「也没人比我更清楚——等不到。」']},
+        {t:'「你说的答案，是真的吗。」',c:'—',sub:'他什么都直说，你反而不敢信',d:{rel:2,sp:-1},r:['（他愣了一下。）','「……你这句问得有意思。」','「别人都藏着说。我直说，你怀疑我。」','「行。」','「那我也藏一次。」','（他真不说了。）']},
+        {t:'【移开视线】',c:'-1',look:true}
+      ]},
+    {need:3,once:'aji_n3',lines:[
+      '（今天他在刷墙上的涂鸦。刷到一半，放弃了。）',
+      '「写过再涂，涂了再写。人就这样。」',
+      '「有些东西不是刷不掉。是不舍得刷。」'],
+      opts:[
+        {t:'「你写过什么？」',c:'-2',d:{rel:2,sp:-2},r:['（他很久没说话。）','「写了。」','「又涂了。」']},
+        {t:'「我写过一封信。」',c:'-3',sub:'你自己也不一定说得清',d:{rel:2,sp:-3},r:['「写给谁的。」','「……行了，别说了。」','「写了的，比没写的强。」','（他把刷子往桶里一扔。）']},
+        {t:'（帮他把剩下的刷完）',c:'+2',d:{rel:3,sp:-1,f:'aji_paint'},r:['（你接过刷子，把剩下那半行刷完。）','（他站在旁边看。）','「……干净了。」','「干净了，才能写新的。」']}
+      ]},
+    /* —— 那一晚：他就在三楼窗户后面 —— */
+    {need:4,once:'aji_n4',lines:[
+      '「我跟你讲个事。」',
+      '「讲完你就当我没讲。」',
+      '「这条街上，有扇窗户。三楼，正对着街。」',
+      '「那天晚上，雨很大。有个人站在街上，没打伞。」',
+      '「站了很久。」',
+      '（他停了。）',
+      '「我在窗户后头。」',
+      '「我看见了。」',
+      '「我没下去。」'],
+      opts:[
+        {t:'【沉默】',c:'—',silent:true,key:true},
+        {t:'「……为什么。」',c:'-3',d:{rel:2,sp:-4},r:['「不为什么。」','「没有为什么。」','（他把帽兜往下拉了拉。）','「你想听的那句『我下去就好了』——我说不出口。」','「那天晚上，我一步都没动。」']},
+        {t:'「那个人，是我。」',c:'-5',sub:'你终于说出来了',d:{rel:3,sp:-6,f:'aji_me'},r:['（他抬起头，第一次正眼看你。）','「……我知道。」','「我看见了。」','「我一直没敢认。」','（他站起来，拍了拍裤子上的灰。）','「对不住。」','「这句我欠了一年。」']},
+        {t:'【移开视线】',c:'-1',look:true}
+      ]},
+    {need:5,once:'aji_n5',lines:[
+      '「后来我想过。」',
+      '「那天我要是下去了，会怎么样。」',
+      '「大概什么都不会变。也大概，会变一点。」',
+      '「我这人，做梦都在算『大概』。」'],
+      opts:[
+        {t:'「你算错了。」',c:'-2',d:{rel:2,sp:-3},r:['「嗯。算错了。」','（他居然笑了。）','「错了就错了。错了我认。」']},
+        {t:'「现在下去，也不晚。」',c:'-4',sub:'说给他，也说给你自己',d:{rel:3,sp:-5,f:'aji_late'},r:['（他愣住了。）','（很久。）','「……你这人。」','「道理都让你说了。」','「行。」','「今晚不算。哪天我准备好了，我自己下去。」','（他顿了顿。）','「——你也是。」']},
+        {t:'【沉默】',c:'—',silent:true}
+      ]},
+    {need:6,once:'aji_n6',lines:[
+      '「最后一晚，哥送你句话。」',
+      '「这条街上的人，都在等一个电话、一封信、一句完整的话。」',
+      '「等不到的，比等到的多。」',
+      '「但是——」',
+      '（他指着街口那盏路灯。）',
+      '「灯还亮着。亮着，就还有人走。」'],
+      opts:[
+        {t:'「你等的是什么？」',c:'-4',d:{rel:3,sp:-4},r:['（他想了想。）','「等一个，我伸得出手的时候。」','「到时候你都不在这条街了。」','「没关系。」','「我练练。」']},
+        {t:'「我记下了。」',c:'-1',d:{rel:1,sp:-1},r:['「记吧。」','「手账这东西，写了就不是白写。」']}
+      ]}
+  ],
+  /* 沉默到 7 秒后他说的话 */
+  deep:[
+    '（他没说话。他就那么蹲着，陪你蹲着。）',
+    '「你知道这条街上，最难的事是什么吗。」',
+    '「不是说话。」',
+    '「是伸手。」',
+    '「我看过太多人，话到嘴边，手不动。」',
+    '「我自己也是。」',
+    '「那天晚上——三楼的灯亮着。我站在窗户后头。」',
+    '「街上有人。我没下去。」',
+    '「我不是坏人。我就是……没下去。」',
+    '「这话我跟别人说不着。他们都有正当理由。」',
+    '「我没有。我就是一个，什么都知道，什么都没做的人。」',
+    '「——你别学我。」'
+  ],
+  /* 第 2 周目起：更松弛、更私人的闲谈 */
+  idle2:[
+    '「你又来了。这条街到底有什么好的。」',
+    '（他蹲下。）「坐。学我那样，蹲着才看得清这巷子。」',
+    '（他指三楼窗。）「那扇窗后面，等的是一个再也不会上楼的人。我替他守着。」',
+    '（他拨火机。）「这街七盏灯，我数过。第七盏，是她走那晚灭的，再没亮。」',
+    '（他摸出那串关东煮。）「多带了一串。给你，别客气。」',
+    '（他笑。）「你来了，我才把这些都说了。以前说给自己听，越说越假。」',
+    '（他拍纸箱。）「这窝猫，我是替这条街养的。没了它们，夜里就剩灯了。」',
+    '「你上次也被这雨淋过，没走。我记着。」',
+    '（他指墙根字。）「这半行字，我刷了又留。留着，像给谁留个记号。」',
+    '「这条街的人，我都认得。就你，是我唯一愿意多说两句的。」'
+  ],
+  idle3:[
+    '（他帽兜里摸出那张折四折的纸。）「这地址，我背下了。就是不敢按门铃。」',
+    '「按了，就真散了。不按，还能当她在。」',
+    '（他低声。）「三楼那窗的人，是我哥。他去等一个人，没回来。我守着，是替他等。」',
+    '（他数灯。）「第七盏灭了三年。我每晚数，替他记着它灭的那晚。」',
+    '（他笑。）「我劝你别伸手，是怕你比我勇敢，反衬我怂。」',
+    '（他摸猫。）「这窝猫，是我留在这条街的理由。它们活着，我就还能守。」',
+    '（他望你。）「你来了，我好像不用一个人替所有人守夜了。」'
+  ],
+  greet2:['「又来了。」','「这条街到底有什么好的。」','「……坐。」','「来了。串给你留着。」','「你又蹲下来了。」'],
+  deep2:[
+    '（他蹲在墙根，帽兜拉起来。）',
+    '「这街我每晚在，是因为三楼那扇窗。」',
+    '「我哥等的人，是我嫂子。她走的那晚，灯灭了，再没亮。」',
+    '（他摸出那张纸。）「这地址，是她的。我存了一年，没敢寄。」',
+    '「寄了，就真散了。不寄，我还能假装她只是晚归。」',
+    '（他盯着你。）「我劝你别伸手，是因为我伸过——伸了，什么都没接住。」',
+    '「你来了，我才敢把这张纸摊开给你看。」',
+    '（他把纸折回去。）「看完，还是得收回去。收着，她就在。」'
+  ],
+  deepGain:'这一夜 · 后巷 · 诺斯图说，最难的事是伸手。他说他自己，什么都知道，什么都没做。',
+  aboutHim:'（他管所有人都叫「哥」。叫得越随便，隔得越远。）',
+  halfGain:'这一夜 · 后巷 · 他说「最难的事是伸手」。没说下去。'
+},
+
+/* —— 迟灯：公交站等车的人。等的不是车，是一个迟到的人。
+      他跟主角是镜子：他也有过一句没送到的「我马上到」。 —— */
+chideng:{
+  name:'迟灯', en:'CHI DENG', place:'street', open:6, kind:'m',
+  theme:'等一个迟到的人',
+  cite:'她说「我马上到」。我就在这个站台等。车来了七趟，人没来。',
+  greet:[
+    {c:'0-1',lines:['（站台边站着个人，怀里抱着个保温杯。）','（他看你的眼神，像在看一个迟到的人。）','「……你来了。」','（他随即意识到认错了人，垂下眼。）','「抱歉。我认错人了。」']},
+    {c:'2-3',lines:['（他还在老地方。）','「今天车也晚点。」','（他像是在跟你说，又像是在跟自己说。）']},
+    {c:'4+',lines:['（他往长椅那头挪了挪，给你让出位置。）','「站着累。坐。」','（他把保温杯往中间放了放，像顺便也给你倒了一杯。）']}
+  ],
+  idle:[
+    '「末班车十一点四十。我每天都赶得上，每天都等。」',
+    '「你说，迟到的人，是忘了时间，还是不敢来？」',
+    '（他看了眼街口。又看回来。）',
+    '「我以前不等人的。等人这事儿，学一次就会了。」',
+    '「杯子是老式的。她说过，这个牌子保温。」',
+    '「下雨天车更慢。慢点好。慢点，就还能等。」',
+    '（他把保温杯换了只手抱着。）',
+    '「这条街的末班车，就一趟。错过就没了。」',
+    '「我不是在等车。这个就不用你问了。」',
+    '「有一年冬天，我在这儿等到一点。她来了。」',
+    '「所以总想着，再等等，也许还能等到。」',
+    '（站牌的灯闪了一下。他抬头看了一眼，又低下。）',
+    '「这个点不睡觉的人，都有事儿。」',
+    '「人等车，车不等人。人等人才傻呢。」',
+    '（他笑了一下。笑得比哭好看一点。）',
+    '「明天我不来了。」（他每天都说明天不来了。）',
+    '「没带伞就往里头站。檐下窄，挤一挤。」',
+    '「末班车上人很少。少到司机都记得你。」',
+    '「我数过，这条街上一共十一个路灯。亮七个。」',
+    '「等人不怕。怕的是等到之后，不知道说什么。」',
+    '（他把保温杯的盖子拧开，又拧上了。没喝。）',
+    '「有一回我等到个熟人。他说，你怎么还在。我说，习惯了。」',
+    '「那年的末班车，司机认得我。他说，你又来啦。我说，等个人。」',
+    '（他拧保温杯。）「她爱喝桂花酿的圆子。我学会煮，她没喝上几回。」',
+    '「站台这长椅，我坐出了印子。木头都暖了。」'
+  ],
+  /* 移开视线才看到的 */
+  micro:'他把保温杯的杯套翻开一角。里面贴着一张照片，边角卷了。',
+  micro2:'他看了一眼手机。屏幕亮着，是一条没发出去的消息。',
+  microNote:'（他看完就把手机扣在手心里，像怕它响。）',
+  nodes:[
+    {need:0,once:'cd_n1',lines:[
+      '（他注意到你在看他，往旁边让了让。）',
+      '「等车？」',
+      '（你摇头。）',
+      '「不等人？」',
+      '（他也不追问。他只是往街口又看了一眼。）'],
+      opts:[
+        {t:'「车多久来？」',c:'-1',d:{rel:1,sp:-1},r:['「十一点四十。最后一趟。」','「之后的夜里，街上只有路灯。」']},
+        {t:'「你在等人？」',c:'-2',d:{rel:2,sp:-1},r:['（他愣了很久。）','「……不算等。」','（他抱紧了保温杯。）','「就算等，也不是今天开始等的。」']},
+        {t:'【沉默】陪他站着',c:'—',silent:true},
+        {t:'【移开视线】',c:'-1',look:true}
+      ]},
+    /* —— 那一句「我马上到」—— */
+    {need:2,once:'cd_n2',lines:[
+      '「我跟你讲个事。讲完你就当听了个岔。」',
+      '「有人说了一句『我马上到』。」',
+      '「就在这个站台。冬天，冷得站牌都在响。」',
+      '「我说好。我等着。」',
+      '「然后车来了。」','「人没来。」',
+      '「我说，下一趟吧。」','「下一趟，也没来。」'],
+      opts:[
+        {t:'「等了几趟？」',c:'-3',d:{rel:2,sp:-2},r:['「七趟。」','（他说得很快。这个数字他数过太多遍。）']},
+        {t:'「你后来呢。」',c:'-4',sub:'他可能不会说',d:{rel:2,sp:-3},r:['「我后来？」','（他看向街口。）','「我后来每天都来。」','「等一个，迟到的人。」']},
+        {t:'【沉默】',c:'—',silent:true,key:true},
+        {t:'【移开视线】',c:'-1',look:true}
+      ]},
+    {need:3,once:'cd_n3',lines:[
+      '「有一年冬天，她真来过。」',
+      '「一点多。末班车早过了。」',
+      '「她跑过来的，围巾都是歪的。」',
+      '「我说，你不用跑。」',
+      '「她说，怕你等。」',
+      '（他把保温杯换到另一只手。）',
+      '「就冲这句『怕你等』，我再等一年也认。」'],
+      opts:[
+        {t:'「她后来呢。」',c:'-4',d:{rel:2,sp:-3},r:['（他不说话了。）','（很久。）','「后来……」','「后来也是冬天。」']},
+        {t:'「你们说了什么？」',c:'-3',d:{rel:2,sp:-2},r:['「忘了。」','（他笑了一下。）','「就记得她说，明天还在这儿见。」','「明天的事儿，谁想得到呢。」']},
+        {t:'【沉默】',c:'—',silent:true}
+      ]},
+    {need:4,once:'cd_n4',lines:[
+      '「头一回见你，我喊了个名字。」',
+      '「喊完我就知道错了。」',
+      '「你们的背影有点像。都是走路不爱抬头的那种。」'],
+      opts:[
+        {t:'「你喊了什么？」',c:'-3',d:{rel:2,sp:-3},r:['（他低声念了两个字。很轻，像怕被人听见。）','（你没有听清。也不需要听清。）']},
+        {t:'「以后别认错了。」',c:'-1',d:{rel:1,sp:-1},r:['「……好。」','（他知道自己做不到。）']},
+        {t:'「你可以继续喊。」',c:'+2',sub:'你不知道自己怎么说出了这句',d:{rel:3,sp:-2,f:'cd_name'},r:['（他猛地抬头看你。）','（很久，他点头。）','「……好。」','「那就劳驾，多站一会儿。」']}
+      ]},
+    {need:5,once:'cd_n5',lines:[
+      '「明天我不来了。」',
+      '（他每天都说明天不来了。今天他说得特别慢。）',
+      '「杯子太重了。拎着拎着，手会酸。」',
+      '「人要是只靠一个念想过夜，会垮的。」'],
+      opts:[
+        {t:'「那就别来了。」',c:'-1',sub:'你说不出挽留的话',d:{rel:1,sp:-2},r:['「……行。」','（他低头笑了一下。）','「你也学会这套了。」']},
+        {t:'「明天我在这儿。」',c:'-4',sub:'替一个人，把今晚补上',d:{rel:3,sp:-5,f:'cd_wait'},r:['（他愣住了。）','「你不用……」','（他没说完。）','（他抱着杯子，肩膀松下来一点。）','「……那麻烦你，陪我胡说八道到十一点四十。」']},
+        {t:'【沉默】',c:'—',silent:true}
+      ]},
+    {need:6,once:'cd_n6',lines:[
+      '「最后一晚，不教你什么。」',
+      '「就想有个人在这儿站着。」',
+      '「十一点四十，车会来。」',
+      '「上不上，随你。」',
+      '（他把保温杯的盖子拧开，往地上倒了半口。）',
+      '「给她留的。她嫌烫。」'],
+      opts:[
+        {t:'「她会知道的。」',c:'-4',d:{rel:3,sp:-4},r:['（他望着街口，很久。）','「……借你吉言。」','（他把杯子抱紧了，像抱着一句还没凉透的话。）']},
+        {t:'「我记住了。十一点四十。」',c:'-1',d:{rel:1,sp:-1},r:['「记这个没用。」','（他顿了顿。）','「……记着也行。」']}
+      ]}
+  ],
+  /* 沉默到 7 秒后他说的话 */
+  deep:[
+    '（他没说话。末班车过去了一趟，他没动。）',
+    '「我跟你说过她吗。」',
+    '「说过一半吧。人都这样，说一半，留一半。」',
+    '「留的那一半，是想着万一还有后续。」',
+    '「那天她说的最后一句是：我马上到。」',
+    '「我就在这儿等。」',
+    '「车来了七趟。人没来。」',
+    '「后来我想，她可能是怕赶不上车，跑了捷径。」',
+    '「街上就一条近路。从店门口穿到巷子里。」',
+    '「我没去找。我怕我走了，她来了，又扑空。」',
+    '「两个人，都怕对方扑空。所以就都扑空了。」',
+    '「——这话我头一回说。你别嫌长。」'
+  ],
+  /* 第 2 周目起：更松弛、更私人的闲谈 */
+  idle2:[
+    '「你又碰上了。」',
+    '（他递糖。）「甜的不嫌多。这颗给你。」',
+    '（他望街口。）「你陪我数车，今天数到第几辆了？」',
+    '（他拧保温杯。）「这杯是满的。喝一口？」',
+    '「末班车我开了十一年。最后一班，总有人没赶上。」',
+    '（他低声。）「桂花圆子，是她爱吃的。我每年秋天都买一盒，没人吃也买。」',
+    '（他拍长椅。）「这印子，是她坐出来的。我每天都擦，擦不掉，也不想擦掉。」',
+    '「这条街小。小有小的好处——你来了，我就知道你在。」',
+    '（他笑。）「你陪我等，等的人就像还在路上。」',
+    '（他把伞往你这边偏。）「上次你也淋着听我说。这次别淋了。」'
+  ],
+  idle3:[
+    '（他望街口。）「那两个人等车的日子，我也陪着等。后来剩一个，我替另一个陪。」',
+    '（他摸糖纸。）「这糖是她爱吃的。我带两颗，一颗等她，一颗……留着万一她真来。」',
+    '（他低声。）「她说『我马上到』那天，我等了七趟。第七趟我笑了——笑自己傻。」',
+    '（他握杯。）「这杯子我抱紧，是怕里面那句话凉了。话凉了，她就像真不来了。」',
+    '（他望你。）「你来了，我好像不用一个人替她守着了。」',
+    '（他轻声。）「其实我早知道等不到。我只是等自己甘心。」',
+    '（他拍长椅印子。）「这印子，我每天来摸一下。摸着，她就像刚坐过。」'
+  ],
+  greet2:['「又碰上了。」','「这条街小。」','「……今天风大。」','「来了。坐。」','「你又来陪我等。」'],
+  deep2:[
+    '（他望着空荡的街口。）',
+    '「她说的『我马上到』，我等了七趟车。」',
+    '「七趟，一趟比一趟空。到第七趟，我笑了。」',
+    '（他摸糖。）「我笑，是笑自己还信她会来。」',
+    '「其实我早知道等不到。我只是……等自己甘心。」',
+    '（他望你。）「你来了，我不用一个人替她守着了。」',
+    '（他把一颗糖放进你手心。）',
+    '「甜的。别吐。她说的。我替她，再跟你说一遍。」'
+  ],
+  deepGain:'这一夜 · 公交站 · 迟灯说，那天她说「我马上到」，他等了七趟车。他不敢走，怕她扑空。',
+  aboutHim:'（他看表的时候，看的其实是街口。人比时间准。）',
+  halfGain:'这一夜 · 公交站 · 他说了一句「我马上到」。没说是谁说的。'
 }
 };
 
 
 /* =========================================================================
-   3. 事件卡（每天一张，每张都一升一降，没有纯赚的选项）
+   3. 事件卡（一晚最多一张，每张都一升一降，没有纯赚的选项）
+
+   原来是「第 N 夜固定发第 N 张」—— 死板，而且第二周目开头完全重复。
+   现在改成：每晚从「还没发生过 + 条件已满足」的卡里随机抽一张。
+   15 夜会抽到 10 张上下，不同周目、不同玩法看到的组合都不一样。
    ========================================================================= */
 var EVENTS=[
- {id:'E01',d:2,t:['（收拾桌子的时候，从书里掉出一张纸条。）','（是你自己写的。字很潦草。）','（上面只有四个字：）','（「记得买伞」。）'],
+ {id:'E01',min:2,t:['（收拾桌子的时候，从书里掉出一张纸条。）','（是你自己写的。字很潦草。）','（上面只有四个字：）','（「记得买伞」。）'],
   o:[{t:'今晚就去买',c:{sp:-6,item:'umbrella'},sub:'雨不会等人',r:['（街角便利店关门了。）','（你在自动售货机旁边站了一会儿。）','（最后你回去了。伞还是没买。）']},
      {t:'明天再说',c:{sp:0},r:['（你把纸条压回书里。）']},
      {t:'把纸条扔了',c:{sp:+3,relAll:-1},sub:'那是你自己写的',r:['（你把它扔了。）','（第二天，你又想起它一次。）']}]},
- {id:'E02',d:5,t:['（手机亮了一下。）','（是群里的一条消息：心理讲座，自愿参加。）','（时间是这周三晚上。）'],
+ {id:'E02',min:4,t:['（手机亮了一下。）','（是群里的一条消息：心理讲座，自愿参加。）','（时间是这周三晚上。）'],
   o:[{t:'去',c:{sp:-7,know:1},r:['（去了。人不多。）','（老师说了一句你记下来了：）','（「陪伴不需要专业，需要在场。」）']},
      {t:'不去，去便利店',c:{sp:-3,rel:'hemu'},r:['（你去了便利店。）','（他抬头看了你一眼，没说话。）']},
      {t:'哪儿都不去，早点睡',c:{sp:+10},r:['（你躺下了。）','（雨声比平时清楚。）']}]},
- {id:'E03',d:6,t:['（门口信箱里有一封信。）','（不是你的。上面写着「水木和 转交」。）','（收件人那一栏，被划掉了。）'],
+ {id:'E03',min:5,t:['（门口信箱里有一封信。）','（不是你的。上面写着「水木和 转交」。）','（收件人那一栏，被划掉了。）'],
   o:[{t:'去问是谁的',c:{sp:-5,know:1},sub:'问了，就得管',r:['（问了一圈，没人知道。）','（你把信放回去了。）']},
      {t:'收着，等有人来取',c:{sp:-1,item:'letter'},r:['（你把信收进抽屉。）']},
      {t:'放回原处',c:{sp:+1,relAll:-1},sub:'它会一直搁在那儿',r:['（你把它放回去了。）','（它第二天还在那儿。）']}]},
- {id:'E04',d:9,t:['（钱包里剩下不到两百块。）','（离月底还有十六天。）'],
-  o:[{t:'省着点，少出门',c:{sp:-4,money:1},r:['（你算了一下。）','（够的。只是要少走几趟。）','（那几天，你去的地方少了。）']},
+ {id:'E04',min:7,t:['（钱包里剩下不到两百块。）','（离月底还有十六天。）'],
+  o:[{t:'省着点，少出门',c:{sp:-4,know:1},r:['（你算了一下。）','（够的。只是要少走几趟。）','（那几天，你去的地方少了。）']},
      {t:'跟家里开口',c:{sp:-9,know:1},sub:'这个电话你很久没打了',r:['（你打了个电话。）','（说了三分钟。挂了以后你坐了很久。）']},
      {t:'不管，先这样',c:{sp:+2},r:['（你没管。）']}]},
- {id:'E05',d:11,t:['（半夜醒了。）','（雨停了。）','（屋里安静得有点过分。）'],
+ {id:'E05',min:8,t:['（半夜醒了。）','（雨停了。）','（屋里安静得有点过分。）'],
   o:[{t:'起来走走',c:{sp:-6,know:1},sub:'也许只是想确认街上还有人',r:['（你出了门。）','（街上没有人。）','（便利店的灯还亮着。）','（你在门口站了一会儿。手机上是 01:15。）']},
      {t:'躺着，等天亮',c:{sp:+8},r:['（你躺着。）','（后来你又睡着了。）']}]},
- {id:'E06',d:14,t:['（有人敲了门。）','（是你不认识的同学，来问路。）','（他问的是老地方怎么走。）'],
+ {id:'E06',min:10,t:['（有人敲了门。）','（是你不认识的同学，来问路。）','（他问的是老地方怎么走。）'],
   o:[{t:'带他去',c:{sp:-8,know:1},sub:'老地方，你也认得',r:['（你带他走到门口。）','（他说谢谢，然后自己上去了。）','（你没跟着上去。）']},
      {t:'指一下路',c:{sp:-2},r:['（你指了个方向。）','（他道了谢就走了。）']},
      {t:'说不知道',c:{sp:+2,relAll:-1},sub:'这也是一个答案',r:['（你说不知道。）','（他愣了一下，走了。）']}]},
- {id:'E07',d:15,t:['（你在书桌抽屉里看到一张旧照片。）','（四个人。你站在最边上。）','（你记不清是什么时候拍的了。）'],
+ {id:'E07',min:11,t:['（你在书桌抽屉里看到一张旧照片。）','（四个人。你站在最边上。）','（你记不清是什么时候拍的了。）'],
   o:[{t:'看很久',c:{sp:-4,know:1},sub:'有一个人的脸，你想不起来',r:['（你看了很久。）','（有一个人的脸，你始终想不起来。）','（照片背面有一行字，被擦过。那个起笔，你认得。）']},
      {t:'放回去',c:{sp:+2},r:['（你放回去了。）']}]},
- {id:'E08',d:18,t:['（今天雨很大。）','（你出门前在门口站了一会儿。）'],
+ {id:'E08',min:13,t:['（今天雨很大。）','（你出门前在门口站了一会儿。）'],
   o:[{t:'撑伞出去',c:{sp:-5},r:['（伞是新的。）','（走出去的时候，你想起了那张纸条。）']},
      {t:'不出门',c:{sp:+9,relAll:-1},sub:'这一天会整个空掉',r:['（你没出门。）','（那一天，谁都没见到你。）']}]},
  /* —— 支线：接上便利店那封信（只有你把话说到过那一步，它们才会来） —— */
- {id:'E10',d:12,cond:function(){return !!S.flags['hemu_letter']},
+ {id:'E10',min:8,cond:function(){return !!S.flags['hemu_letter']},
   t:['（何木今天没在柜台后面。）','（他在后门站着，手里拿着那封信。）','「你说要帮我寄。」','「我想了两天。……其实我是不敢寄。」'],
   o:[{t:'「寄吧。地址还在。」',c:{sp:-6,rel:2},sub:'替他把信送出去，不管有没有回音',r:['（他把信递给你，指尖在信封上停了一下。）','「那就寄。」','「寄了就寄了。别回头想。」','（他转身回去理货，背对着你。）','（你没看见他的脸。）']},
      {t:'「不寄。等他回来自己看到。」',c:{sp:-3,rel:1},sub:'那扇门也许永远不会开',r:['（他把信收回抽屉，压在那叠旧报纸下面。）','「……也行。」','「留着吧。留着，就当她还会来一趟。」','（抽屉关得很轻。）']},
      {t:'「那封信，是写给谁的。」',c:{sp:-8,rel:3},r:['（他把信捏在手里，看了你很久。）','「写给一个人。那孩子不来了。」','（他说完，把信又折了一道。）']}]},
- {id:'E11',d:17,cond:function(){return !!S.flags['deep_hemu']},
+ {id:'E11',min:11,cond:function(){return !!S.flags['deep_hemu']},
   t:['（便利店没客人。）','（他从抽屉最底下拿出一张照片，推到你面前。）','（照片上是一个女人，站在一口锅前面。）'],
   o:[{t:'「你妈。」',c:{sp:-5,rel:2},r:['（他点头。）','「锅就是她那口。她走的时候留给我的。」','「她在老家。我一年回去一次。」','（说这些的时候，他没看着你。）']},
      {t:'（不问，把照片推回去）',c:{sp:0,rel:1},r:['（他把照片收好。）','（像是刚才什么都没发生。）','（但他给你续了一次热水。）']}]},
  /* —— 支线：只有你把某个人的话陪到了底，它们才会来 —— */
- {id:'E12',d:10,cond:function(){return !!S.flags['deep_zi']},
+ {id:'E12',min:7,cond:function(){return !!S.flags['deep_zi']},
   t:['（今天琴房的门虚掩着。）','（她不在。谱架上放着一台旧录音机。）','（按下去，是一段弹到一半的曲子。）'],
   o:[{t:'（听完）',c:{sp:-4,rel:2},r:['（那一小节，她这次没有空过去。）','（她填了一个音进去。）','（就一个。）','（录音机是自己停的，不是她按了停。）']},
      {t:'（按停，放回原处）',c:{sp:0,rel:1},r:['（你把磁带倒回开头。）','（你不确定她想不想让你听。）']}]},
- {id:'E13',d:13,cond:function(){return !!S.flags['deep_baigao']},
+ {id:'E13',min:9,cond:function(){return !!S.flags['deep_baigao']},
   t:['（放映厅的灯亮着，他蹲在地上。）','（地上一地的胶片。他在把它们一段一段接回去。）','「剪掉的接不回去了。」','「我知道接回去也没用。」','「可总得有人肯接。」'],
   o:[{t:'（蹲下去，帮他接）',c:{sp:-7,rel:3},r:['（你们接了很久。）','（接出来的那一段，抖得厉害，还是能看。）','（他说：「能看就行。」）','（他没有说谢谢。他把机器又开了一遍。）']},
      {t:'「接不回去就别接了。」',c:{sp:-3,rel:1},r:['（他手上的动作停了一下。）','「……嗯。」','（他还是把那几截收进了铁盒。）']}]},
- {id:'E14',d:16,cond:function(){return !!S.flags['deep_wenxu']},
+ {id:'E14',min:10,cond:function(){return !!S.flags['deep_yat']},
   t:['（天台上只有他。）','（他把那张皱了的票根放在栏杆上，用手压平。）','「这张给你。」'],
   o:[{t:'（收下）',c:{sp:-5,rel:2},r:['（票根上是一年前那一场，两个座位，一个没撕。）','「她买了两张。说是要带个人一起。」','「那个人，我一直没见过。」','（他没说那个人是谁。你也没问。）','（他说完，抬头看天。今晚有星。）']},
      {t:'「你留着吧。」',c:{sp:0,rel:1},r:['（他把它又收回去，折好。）','「也行。」','（他没说别的。）']}]},
- {id:'E15',d:4,t:['（街边蹲着那只白猫。她今天没走。）','（她蹭了蹭你的脚踝，然后往一个方向看。）','（那个方向是便利店。）'],
-  o:[{t:'顺着她看的方向走',c:{sp:-4,rel:'hemu'},r:['（你去了便利店。）','（何木抬头：「今天怎么来了。」）','「……你脸色不太好。坐会儿。」','（你说不出来。但你还是来了。）']},
-     {t:'蹲下来陪她一会儿',c:{sp:+3,relAll:0},r:['（你在台阶上坐下来。）','（她把脑袋搁在你鞋上。）','（这条街今晚没那么长。）']}]},
- {id:'E16',d:8,t:['（协会的布告栏上换了新海报。）','（标题是：「陪伴不需要专业，需要在场。」）'],
+ {id:'E15',min:3,t:['（街边蹲着那只白猫。它今天没走。）','（它蹭了蹭你的脚踝，然后往一个方向看。）','（那个方向是便利店。）'],
+  o:[{t:'顺着它看的方向走',c:{sp:-4,rel:'hemu'},r:['（你去了便利店。）','（何木抬头：「今天怎么来了。」）','「……你脸色不太好。坐会儿。」','（你说不出来。但你还是来了。）']},
+     {t:'蹲下来陪它一会儿',c:{sp:+3,relAll:0},r:['（你在台阶上坐下来。）','（它把脑袋搁在你鞋上。）','（这条街今晚没那么长。）']}]},
+ {id:'E16',min:6,t:['（协会的布告栏上换了新海报。）','（标题是：「陪伴不需要专业，需要在场。」）'],
   o:[{t:'（把这句话记下来）',c:{sp:-2,know:1},r:['（你把这句话记在了手机上。）','（后来你真的用上了它。）']},
      {t:'（看一眼就走）',c:{sp:0},r:['（你走了。）','（风把海报的角吹起来了。）']}]},
- {id:'E17',d:20,cond:function(){return (S.loop||1)>=2},
+ {id:'E17',min:14,cond:function(){return (S.loop||1)>=2},
   t:['（这一次，你认得这条街了。）','（哪盏灯什么时候亮，你都记得。）','（你还记得他们上一遍说过的话。可这一遍，他们还没有说。）','（只是没有人记得你。）'],
   o:[{t:'（还是走过去）',c:{sp:-5,relAll:1},r:['（你推开门。）','（他抬起头，看你的眼神是第一次。）','（你知道结局。你还是来了。）']},
      {t:'（在门口站了很久）',c:{sp:+6},r:['（你没有进去。）','（你只是想确认，门后面还有灯。）','（有的。）']}]},
- {id:'E18',d:7,cond:function(){return (S.loop||1)>=2},
+ {id:'E18',min:5,cond:function(){return (S.loop||1)>=2},
   t:['（又走到那个街角。）','（上一遍，还有人蹲在这儿。）','（这一遍，地上只剩一张关东煮的包装纸。）'],
   o:[{t:'把纸捡起来',c:{sp:-4,know:1},sub:'纸是干的',r:['（纸是干的。可昨晚下了一整夜的雨。）','（有人比你先来过，又走了。）']},
      {t:'站一会儿就走',c:{sp:+3},r:['（你站了一会儿。）','（街角很空。）']}]},
- {id:'E09',d:19,t:['（明天就是最后一天了。）','（你不知道该做什么。）'],
+ {id:'E09',min:14,t:['（这条街，你走不了多少夜了。）','（你不知道该做什么。）'],
   o:[{t:'把每个人的事在脑子里过一遍',c:{sp:-3,know:1},r:['（你想了很久。）','（有些地方对不上。）','（比如：那十三分钟里，你到底等没等。）','（它们大概会一直对不上。）']},
      {t:'睡吧',c:{sp:+7},r:['（你睡了。）']}]},
- {id:'E19',d:3,t:['（你梦见自己站在一扇门前。）','（门没关严。留着一条缝。）','（她家也是租的。你也是——两个租来的房间，隔了两条街。）'],
+ {id:'E19',min:2,t:['（你梦见自己站在一扇门前。）','（门没关严。留着一条缝。）','（她家也是租的。你也是——两个租来的房间，隔了两条街。）'],
   o:[{t:'推开',c:{sp:-7,know:1},sub:'你知道后面是什么',r:['（你推开了。）','（先是水声。）','（浴缸的水，还开着。）','（水从门底下漫出来，漫过你的鞋。）','（水是温的。）','（你到现在都不想去想——那水，为什么是那个颜色。）','（你站在门口，没有进去，也没有退。）','（你在门槛上站了很久。久到走廊的灯，自己灭了。）']},
      {t:'不推，就这么站着',c:{sp:-2},sub:'你每天晚上都做这个梦',r:['（你就那么站着。）','（门缝里的光一直亮着。）','（你告诉自己：只要不推，里面就还是原来的样子。）','（你醒了。）']},
      {t:'（醒了）',c:{sp:+4},sub:'醒来就没有门了',r:['（你醒了。）','（床是干的。可你觉得后背全是水。）']}]},
- {id:'E20',d:1,t:['（你走在街上，忽然一切都隔远了。）','（路灯、雨、招牌，都在一层玻璃后面。）','（你听见自己说了一句话。你不记得自己说过。）'],
+ {id:'E20',min:1,t:['（你走在街上，忽然一切都隔远了。）','（路灯、雨、招牌，都在一层玻璃后面。）','（你听见自己说了一句话。你不记得自己说过。）'],
   o:[{t:'停下来，数眼前的东西',c:{sp:-3,know:1},sub:'五感着陆',r:['（你停下来。）','（一盏灯。一滩水。一棵树。一块招牌。一只猫。）','（数到第五个的时候，玻璃薄了一层。）','（你又能听见雨了。雨是真的。）']},
-     {t:'继续走，走完这段',c:{sp:-7},sub:'你以前都是这么过去的',r:['（你继续走。）','（不知走了多久。回头，那段路是空白的。）','（你到了。可你不记得是怎么到的。）','（这样到过、却想不起怎么到的，有过很多次了。）']}]}
+     {t:'继续走，走完这段',c:{sp:-7},sub:'你以前都是这么过去的',r:['（你继续走。）','（不知走了多久。回头，那段路是空白的。）','（你到了。可你不记得是怎么到的。）','（这样到过、却想不起怎么到的，有过很多次了。）']}]},
+ /* —— 后加的一批：街上每天都有点小事，不必都和那件事有关 —— */
+ {id:'E21',min:6,t:['（雨忽然大了。）','（便利店的屋檐很窄。）','（你到的时候，下面已经站了三个人。）','（谁也没跟谁说话。）'],
+  o:[{t:'（挤进去站着）',c:{sp:-3,relAll:1},sub:'四个人，同一个屋檐',r:['（你挤了进去。）','（肩挨着肩。谁都没说话。）','（雨打在檐上，声音盖过了别的。）','（后来雨小了。他们各自走了，朝三个方向。）']},
+     {t:'（站在雨里，不挤）',c:{sp:-6},r:['（你站在雨里。）','（他们看了你一眼，往里挪了挪。）','（你还是没进去。）','（衣服湿透了。你站了很久才走。）']},
+     {t:'（转身回屋）',c:{sp:+4,relAll:-1},sub:'这一夜，谁都没见到你',r:['（你回去了。）','（屋檐下那三个人，你后来在四个地方分别见过。）','（那时候你还不知道，他们各自是谁。）']}]},
+ {id:'E22',min:3,t:['（街边的猫今天不在老位置。）','（冰柜旁边空着。）','（你找了一圈。）'],
+  o:[{t:'（沿街找它）',c:{sp:-4,know:1},sub:'找一只猫，也是出门的理由',r:['（你走完了整条街。）','（在后巷的纸箱里找到了它。）','（它没什么事。只是换了个地方睡。）','（你在那儿站了一会儿，才回去。）']},
+     {t:'（不去找）',c:{sp:+1},r:['（你没找。）','（第二天它又回到冰柜旁边了。）']}]},
+ {id:'E23',min:4,t:['（手机只剩百分之三。）','（充电线断在接头那里。）','（01:15。这个时间，谁都不能打。）'],
+  o:[{t:'（去便利店买一根）',c:{sp:-4,rel:'hemu'},r:['（你下楼买了一根。）','（他找零的时候，多看了你一眼。）','「这么晚了还出门。」','（你不知道怎么接。他也没等答案。）']},
+     {t:'（关机，省着）',c:{sp:-2},sub:'关了，就谁也联系不上你',r:['（你按了关机。）','（屋里只剩雨声。）','（你躺了一会儿，又把它开了。）']},
+     {t:'（不管，让它没电）',c:{sp:+3,relAll:-1},r:['（你没管。）','（它在你口袋里自己灭了。）','（那一夜，你没有看时间。）']}]},
+ {id:'E24',min:5,t:['（门口放着一把伞。）','（不是你的。）','（伞骨断了一根。和你那把断的是同一根。）'],
+  o:[{t:'（拿起来用）',c:{sp:-2,know:1},sub:'有人把它放在了这儿',r:['（你拿起来撑开。）','（断的那一角，还是塌的。）','（你没有还。你也不知道该还给谁。）']},
+     {t:'（不动它）',c:{sp:0},r:['（你从旁边绕过去了。）','（第二天早上，它还在那儿。）']},
+     {t:'（把它收进屋）',c:{sp:-1,relAll:1},r:['（你把它收了进来，靠墙放好。）','（万一有人来找呢。）']}]},
+ {id:'E25',min:4,t:['（自动售货机吞了你的硬币。）','（你拍了两下。）','（它没反应。）'],
+  o:[{t:'（再投一枚）',c:{sp:-1},r:['（你又投了一枚。）','（这次掉了两瓶。）','（你拿了一瓶，另一瓶留在那儿。）']},
+     {t:'（算了，走开）',c:{sp:0},r:['（你走了。）','（机器在你身后响了一声，吐出那瓶。）','（你没有回头拿。）']},
+     {t:'（踹它一脚）',c:{sp:-3,know:1},sub:'有些东西踹了也没用，但当时想踹',r:['（你踹了一脚。）','（机器晃了一下，掉出一瓶。）','（你捡起来，走了两步，又放回去。）']}]},
+ {id:'E26',min:7,t:['（便利店的收音机在放一首老歌。）','（很旧的那首。）','（他没换台。）'],
+  o:[{t:'「这歌挺老的。」',c:{sp:-2,rel:'hemu'},r:['（他没回头。）','「我妈以前听。」','「我店里一直放这个。」','（过了会儿，他把音量调小了一点。）']},
+     {t:'（听完再走）',c:{sp:-3,know:1},sub:'一首歌的时间',r:['（你站着听完了。）','（歌放完的时候，正好有个人推门进来。）','（你们错身而过。）']},
+     {t:'（戴上耳机）',c:{sp:+1},r:['（你戴上了耳机。）','（外面那首歌，你就听不见了。）']}]},
+ {id:'E27',min:5,cond:function(){return !!(S.times&&S.times.yat>0)},
+  t:['（你路过那栋楼。）','（五楼那扇窗，今晚亮着。）','（你停下来看了一会儿。）'],
+  o:[{t:'（上去）',c:{sp:-7,rel:'yat'},sub:'他每周三来一次',r:['（你上了天台。）','（他在。他没问你怎么找到的。）','（你们一起看了一会儿那扇窗。）','（后来灯灭了。谁都没说话。）']},
+     {t:'（在楼下站着看）',c:{sp:-3,know:1},r:['（你站了一会儿。）','（窗帘后面有人影动了一下。）','（你没有上去。）']},
+     {t:'（走开）',c:{sp:0},r:['（你走了。）','（那扇窗亮到你拐过街角。）']}]},
+ {id:'E28',min:8,t:['（电线杆上贴了一张新的寻物启事。）','（纸很新。钉子也是新的。）','（照片那一角，还是缺的。）'],
+  o:[{t:'（看清上面写的什么）',c:{sp:-3,know:1},sub:'一年了，还没有人撕',r:['（上面写的东西，和一年前那张一样。）','（日期是新的。）','（有人一直在找，也一直没有找到。）']},
+     {t:'（伸手把它撕下来）',c:{sp:-5,relAll:-1},sub:'撕了，它就真的没了',r:['（你撕下来了。）','（捏在手里走了一段，又折好放进口袋。）','（你没有扔。）']},
+     {t:'（不看）',c:{sp:0},r:['（你没看。）','（它还在那儿。）']}]},
+ {id:'E29',min:6,t:['（快递柜里有一个你的包裹。）','（取件码发了三天了。）','（你一直没去拿。）'],
+  o:[{t:'（今晚去拿）',c:{sp:-3,item:'parcel'},sub:'里面是家里寄的东西',r:['（你取了。）','（是家里寄的。吃的，还有一件厚外套。）','（你把它抱回屋，放在桌上，没拆。）']},
+     {t:'（明天再说）',c:{sp:+1},r:['（你没取。）','（取件码又发了一遍。）']},
+     {t:'（退回去）',c:{sp:-2,relAll:-1},sub:'退回去了，他们就知道你过得不好',r:['（你点了退回。）','（三天后，家里打来一个电话。）','（你说一切都好。）']}]},
+ {id:'E30',min:9,t:['（手机推送：明天放晴。）','（这条街下了很久的雨。）','（你不太记得晴天是什么样子了。）'],
+  o:[{t:'（明晚去天台）',c:{sp:-2,know:1},sub:'放晴的夜里能看见星',r:['（你记住了。）','（第二天晚上，你果然上去了。）','（天上真的有星。三颗。）']},
+     {t:'（把推送划掉）',c:{sp:-1},r:['（你划掉了。）','（第二天确实是晴天。）','（你还是那个点醒的。）']},
+     {t:'（晒一晒被子）',c:{sp:+3},sub:'很小的一件事',r:['（你把被子抱到窗台上。）','（晒了一整天。）','（晚上盖着的时候，有太阳的味道。）','（那一夜你睡得比平时早一点。）']}]},
+ {id:'E31',min:10,cond:function(){return Object.keys(S.known||{}).length>=1},
+  t:['（你梦见那十三分钟。）','（梦里你在街口站着，四分钟。）','（然后你转身走了。）','（醒来的时候，枕头是湿的。）'],
+  o:[{t:'（记进手册）',c:{sp:-4,know:1},sub:'写下来，就不用一直记着',r:['（你把它写进了手册。）','（写完你看了一遍，合上了。）','（那一夜你没有再睡。）']},
+     {t:'（起来出门）',c:{sp:-6,relAll:1},r:['（你出了门。）','（街上没有人。）','（便利店的灯亮着。）','（你在门口站了一会儿，进去了。）']},
+     {t:'（躺着，等心跳慢下来）',c:{sp:+5},r:['（你躺着。）','（数呼吸。数到后来就乱了，又从头数。）','（天亮的时候，你又睡了一会儿。）']}]},
+ /* —— 后巷那一批 —— */
+ {id:'E32',min:3,t:['（后巷的纸箱里有声音。）','（一只猫，和四只小猫。）','（猫看见你，没有跑。）'],
+  o:[{t:'（蹲下来看一会儿）',c:{sp:-2,know:1},sub:'活着的东西，在很脏的地方也活着',r:['（你蹲了很久。）','（小猫眼睛还没睁开。）','（你回去的时候，脚步比来时轻一点。）']},
+     {t:'（找点吃的来）',c:{sp:-5,rel:'hemu'},r:['（你去便利店买了两根火腿肠。）','（他没问你买给谁。）','（你回去放在纸箱边。）','（第二天少了半根。）']},
+     {t:'（走开）',c:{sp:0},r:['（你走了。）','（第二天纸箱还在那儿。）']}]},
+ {id:'E33',min:5,t:['（后巷那台旧电话亭。）','（投币口里卡着一枚硬币。）','（有人投了，没拨，就走了。）'],
+  o:[{t:'（投币，拨一个你背得出的号码）',c:{sp:-8,know:1},sub:'那个号码你记着，但从来没拨过',r:['（你投了币。）','（拨到第七位，你按了挂断。）','（听筒挂回去的声音，在巷子里响了一下。）','（你在电话亭里站了很久。）']},
+     {t:'（把硬币抠出来）',c:{sp:-1},r:['（你抠出来了。）','（一枚一块。）','（你把它放进口袋，又觉得不该拿。）']},
+     {t:'（不投，也不拿）',c:{sp:0},r:['（你看着它。）','（硬币还在那儿。）','（下一个来的人，也许会拨完。）']}]},
+ {id:'E34',min:8,cond:function(){return !!S.flags['item_umbrella']},
+  t:['（你把伞放在门口的第二天。）','（伞不见了。）','（墙角留着一小滩水。）'],
+  o:[{t:'（有人拿走了。挺好的。）',c:{sp:+3,relAll:1},sub:'那把伞本来也不是你的',r:['（你愣了一下，然后笑了。）','（有人需要它。）','（你回屋，把窗台上那把收了进来。）']},
+     {t:'（在巷子里找一圈）',c:{sp:-4},r:['（你找了一圈。）','（没找到。）','（巷口的积水里有新的脚印，朝街那头去的。）']},
+     {t:'（再买一把，放在同一个地方）',c:{sp:-6,item:'umbrella'},r:['（你又买了一把。）','（放在同一个位置。）','（第二天早上，它也不见了。）','（第三天下雨的时候，你在街上看见了一把断了一根的伞。）']}]}
 ];
 
 /* =========================================================================
    4. 结局（有序阈值表，从上到下命中即止 —— 不按好坏排序）
    ========================================================================= */
 var ENDINGS=[
- /* —— 真结局：把街上所有没人跟你说过的事，都自己看了一遍 —— */
+ /* 结局1 · 真结局（隐藏） */
  {id:'THIRTEEN',t:'十三分钟',en:'THE THIRTEEN MINUTES',
-  hint:'这条街上，没人和你说过的事——全部都自己看一遍。',
+  hint:'走完这条街，把没人跟你说的事，自己都看一遍。',
   cond:function(s){return s.traces>=12&&s.deep&&s.frags>=3},
   b:['（你又走了一遍这条街。）','（这一次你没有找谁说话。）',
      '（墙根的字。压着的海报。干着的土。涂掉的账。）',
@@ -3039,9 +3775,9 @@ var ENDINGS=[
      '（——这不是谁欠谁的。这就是那十三分钟。）',
      '（天亮了。街上的灯一盏一盏灭掉。）',
      '（你还在这儿。）']},
- /* —— 四条线各自的"看见"（你先陪谁陪到了底，就走哪一条）—— */
+ /* 结局2 ~ 结局5 · 四条线的「看见」 */
  {id:'SEE_HEMU',t:'看见 · 折起来的那张',en:'THE FOLDED NOTE',
-  hint:'把便利店那个人的话，听到他不再解释为止。',
+  hint:'陪便利店那个人，坐到他没话可说。',
   cond:function(s){return s.maxRel>=5&&s.deep&&s.who==='hemu'},
   b:['（他把抽屉推上了。这一次没推到底。）',
      '（纸上那句话他给你看了——「你能不能来一趟」。）',
@@ -3050,7 +3786,7 @@ var ENDINGS=[
      '（他揉了揉右手腕。这次揉得很轻。）',
      '（他今晚大概能睡着了。）']},
  {id:'SEE_ZI',t:'看见 · 空着的那一小节',en:'THE EMPTY BAR',
-  hint:'陪一个弹琴的人，待到那一小节结束。',
+  hint:'陪弹琴的人，坐到那一小节的空白被接上。',
   cond:function(s){return s.maxRel>=5&&s.deep&&s.who==='zi'},
   b:['（她又弹到那一小节。还是空的。）',
      '（这一次她没有重来。）',
@@ -3068,7 +3804,7 @@ var ENDINGS=[
      '（他把搪瓷杯洗干净了，扣在架子上。）']},
  {id:'SEE_WENXU',t:'看见 · 三句话',en:'THREE SENTENCES',
   hint:'天台那个人，上到第二次才开口。',
-  cond:function(s){return s.maxRel>=5&&s.deep&&s.who==='wenxu'},
+  cond:function(s){return s.maxRel>=5&&s.deep&&s.who==='yat'},
   b:['（他走了。天台上只剩你。）',
      '（口袋里那张票根还是皱的。）',
      '<span class="q">「我那天，本来要来找你的。」</span>',
@@ -3076,7 +3812,7 @@ var ENDINGS=[
      '（他上来，不是等她回来。）',
      '（是来告诉她：我来了。）']},
  {id:'DIM',t:'陪不动了',en:'TOO TIRED',
-  hint:'连着好几个晚上，一步都没出门。',cond:function(s){return s.lowDays>=3},
+  hint:'连着几夜，一步没迈出去。',cond:function(s){return s.lowDays>=3},
   b:['（你连续好几天没有出门。）',
      '（手机上有两条消息，你没回。）',
      '（不是不想回。是没有力气把它点开。）',
@@ -3084,54 +3820,54 @@ var ENDINGS=[
      '（这不算失败。你只是先停下来了。）',
      '（街角便利店的灯还亮着。）',
      '（它每天都会亮。你随时可以再下去。）']},
- /* —— 你怎么乱来，它都接得住（八条）—— */
+ /* 结局6 ~ 结局15 · 其余结局 */
  {id:'REGULAR',t:'只去过便利店',en:'THE REGULAR',
-  hint:'二十天，只推一扇门。',
-  cond:function(s){var t=s.times||{};return (t.hemu||0)>=4&&((t.zi||0)+(t.baigao||0)+(t.wenxu||0))===0},
-  b:['（二十天，你只推开过一扇门。）','（何木的便利店。）',
+  hint:'很多个夜里，只推开同一扇门。',
+  cond:function(s){var t=s.times||{};return (t.hemu||0)>=4&&((t.zi||0)+(t.baigao||0)+(t.yat||0))===0},
+  b:['（十五天，你只推开过一扇门。）','（何木的便利店。）',
      '<span class="q">你成了「常客」。</span>',
      '（你再去的时候，柜台边放着一杯温的。）',
      '（这条街上别的灯，你一次都没走进去过。）','（它们还亮着。）']},
  {id:'ROOFONLY',t:'天台风很大',en:'ON THE ROOF',
-  hint:'每晚都上同一个天台。',
-  cond:function(s){var t=s.times||{};return (t.wenxu||0)>=4&&((t.hemu||0)+(t.zi||0)+(t.baigao||0))<=1},
+  hint:'每个夜里都去同一个高处。',
+  cond:function(s){var t=s.times||{};return (t.yat||0)>=4&&((t.hemu||0)+(t.zi||0)+(t.baigao||0))<=1},
   b:['（你每天晚上都上去。）','（风大。他不说话。）','（你也不说。）',
      '<span class="q">两个人对着同一片天，看了二十个晚上。</span>',
      '（有些话，也许就是这样看出来的。）','（也许不是。）']},
  {id:'NOTHING',t:'什么都没发生',en:'NOTHING HAPPENED',
-  hint:'几乎谁也不理。',
-  cond:function(s){var t=s.times||{};return ((t.hemu||0)+(t.zi||0)+(t.baigao||0)+(t.wenxu||0))<=2},
+  hint:'几乎没有，和谁说过一句话。',
+  cond:function(s){var t=s.times||{};return ((t.hemu||0)+(t.zi||0)+(t.baigao||0)+(t.yat||0))<=2},
   b:['（你一晚又一晚地醒过来。）','（又一晚又一晚地，睡回去。）',
      '<span class="q">什么都没有发生。</span>',
-     '（这也是二十天。）','（没有人怪你。这条街还在。）',
+     '（这也是十五天。）','（没有人怪你。这条街还在。）',
      '（哪天你想出门，门就在那儿。）']},
  {id:'EMPTY',t:'把口袋给空了',en:'EMPTY POCKETS',
-  hint:'把捡来的东西，一样一样都送出去。',
+  hint:'把手里的东西，一件件交出去。',
   cond:function(s){return s.seeds>=4&&s.bag===0},
   b:['（你把捡到的东西，一样一样都给了人。）','（关东煮、谱纸、胶片、粉笔。那块糖也给出去了。）',
      '<span class="q">口袋里什么都没有了。</span>',
      '（你走得比来的时候轻。）','（有人拿着你的东西，一直没放下。）']},
  {id:'ARCHIVIST',t:'记了很多，说了一句',en:'THE ARCHIVE',
-  hint:'手册写得比谁都厚，自己一句不说。',
+  hint:'记了很多，自己一句没说。',
   cond:function(s){return s.journal>=26&&!s.deep},
   b:['（你的手册很厚了。）','（上面全是别人说过的话。）',
      '<span class="q">你记下了一整条街，自己一句没说。</span>',
      '（记录也是一种陪。）','（你只是没敢走得更近。）','（手册会留到下一次。）']},
  {id:'ALLFRAG',t:'知道了一切，一个人没留',en:'KNEW IT ALL',
-  hint:'把那十三分钟全弄懂了，却没和谁坐下来聊过一整夜。',
+  hint:'什么都弄懂了，却没和谁，坐下来。',
   cond:function(s){return s.clue>=4&&s.maxRel<=2},
   b:['（四块拼图，你都凑齐了。）','（那十三分钟，你比谁都清楚。）',
      '<span class="q">可你没有和任何一个人，单独待过一个完整的夜里。</span>',
      '（知道，和陪着，是两件事。）','（下次可以试试后者。）']},
  {id:'SATCHEL',t:'揣了一兜子东西',en:'A POCKET FULL',
-  hint:'五件以上，全揣着不给。',
+  hint:'攒了一兜子，一件都没给出去。',
   cond:function(s){return s.bag>=5&&!s.deep},
   b:['（口袋里塞满了捡来的东西。）','（伞、胶片、谱纸、糖。一样都没给出去。）',
      '<span class="q">你舍不得给。</span>','（留着也不是错。）',
      '（只是有的人，等的是你手里那把伞。）']},
  {id:'SAMEAGAIN',t:'这一遍也一样',en:'SAME AS BEFORE',
-  hint:'第二周目，走和第一遍一样的那条路。',
-  cond:function(s){var t=s.times||{};return s.loop>=2&&!s.deep&&((t.hemu||0)+(t.zi||0)+(t.baigao||0)+(t.wenxu||0))>=8},
+  hint:'再来一遍，还是走老路。',
+  cond:function(s){var t=s.times||{};return s.loop>=2&&!s.deep&&((t.hemu||0)+(t.zi||0)+(t.baigao||0)+(t.yat||0))>=8},
   b:['（第二遍了。）','（你认得每一条路，每一个人的开场白。）',
      '<span class="q">然后你走的，和上一遍一模一样。</span>',
      '（他们还是不认识你。）','（你什么都知道，什么都没变。）',
@@ -3155,7 +3891,7 @@ var ENDINGS=[
      '（没有人知道你来过。）']},
  {id:'PASS',t:'路过',en:'PASSED BY',
   hint:'和谁说上一句话，然后离开。',cond:function(s){return s.maxRel>=1},
-  b:['（二十天，你走完了那条路。）',
+  b:['（十五天，你走完了那条路。）',
      '（路上遇到过人。说过几句话。）',
      '（然后你离开了。）',
      '<span class="q">路你走过了。</span>',
@@ -3174,11 +3910,11 @@ var ENDINGS=[
    ========================================================================= */
 var S={
   day:1, night:1, seg:0, phase:0, spirit:72, loop:1,
-  rel:{hemu:0,zi:0,baigao:0,wenxu:0},
+  rel:{hemu:0,zi:0,baigao:0,yat:0},
   insight:0, empath:0,                 /* 轻量养成：跨周目保留，缓慢增长 */
   flags:{}, seen:{}, journal:[], known:{}, frags:{}, stage:{}, times:{},
   lowDays:0, route:null, eventDone:{}, over:false, finale:false,
-  knows:{hemu:0,zi:0,baigao:0,wenxu:0}   /* 跨周目保留：你对每个人了解多少 */
+  knows:{hemu:0,zi:0,baigao:0,yat:0}   /* 跨周目保留：你对每个人了解多少 */
 };
 var KEEP={knows:1,journal:1,loop:1,clue:1};     /* 跨周目继承的字段：知道的事会留下 */
 
@@ -3504,7 +4240,7 @@ var VOICE={
   hemu  :[146, 'sine',     0.105, 0.05],   /* 沉默、压着：低、平、略闷 */
   zi    :[392, 'sine',     0.090, 0.09],   /* 内向、轻：高、短、有点抖 */
   baigao:[112, 'triangle', 0.125, 0.03],   /* 克制、低：很低、更闷、更慢 */
-  wenxu :[262, 'sine',     0.100, 0.04],   /* 平静、稳：中间、干净 */
+  yat :[262, 'sine',     0.100, 0.04],   /* 平静、稳：中间、干净 */
   aji   :[330, 'triangle', 0.075, 0.16],   /* 抬杠、跳：硬、短、不稳（三角波去刺耳） */
   hero  :[196, 'sine',     0.085, 0.05]    /* 心声：最轻 */
 };
@@ -3566,7 +4302,7 @@ function drawFace(cv,who){
     g.drawImage(im,c[0],c[1],c[2],c[3],0,0,48,48);
   }else{
     /* 立绘没就绪（或素材缺失）：画一个像素剪影，别留黑洞 */
-    var COL={hemu:'#e8b45a',zi:'#7fc6c0',baigao:'#8f6fb0',wenxu:'#c2453d',aji:'#7fa86b',hero:'#8fa0d6'};
+    var COL={hemu:'#e8b45a',zi:'#7fc6c0',baigao:'#8f6fb0',yat:'#c2453d',aji:'#9a7fc0',chideng:'#7f95c0',hero:'#8fa0d6'};
     var cc=COL[who]||'#8fa0d6';
     g.fillStyle='#1b1730'; g.fillRect(0,0,48,48);
     g.fillStyle='rgba(255,255,255,.06)'; g.fillRect(0,0,48,4);
@@ -3578,7 +4314,9 @@ function drawFace(cv,who){
     setTimeout(function(){drawFace(cv,who)},900);
   }
 }
-var autoSay=false, _sayGo=null;   /* 默认手动：每句等玩家点；可切自动 */
+/* 默认自动推进：每句打完停一拍自己往下走 —— 逐行点得太累。
+   玩家手动关过就记住（localStorage），下一夜还是手动 */
+var autoSay=(function(){ try{ return localStorage.getItem('yd30_auto_off')!=='1'; }catch(e){ return true; } })(), _sayGo=null;
 function sayLines(lines,cb){
   clearTalk(); typing=true; talkLog=lines.slice();
   talkEl.classList.add('on');        /* 有台词才显示 */
@@ -3594,7 +4332,7 @@ function sayLines(lines,cb){
     talkEl.appendChild(head);
   }catch(e){}
   var i=0, p=null, txt='', at=0, tm=null, phase=0, ended=false;
-  var who=f.who;                                 /* 本段对话的说话者：逐字音用它区分音色 */
+  var who=(f&&f.who)||'';                         /* 本段对话的说话者：逐字音用它区分音色 */
   var KEEP=3;                                    /* 屏幕上最多留几句 */
   function trim(){
     var ps=talkEl.querySelectorAll('p'), k;
@@ -3608,7 +4346,8 @@ function sayLines(lines,cb){
     if(my!==talkEpoch||ended)return;
     if(at>=txt.length){
       phase=2; p.classList.remove('caret');
-      if(autoSay){ var d=(txt.charAt(0)==='「')?400:250;
+      if(autoSay){ /* 自动：按行长给读的时间 —— 短句不拖，长句不赶 */
+        var d=Math.min(6500, 430+txt.length*118);
         tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); }, d); }
       else { p.classList.add('waitc'); }          /* 等玩家点 */
       return;
@@ -3626,8 +4365,15 @@ function sayLines(lines,cb){
     if(i>=lines.length){
       ended=true; typing=false; _skipFn=null;
       if(cb)cb();
-      /* 演完、没有待选项 → 2.6s 后淡出。残留文本框不许挡着画面和点击 */
+      /* 演完、没有待选项 → 先落一个「说完了」的结束提示，2.6s 后淡出。
+         以前是默默淡掉，玩家不知道话已经讲完、还是在等下一句 */
       if(!optsEl.innerHTML&&!silActive&&(!PUZ||!PUZ.on)){
+        try{
+          var ec=document.createElement('p'); ec.className='eend';
+          ec.textContent='—— 说完了 ——';
+          talkEl.appendChild(ec);
+          talkEl.scrollTop=talkEl.scrollHeight;
+        }catch(e){}
         clearTimeout(fadeTo);
         fadeTo=setTimeout(function(){
           if(talkEpoch===my&&!optsEl.innerHTML&&!silActive&&(!PUZ||!PUZ.on)){
@@ -3648,7 +4394,7 @@ function sayLines(lines,cb){
     txt=show; at=0; phase=1;
     if(txt.indexOf('<')>=0){                      /* 带标记的行：不逐字，直接给 */
       p.innerHTML=txt; at=txt.length; phase=2;
-      if(autoSay) tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); }, txt.length*22+300);
+      if(autoSay) tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); }, txt.length*22+520);
       else p.classList.add('waitc');
     }else{
       p.classList.add('caret');
@@ -3728,7 +4474,7 @@ var CHARLINE={
   hemu  :'把没寄出去的信折两折、塞回抽屉的人。',
   zi    :'有一小节，她从来不弹完。',
   baigao:'守着放映机，等一个人下楼。',
-  wenxu :'每周三上天台，跟一扇不亮的窗说话。'
+  yat :'每周三上天台，跟一扇不亮的窗说话。'
 };
 function renderBook(){
   var b=$('#bookBody'), h='';
@@ -3740,10 +4486,10 @@ function renderBook(){
     +'<li><span class="d">今晚</span><span>'+nextHint().replace('今晚：','')+'</span></li>'
     +'<li><span class="d">主线</span><span>一年前雨夜的那十三分钟，四个人各记着一块。你现在有 '+cn+' / 4 块。</span></li>'
     +'<li><span class="d">别忘了</span><span>手机草稿箱里那条没发出去的消息。你每晚醒着，就是因为它。</span></li>'
-    +'<li><span class="d">天数</span><span>这条荧惑最长 '+DAYS+' 天。但只要三个字凑齐、你上了天台——想收尾，随时可以。</span></li>'
+    +'<li><span class="d">天数</span><span>这条荧惑最长 '+DAYS+' 天。走完就收尾；想提前收，天台栏杆边有个「想清楚了」——你自己开口才算。</span></li>'
     +'<li><span class="d">四段</span><span>他们各自卡住的那件事，你陪着往下走过了 '+_pz+' / 4。</span></li>'
     +'</ul></div>';
-  var order=['hemu','zi','baigao','wenxu'];
+  var order=['hemu','zi','baigao','yat'];
   order.forEach(function(id){
     var n=NPCS[id];
     var items=S.journal.filter(function(x){return x.w===id});
@@ -3804,13 +4550,13 @@ function rollWeather(day){
   var w, lp=S.loop||1;
   /* 不是随机：这条街有自己的季节。周目不同，同一夜的天气也不同。 */
   if(day<=2)w='rain';                              /* 开头总是在下雨 */
-  else if(day%7===0)w='clear';                      /* 每七天有一夜放晴，能看见星星 */
-  else if(day>=17)w=(lp%2)?'fog':'drizzle';         /* 末尾起雾，或者细雨 */
+  else if(day%5===0)w='clear';                      /* 15 天制：每五夜放晴一次，能看见星星 */
+  else if(day>=12)w=(lp%2)?'fog':'drizzle';         /* 末尾起雾，或者细雨（15 天制：从第 12 夜起） */
   else w=WXPOOL[(day*3+lp*5)%WXPOOL.length];        /* 中间按天推进；换周目会错开 */
   S.wx=w; S.wxDay=day;
 }
 /* 今晚该往哪走：没去过的先指；都去过就看碎片还缺不缺 */
-var NHORDER=[['store','便利店'],['piano','琴房'],['cinema','放映厅'],['roof','天台']];
+var NHORDER=[['store','便利店'],['piano','琴房'],['cinema','放映厅'],['roof','天台'],['alley','后巷']];
 function nextHint(){
   var seen=S.seen||{};
   for(var i=0;i<NHORDER.length;i++)
@@ -3846,6 +4592,7 @@ function startNight(){
   clearTalk(); optsEl.innerHTML=''; silEl.classList.remove('on');
   setCap('出租屋');
   S.toolUsed={}; S.againN={}; save();   /* 每夜各能用一次；连着搭话会被看出来 */
+  rollHere();                            /* 今晚谁在、谁不在，一次定死 */
   /* 不再有章节。每天就是一天，天亮了就又是一天。 */
   renderScene('flat','none',false);
 
@@ -3876,16 +4623,8 @@ function startNight(){
   try{ fxLeak(false); }catch(e){}
   sayLines(lead,function(){
     /* 今天若有一件小事：在“入夜”之后才发生，而不是天没黑就先摆一堆选项 */
-    if(!S.eventDone['D'+S.day]){
-      var ev=null,ei;
-      for(ei=0;ei<EVENTS.length;ei++){
-        var cand=EVENTS[ei];
-        if(cand.d!==S.day)continue;
-        if(cand.cond&&!cand.cond())continue;
-        ev=cand;
-      }
-      if(ev){ S.eventDone['D'+S.day]=1; save(); playEvent(ev); return; }
-    }
+    var ev=pickEvent();
+    if(ev){ S.eventDone['D'+S.day]=1; save(); playEvent(ev); return; }
     freeRoam();
   });
 }
@@ -3960,7 +4699,7 @@ var STREET_VIG=[
  '（有人把一盆花放在窗台上。花是假的。）',
  '（楼上有人在晾衣服。衣架碰了一下栏杆。）'
 ];
-var STREET_DROP={flat:[16,78], store:[41,78], piano:[65,78], cinema:[89,78], roof:[110,78]};
+var STREET_DROP={flat:[13,78], store:[36,78], piano:[59,78], cinema:[82,78], roof:[103,78], alley:[116,78]};
 function goStreet(from){
   startRain();
   optsEl.innerHTML=''; clearTalk();
@@ -3971,7 +4710,7 @@ function goStreet(from){
   /* 街上的门面：去过的、和下一个该去的，才亮着 */
   SC.opened={flat:1};
   var seen=S.seen||{};
-  var order=['flat','store','piano','cinema','roof'], i;
+  var order=['flat','store','piano','cinema','roof','alley'], i;
   for(i=0;i<order.length;i++){
     if(seen[order[i]])SC.opened[order[i]]=1;
     /* 前一个去过了，下一个就开门（不强制拿碎片也能往前走） */
@@ -3981,6 +4720,8 @@ function goStreet(from){
   if(S.seg>=2)SC.opened.piano=1;
   if(S.seg>=3)SC.opened.cinema=1;
   if(S.seg>=4)SC.opened.roof=1;
+  /* 后巷不用等去过天台 —— 去过放映厅就能钻进去，它本来就是条近路 */
+  if(seen.cinema)SC.opened.alley=1;
   var lead=[];
   if(S.wx==='rain')lead.push('（雨没小。）');
   else if(S.wx==='fog')lead.push('（雾里看不清招牌，只看见几团光。）');
@@ -4028,7 +4769,7 @@ var TOOL_ORDER=['breath','ground','scan','write','cold','name','pmr','walk','rea
 var CLUE={
   hemu_msg:{ from:'hemu', n:'那条没回的消息',
     txt:'何木那天晚上给一个人发过消息：「你能不能来一趟」。没有回音。他一直以为，是对方不想来。' },
-  wx_mute:{ from:'wenxu', n:'静音的手机',
+  wx_mute:{ from:'yat', n:'静音的手机',
     txt:'可帕玲的手机常年静音。她不是不回，她根本不会听见。' },
   zi_parts:{ from:'zi', n:'拆开练的那一段',
     txt:'教籽弹琴的人说过：一段可以拆开练，不必从头弹到尾。' },
@@ -4068,6 +4809,12 @@ function goPlace(id){
   enterRoom(id,who);
   setCap(SCENES[id].name);
   if(!who){ afterAction(); return; }
+  /* 进门就自动开聊的这条路径也得查在场：不然立绘没画出来，人却先开口了 */
+  if(!hereTonight(who)){
+    sayLines((ABSENT[who]||['（这里没有人。）']).concat(['（今晚他不在这儿。明晚再来。）']),
+      function(){ afterAction(); });
+    return;
+  }
   visitNPC(who);
 }
 /* 房间与房间之间的门：不走街上，直接过去，落点在对面那扇门旁边 */
@@ -4084,7 +4831,9 @@ var AGAIN={
  hemu:['（他在数零钱。这次数得比刚才快。）','「……你还没走啊。」','「我不饿。真的。」','（他把抽屉又推上了。）'],
  zi:['（她没停手。）','「你怎么还在这儿。」','（她弹错了一个音。这次她重来了。）','「站着不累啊。」'],
  baigao:['（他看了你一眼，没说话。）','「你一天能来三趟。」','（他把音量又拧小了一格。）'],
- wenxu:['（他没回头。）','「你又上来了。」','（风还是那么大。）','「……上面没别的东西。」']
+ yat:['（他没回头。）','「你又上来了。」','（风还是那么大。）','「……上面没别的东西。」'],
+ aji:['（他还蹲在那儿，像没挪过窝。）','「又来了。」','「这条街到底有什么好的。」','（他说完，往旁边挪了挪。）'],
+ chideng:['（他还在老地方，抱着那个杯子。）','「又碰上了。」','「这条街小。小有小的好处。」','（他往旁边让了让，给你腾出干的地方。）']
 };
 var DAYACT={
  hemu:[
@@ -4105,17 +4854,29 @@ var DAYACT={
   {t:'帮他拧一下机器', d:'今天机器有点吵', r:['（你把螺丝拧紧了。）','（机器不响了。）','（安静下来，他反而有点不习惯。）']},
   {t:'端起那杯水', d:'今天多倒了一杯', r:['（你端起旁边那杯。）','（他没拦。）','「……那杯是倒给我的。」','（他还是让你喝了。）']}
  ],
- wenxu:[
+ yat:[
   {t:'喝他带的茶', d:'今天他带了两个杯子', r:['（你端起一杯。）','（很烫。他递过来的时候，应该晾过一会儿。）','（他自己那杯，一口没动。）']},
   {t:'帮他按住栏杆', d:'他今天在补漆', r:['（你按住那块松的。）','（他刷得很慢。）','「这个位置，以前刻过东西。」']},
   {t:'把外套递给他', d:'今天外套搭在栏杆上', r:['（你把外套拿给他。）','（他没接。）','「放那儿吧。」','（那件外套，他一直没穿。）']},
   {t:'陪他站着不说话', d:'他今天来得比平时早', r:['（你们一起站着，谁也没开口。）','（风把两个人的头发都吹乱了。）','（过了很久，他说：）','「今天云薄。可能看得见。」']}
+ ],
+ aji:[
+  {t:'蹲到他旁边', d:'今天他没赶人', r:['（你学他的样子蹲下。）','「不累吗。」','（他没教你。他就那么蹲着，像在示范。）']},
+  {t:'把他那串关东煮买了', d:'他今天多带了一串', r:['（你把钱塞给他。）','「……我又没卖。」','（他还是接了。）','（两个人分一串，谁都没说话。）']},
+  {t:'帮他看一会儿街口', d:'他今天在打电话', r:['（他说：看着点，有人来叫我。）','（你就看着街口。）','（什么人都没来。）','（他也没指望什么人来。）']},
+  {t:'把他涂掉的半行字认出来', d:'他今天在刷涂鸦', r:['（你凑近看那半行没刷完的。）','（七个字。只认得出前三个。）','「……她那天。」','（他没问你是怎么知道的。）']}
+ ],
+ chideng:[
+  {t:'帮他看看车来没来', d:'他今天在看街口', r:['（你陪他看向街口。）','（路灯亮着。路上空的。）','「还没。」','（他说完，自己先笑了。）']},
+  {t:'把长椅上的水擦干', d:'今天椅上都是雨水', r:['（你把椅面的水抹干。）','「……谢谢。」','（他没坐。他站着的时候比坐着多。）']},
+  {t:'把他那颗糖吃了', d:'他今天带了两颗糖', r:['（你接过一颗。糖纸脆得一碰就响。）','「甜的。别吐。」','（是很甜的糖。甜得有点发苦。）']},
+  {t:'陪他等一趟车', d:'他说明天不来了', r:['（你们一起等。）','（车真的来了。又开走了。）','（他没动。你也没动。）']}
  ]
 };
 function recordTrace(k){
   S.traces=S.traces||{}; if(S.traces[k])return;
   S.traces[k]=1; save();
-  var tot=18, got=Object.keys(S.traces).length;
+  var tot=21, got=Object.keys(S.traces).length;   /* 后巷加了 3 处，总数跟着改 */
   try{ jrAdd('hero','（这一条，我自己看到的。'+got+' / '+tot+'）'); }catch(e){}
   if(got>=12&&!S.flags['tr_full']){ S.flags['tr_full']=1; save();
     try{ toast('（这条街上没人跟你说过的事，你看了大半。'); }catch(e){}
@@ -4137,13 +4898,16 @@ function visitNPC(who){
     if(x.c==='2-3')return rel>=2&&rel<=3;
     return rel>=4;
   })[0]||n.greet[0];
+  /* 第 2 周目起，开场先垫一句「我们又见面了」式的话，让重逢有新鲜感 */
+  if((S.loop||1)>=2 && n.greet2 && n.greet2.length){ g={lines:[pick(n.greet2)].concat(g.lines)}; }
   var _ds=dailyState(who);
   var firstTime=!(S.times[who]>0);
   S.times[who]=(S.times[who]||0)+1; save();
-  if(firstTime){
+    if(firstTime){
     pop('认识到 · '+n.name,'rel');
     try{ paintTop(); }catch(e){}
-    setTimeout(function(){ toast('（你认识了 '+n.name+'。这条街上，还差 '+(4-Object.keys(S.times).length)+' 个人。）'); },900);
+    var _left=Object.keys(NPCS).length-Object.keys(S.times).length;
+    setTimeout(function(){ toast('（你认识了 '+n.name+'。' + (_left>0?('这条街上，还差 '+_left+' 个人。'):'这条街上的人，你都认得了。') + '）'); },900);
   }
   var st=S.stage[who]||0, node=null;
   if(st<n.nodes.length){
@@ -4162,25 +4926,228 @@ function visitNPC(who){
   sayLines((_ds?[_ds]:[]).concat(g.lines),function(){ if(node){ playNode(who,node); } else { idleTalk(who); } });
 }
 
+/* 闲谈里的场景感：同一句话，在不同时间、不同天气说，味道不一样。
+   这里不重写每个人的 idle 池，而是在闲谈开头按当前「夜里到了哪一段」「什么天气」
+   插一句应景的话 —— 你越往这条街深处走（S.phase 越往后），场景越沉，话也越轻。 */
+var SCENE_SAY={
+ hemu:{
+  early:['（这个点儿店里没什么人。他靠在柜台后头，难得有空。）',
+         '（下午的光从玻璃门斜进来。他眯了下眼，把手里的活放下。）'],
+  dusk:['（傍晚的灯刚亮起来。他抬头看了一眼外面，又低下头。）',
+        '（天还没全黑。他提前把关东煮的锅端了出来。）'],
+  night:['（夜里，便利店最安静的那几分钟。他也不急着做别的。）',
+         '（这个时间常有人来买东西。他守着柜台，像守着什么。）'],
+  deep:['（快天亮了。冰柜的嗡嗡声在这时候特别响。他还没走。）',
+        '（他看了眼钟。还有一会儿才天亮，正好能歇一下。）'],
+  rain:['（雨打在遮阳棚上。他说：这声音听久了，反而睡得着。）',
+        '（门口那把塑料凳，是他留给等雨的人坐的。他指了指。）'],
+  fog:['（雾把街对面的灯糊成一团。他盯着看，没说话。）']
+ },
+ zi:{
+  early:['（这个时间她多半在调音。弹一下，停一下，再弹一下。）',
+         '（下午的屋子里只有她和钢琴。她说这样最好。）'],
+  dusk:['（傍晚的光从窗进来，落在琴键上。她没开大灯。）',
+        '（天暗下来之前，她把那盏台灯拧亮了。）'],
+  night:['（夜里的琴声和白天不一样。她自己也知道。）',
+         '（她弹到那一小节，像在等什么人推门进来。）'],
+  deep:['（深夜了，她还没走。她说曲子还差一点。）',
+        '（快天亮了。她说这是她弹得最好的时候，因为没人听。）'],
+  rain:['（雨声刚好盖住走音的那一个键。她笑了一下。）',
+        '（她说喜欢雨天练琴，因为外面听不见里面。）']
+ },
+ baigao:{
+  early:['（这个点儿还没到放映时间。他在擦放映机，擦得很慢。）',
+         '（下午的厅里空着。他一个人在摆椅子。）'],
+  dusk:['（傍晚他把灯关了大半。银幕亮起来，屋里就不空了。）',
+        '（天快黑了。他调试着机器，等第一拨人。）'],
+  night:['（夜里的放映厅，他总是一个人守着机器。）',
+         '（他说这个点放的那一段，是整部里他最喜欢的。）'],
+  deep:['（深夜场散了。他没急着走，又放了一遍给自己看。）',
+        '（快天亮了。他说机器一停，这屋子就空得吓人。）'],
+  rain:['（雨敲在铁皮顶上。他说这厅的屋顶，雨天最吵也最安静。）'],
+  clear:['（今晚没雨。他说这种天，放映机投出来的光里能看见灰尘在飞。）']
+ },
+ yat:{
+  early:['（这个点儿天台上还很晒。他站了一会儿就躲到阴影里。）',
+         '（下午他上来透气。栏杆上搭着他的外套。）'],
+  dusk:['（傍晚的风从这边吹过来。他靠着栏杆，像在等人。）',
+        '（天边那点光还没灭。他看了很久，没说话。）'],
+  night:['（夜里天台最安静。他在这儿待得比谁都久。）',
+         '（他指着远处几盏灯，说那是他还认得的人家。）'],
+  deep:['（深夜的天台，风更凉。他外套也没拿，就那么站着。）',
+        '（快天亮了。他说这个点儿，能看见一天里最后几颗星。）'],
+  rain:['（雨天的天台没什么人。他说他就喜欢这种时候上来。）',
+        '（他指着被雨打湿的栏杆：你看，连铁都记得冷。）'],
+  fog:['（雾把半座城都盖住了。他说这样反而看得清近处的东西。）']
+ },
+ aji:{
+  early:['（这个点儿他还在刷墙。帽兜没拉起来，露出脸。）',
+         '（下午的后巷，只有他在。他说白天干活没人看。）'],
+  dusk:['（傍晚他把刷子搁下，蹲着看那行没刷完的字。）',
+        '（天快黑了。他从纸箱里摸出那串关东煮。）'],
+  night:['（夜里的后巷是他的地盘。他蹲在墙根，像守着什么。）',
+         '（他说这巷子白天没人，夜里才属于他。）'],
+  deep:['（深夜他还没走。他说这个时间，墙上的字最清楚。）',
+        '（快天亮了。他说再蹲一会儿，等第一班垃圾车。）'],
+  rain:['（雨把墙根潮了一圈。他说他见过的雨，比这巷子还老。）',
+        '（他蹲在屋檐下，把那串关东煮往怀里拢了拢。）'],
+  fog:['（雾里他蹲着像一团影子。你说不清他在不在。）']
+ },
+ chideng:{
+  early:['（这个点儿站台上还没人。他来得比谁都早。）',
+         '（下午他就来了。长椅上放着两颗糖，像等人。）'],
+  dusk:['（傍晚的灯亮了。他望着街口，像在数车。）',
+        '（天快黑了。他把保温杯的盖子拧得紧紧的。）'],
+  night:['（夜里的站台，他一个人站着比坐着多。）',
+         '（他说这个点车最少，但他还是来等。）'],
+  deep:['（深夜的车早没了。他还站着，像忘了时间。）',
+        '（快天亮了。他说再等一趟，就当陪这条街。）'],
+  rain:['（雨打在站牌上。他说这种天，等车的人最像他自己。）',
+        '（他把手里那把伞往你这边偏了偏，又收回去。）'],
+  fog:['（雾里站牌的灯成了一团。他说这样也好，看不清空着的路。）']
+ }
+};
+/* 第 2 周目起的场景垫场白：你已经来过这条街，台词带「重逢 / 你已认得这里」的意味 */
+var SCENE_SAY2={
+ hemu:{
+  early:['（这个点儿你又来了。他抬眼，把那瓶水往你这边推了推。）'],
+  dusk:['（傍晚的灯，你上次也在这儿看它亮起。他记得你来过。）'],
+  night:['（夜里你又站到柜台前。他没问买什么，先笑了笑。）'],
+  deep:['（快天亮了，你陪他坐到打烊前。冰柜的嗡嗡声你们都听习惯了。）'],
+  rain:['（雨声响着。他说：你上次也站在这把塑料凳边上。）'],
+  fog:['（雾里你又认出了那扇玻璃门。他正把那瓶水摆正。）'],
+  clear:['（没雨的夜，便利店的光格外亮。他说：你比月亮准时。）']
+ },
+ zi:{
+  early:['（下午的调音声你听过一遍了。她抬头，没停手。）'],
+  dusk:['（黄昏的光落在琴键上，你上次说像撒了层粉。她记得这话。）'],
+  night:['（夜里你又推门进来。她弹到那一小节，像在等你接。）'],
+  deep:['（深夜她还没走。她说：你来的这几个晚上，她弹得都比平时顺。）'],
+  rain:['（雨盖住了走音的键。她笑：你上次也在这雨天听过。）'],
+  fog:['（雾里琴声闷闷的。她说：这种天弹，像说给一个人听。）'],
+  clear:['（没雨的夜，她的琴声格外清楚。她说：你来了，她才敢弹完。）']
+ },
+ baigao:{
+  early:['（午后你又来看他擦机器。他抬了下下巴，算是打过招呼。）'],
+  dusk:['（傍晚银幕亮起来。他说：你上次坐的那个位置，还空着。）'],
+  night:['（夜里放映厅只你一个观众。他守着机器，像守着什么秘密。）'],
+  deep:['（深夜场散了，他又放了一遍。他说：你陪着看，这屋子就不空。）'],
+  rain:['（雨打铁皮顶。他说：上次你也在这雨声里听完了第十三分钟。）'],
+  fog:['（雾里银幕的光发虚。他说：这种天放，像给谁留着。）'],
+  clear:['（没雨的夜，光里能看见灰尘飞。他说：你来了，灰尘都有伴。）']
+ },
+ yat:{
+  early:['（午后你又上来了。他往旁边挪了挪，给你腾出栏杆边的位置。）'],
+  dusk:['（傍晚的风你们一起吹过。他说：你上次也站这儿看天边。）'],
+  night:['（夜里天台最安静。他指着远处几盏灯，说其中有一盏你还认得。）'],
+  deep:['（深夜你陪他站到快天亮。他说：能有人一起看最后几颗星，挺好。）'],
+  rain:['（雨天你又上来了。他说：上次也是这种时候，你没嫌冷。）'],
+  fog:['（雾里他指给你看近处的东西：你看，栏杆上那道刻痕还在。）'],
+  clear:['（没雨的夜，星比上次多。他说：你来了，可帕玲要是看见也好。）']
+ },
+ aji:{
+  early:['（白天你又蹲到他旁边。他说：你上次也学他那样蹲着。）'],
+  dusk:['（傍晚他还在刷那面墙。他说：你见过这行字没刷完的样子。）'],
+  night:['（夜里后巷又是他的地盘。他从纸箱里摸出那串关东煮，分你一半。）'],
+  deep:['（深夜你陪他蹲到垃圾车来。他说：有人陪着等，等的事就不那么难熬。）'],
+  rain:['（雨里他又把串往怀里拢。他说：你上次也被这雨淋过，没走。）'],
+  fog:['（雾里他蹲成一道影子。他说：你来了，这巷子才算有人气。）'],
+  clear:['（没雨的夜，墙根的字格外清楚。他说：你来了，他才念出声。）']
+ },
+ chideng:{
+  early:['（下午你又来站台。他指指长椅：还是两颗糖，今天没少。）'],
+  dusk:['（傍晚的灯亮着。他说：你上次也陪他数过车。）'],
+  night:['（夜里你又陪他站着。他说：这个点车最少，你还是来了。）'],
+  deep:['（深夜车没了，你陪他站到天亮前。他说：有人陪着等，等的人就像还在。）'],
+  rain:['（雨里他又把伞往你这边偏。他说：你上次也没躲，淋着听他说。）'],
+  fog:['（雾里站牌的灯成一团。他说：你来了，空着的路就没那么难看。）'],
+  clear:['（没雨的夜，站台格外空。他说：你来了，他也不用自己跟自己说话。）']
+ }
+};
+/* 当前是夜里哪一段 + 什么天气 */
+function sceneMood(){
+  var ni=(SC&&SC.night)||0, w=(SC&&SC.weather)||'rain';
+  var t = ni<0.34?'early' : ni<0.62?'dusk' : ni<0.86?'night' : 'deep';
+  return {t:t, w:w, ni:ni};
+}
+/* 从 SCENE_SAY 里挑一句应景的；时间阶段优先，天气兜底；第 2 周目起混入 SCENE_SAY2 */
+function sceneIntro(who){
+  var tb=SCENE_SAY[who]; if(!tb)return null;
+  var m=sceneMood(), cand=[];
+  if(tb[m.t])cand=cand.concat(tb[m.t]);
+  if(tb[m.w])cand=cand.concat(tb[m.w]);
+  if((S.loop||1)>=2 && SCENE_SAY2[who]){
+    var t2=SCENE_SAY2[who];
+    if(t2[m.t])cand=cand.concat(t2[m.t]);
+    if(t2[m.w])cand=cand.concat(t2[m.w]);
+  }
+  if(!cand.length)return null;
+  return pick(cand);
+}
+/* 第 2 周目起，闲谈里漏出的往事（比 GOSSIP 更深一层，且不与基础池重复） */
+var GOSSIP2={
+ hemu:['（他一边理货一边说：）','「那条街的人，我都认得脸。就一个人，我记了三年也没敢问名字。」',
+       '（他擦柜台。）','「那孩子后来来了一次。站在门口，没进。我追出去，人已经拐进巷子了。」',
+       '（他低声：）','「我妈问我，在这边有没有交到朋友。我说有。其实……你是头一个我愿意多说两句的。」',
+       '（他笑着摇头。）','「你别学我。一个人待久了，连说话都忘了怎么开口。」'],
+ zi:['（她弹到一半停住。）','「沈老师走那天，我来不及送。后来每首曲子，我都当是送给她的。」',
+     '（她轻声：）','「窗外那个人，其实我去门口看过一次。是个老人，每天这个点路过。」',
+     '（她合上琴盖。）','「我复制那份谱子，是给一个总也不来的人留的。我也不知道为什么留。」',
+     '（她笑：）','「你来了之后，我这几晚弹的，比过去一个月都多。」'],
+ baigao:['（他擦着机器。）','「第十三分钟那句话，是她说的。我把她剪掉了，又留着。」',
+         '（他指空座。）','「那个姑娘，散场总不肯走。后来她不来了——听说去外地了。」',
+         '（他低声：）','「师父临走前说，胶片留着，是给以后想看的人。我守着，就是守这句话。」',
+         '（他笑：）','「你来了，这厅总算不只剩我一个人对着银幕说话。」'],
+ yat:['（他摸出钥匙。）','「可帕玲的房间，我每周三都进去坐十分钟。就坐，什么都不动。」',
+      '（他轻声：）','「她走之前那周，说想养盆多肉。我养了，替她浇了三年水。」',
+      '（他停了停。）','「那三句话，是她写给我的。让我转交——可我一直没找到该交给谁。直到你来了。」',
+      '（他望天：）','「你说星不多。可帕玲以前数星，数到第三颗就睡着了。」'],
+ aji:['（他指三楼窗。）','「那扇窗后面的人，等的是一个再也不会上楼的人。我替他守着这秘密。」',
+      '（他拨弄火机。）','「这街上七盏灯，我数过。第七盏，是她走的那晚灭的，再没亮过。」',
+      '（他低声：）','「帽兜里那张纸，是个地址。我存了快一年，没敢寄。寄了，就真散了。」',
+      '（他笑：）','「你来了，我才把这些都说了。以前没人听，我说给自己听，越说越假。」'],
+ chideng:['（他望街口。）','「那两个人等车的日子，我也陪着等。后来剩一个，我替另一个陪。」',
+         '（他摸糖纸。）','「这糖是她爱吃的。我带了两颗，一颗等她，一颗……留着万一她真来。」',
+         '（他低声：）','「她说『我马上到』那天，我等了七趟。第七趟我笑了——笑自己傻。」',
+         '（他望你：）','「你来了，我好像不用一个人替她守着了。」']
+};
+/* 同一个周目里，你听过他最深的秘密之后，闲谈偶尔会接上那句 —— 像他记得你们之间发生过什么 */
+var RECALL={
+ hemu:'（你还记得那个没回消息的晚上。他看了你一眼，没再提，但你知道他记得你听过。）',
+ zi:'（你还记得她那首弹不完的曲子。她弹到那一小节，停了一下，像在等你接——和那晚一样。）',
+ baigao:'（你还记得第十三分钟里那句话。银幕亮着，他没看你，但你知道他记得你陪他看过。）',
+ yat:'（你还记得可帕玲的那三句话。他摸出钥匙，停了停，像在确认你还记着。）',
+ aji:'（你还记得他帽兜里那张折四折的纸。他蹲着，没说话，但你知道他记得你见过。）',
+ chideng:'（你还记得她说「我马上到」的那个晚上。他握着保温杯，看了你一眼，像确认你还记着。）'
+};
 /* 闲谈：从池子里随机，且不同条件不同 */
 function idleTalk(who){
   if(!who||!NPCS[who]){ try{afterAction();}catch(e){} return; }   /* 护栏 */
   var n=NPCS[who];
   var lines=[];
-  lines.push(pick(n.idle));
-  if(rnd()<0.45)lines.push(pick(n.idle));
+  lines.push(pickSaid(who+':i', loopPool(n,'idle')));
+  if(rnd()<0.45)lines.push(pickSaid(who+':i', loopPool(n,'idle')));
+  /* 闲谈开头先按当前场景（夜里到了哪一段 / 什么天气）垫一句话，
+     让对话跟着时间走，而不是每次都从同一句开始 */
+  var _sl=sceneIntro(who); if(_sl)lines.unshift(_sl);
+  /* 这周目里，你已经听过他最深的那个秘密；之后闲谈偶尔会接上那句，
+     像他记得你们之间发生过什么 —— 但只在同一个周目里：跨周目他会忘（手册留下，人不会记得你） */
+  if(S.flags['deep_'+who] && rnd()<0.5 && typeof RECALL!=='undefined' && RECALL[who]) lines.push(RECALL[who]);
   if(rnd()<0.25)lines.push('（他提到过别人：）','「'+n.cite+'」');
   /* 闲谈里也会漏出关于别人的一件小事 —— 有些线索不用把人陪到底也能捡到 */
   var GOSSIP={
-    hemu:['（他一边理货一边说：）','「这条街上的人，我都认得。有一个，只来过一次。」','（他把那瓶水摆正了。）'],
-    zi:['（她弹到一半停下来。）','「窗外以前有个人听。每天这个点。」','「后来就不来了。」','（她继续弹。）'],
-    baigao:['（他擦着放映机。）','「有个人跟我说过一句话：别让那一段留下来。」','「我一直记得她的语气。很轻。」'],
-    wenxu:['（他看着街对面。）','「我妹妹有个朋友。她总说那个人很好。」','「我没见过。」','（他顿了顿。）','「现在也没机会了。」']
+    hemu:['（他一边理货一边说：）','「这条街上的人，我都认得。有一个，只来过一次。」','（他把那瓶水摆正了。）','（他笑了一下。）','「我妈总怕我饿着。寄来的腊肉我吃不完，分给隔壁摊位的老李。」'],
+    zi:['（她弹到一半停下来。）','「窗外以前有个人听。每天这个点。」','「后来就不来了。」','（她继续弹。）','（她顿了顿。）','「我中学后面那同学，总踢我椅子。后来他不踢了，我反而弹不下去。」'],
+    baigao:['（他擦着放映机。）','「有个人跟我说过一句话：别让那一段留下来。」','「我一直记得她的语气。很轻。」','（他指了指一排空座。）','「有个姑娘散场不肯走。她说银幕亮着，屋里就不空。」'],
+    yat:['（他看着街对面。）','「我妹妹有个朋友。她总说那个人很好。」','「我没见过。」','（他顿了顿。）','「现在也没机会了。」','（他摸出钥匙。）','「可帕玲房间的灯我还留着。就当她还没走。」'],
+    aji:['（他往纸箱上一靠。）','「这条街上，就我一个闲人。」','「他们忙，忙了一年，什么都没忙出来。」','（他顿了顿。）','「我也一样。所以我懂他们。」','（他朝三楼抬了抬下巴。）','「那扇窗后面，我也等过。等得比他们谁都久。」'],
+    chideng:['（他望着街口，忽然开口：）','「这站台上，从前有两个人等车。」','「后来变成一个。」','「再后来，一个也不等了——我就是那个不好意思走的。」','（他低头看表。）','「她说过，怕你等。所以我替她，把这份等接着。」']
   };
-  if(rnd()<0.30&&GOSSIP[who]){
-    lines=lines.concat(GOSSIP[who]);
+  var _gossip=(((S.loop||1)>=2 && typeof GOSSIP2!=='undefined' && GOSSIP2[who])?GOSSIP2[who]:GOSSIP[who]);
+  if(rnd()<0.30&&_gossip){
+    lines=lines.concat(_gossip);
     /* 闲谈里漏出来的，也算线索 —— 不必把人陪到底，也能捡到钥匙 */
-    var GCLUE={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', wenxu:'wx_mute'};
+    var GCLUE={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', yat:'wx_mute'};
     if(GCLUE[who])setTimeout(function(){ try{learnClue(GCLUE[who])}catch(e){} },2400);
   }
   sayLines(lines,function(){
@@ -4265,13 +5232,29 @@ var ACTS={
    l:['（地上散着几截剪下来的胶片。）','（你蹲下去，一卷一卷捡。）','（他没拦你。）'],
    r:['（他接过胶片，对着灯照了照。）','「这段没用了。」','（但他把它收进了铁盒。）']}
  ],
- wenxu:[
+ yat:[
   {t:'陪他在栏杆边站着',sub:'什么都不说',sp:-3,rel:2,
    l:['（你走到栏杆边，和他并排站着。）','（风从下面上来。）','（他没让你走，也没让你留。）'],
    r:['（站了很久，他先开口。）','「你不用陪我的。」','（可他说这话的时候，往你这边挪了半小步。）']},
   {t:'问他冷不冷',sub:'天台上的风很硬',sp:-2,rel:1,
    l:['「……不冷。」','（他把外套的领子拉高了一点。）'],
    r:['（又坐了一阵，他把外套脱下来递给你。）','「你穿得比我少。」','（他说完，又转回去看天。）']}
+ ],
+ aji:[
+  {t:'学他的样子蹲一会儿',sub:'他居然没有笑你',sp:-3,rel:2,
+   l:['（你挨着他蹲下。巷子里的潮气往上返。）','（他没看你。他盯着街口。）','（一蹲就是很久。）'],
+   r:['（腿麻了，他伸手扶了你一把。）','「蹲不住吧。」','「我蹲了三年。」']},
+  {t:'把他那串关东煮吃一串',sub:'他嘴上嫌弃，手没停',sp:-2,rel:1,
+   l:['（你从他手里拿了一串。）','「……谁让你拿的。」','（他也没真抢回去。）'],
+   r:['（汤是温的。他揣在兜里。）','「凑合吃。这条街上，也就这个还热着。」']}
+ ],
+ chideng:[
+  {t:'陪他站到末班车来',sub:'十一点四十，不说话',sp:-4,rel:2,
+   l:['（你们并排站着，谁都没说话。）','（站牌的灯闪了两下。）','（远处有车灯的光，拐过来了。）'],
+   r:['（车停了。门开了。）','（他没上。他看了你一眼。）','「你先走。」','（门关上。车开远了。）','「……谢谢你没劝我。」']},
+  {t:'把他杯里的水续上',sub:'他说她嫌烫',sp:-2,rel:1,
+   l:['（你问他要杯子。他没给。）','（他就站在原地说：）','「左边口袋，有凉水。」'],
+   r:['（你给他续了半杯凉的。）','（他捧着，试了试温度。）','「刚好。」','「她以前就喝这个温度。」']}
  ]
 };
 function optHTML(k,t,d,c,sub){
@@ -4331,7 +5314,7 @@ function playNode(who,nd){
         if(o.speak){ S.flags['spoken_'+o.speak]=true; try{toast('（他说出来了。）')}catch(e){} }
         /* 坐远了，字就该亮回来 */
         if(d.f==='hemu_seat')talkEl.classList.remove('near');
-        if(d.relAll){['hemu','zi','baigao','wenxu'].forEach(function(x){bump(x,d.relAll)})}
+        if(d.relAll){['hemu','zi','baigao','yat','aji'].forEach(function(x){bump(x,d.relAll)})}
         sayLines(o.r||['（……）'],function(){
           if(o.t.indexOf('【沉默】')===0)return;
           afterAction();
@@ -4401,14 +5384,14 @@ function endSilence(reached){
         +optHTML(2,'点点头',null,'—','')+'</div>';
       optsEl.innerHTML=h;
       bindOpts([
-        function(){ cost(3); sayLines(n.deep.slice(0,3),function(){ grantDeep(who,nd,true); afterAction(); }); },
+        function(){ cost(3); sayLines(deepLines(who).slice(0,3),function(){ grantDeep(who,nd,true); afterAction(); }); },
         function(){ sayLines(['（你点点头。）','（你们都没再说话。）'],function(){ afterAction(); }); }
       ]);
     });
     return;
   }
   if(t>=7){
-    sayLines(n.deep,function(){ grantDeep(who,nd,false); afterAction(); });
+    sayLines(deepLines(who),function(){ grantDeep(who,nd,false); afterAction(); });
     return;
   }
   /* 中段松手：只拿到一半 */
@@ -4439,10 +5422,10 @@ function grantDeep(who,nd,partial){
   try{ if(typeof takeItem==='function'&&ITEMS['relic_'+who]) takeItem('relic_'+who);
        else if(typeof showItem==='function') showItem('relic_'+who); }catch(e){}
   /* 陪到底之后，他会把自己也在用的办法教给你 —— 这条在现实里也一样管用 */
-  var TEACH={hemu:['write','rest'], zi:['breath','pmr'], baigao:['cold','ground'], wenxu:['walk','name']};
+  var TEACH={hemu:['write','rest'], zi:['breath','pmr'], baigao:['cold','ground'], yat:['walk','name']};
   (TEACH[who]||[]).forEach(function(k){ if(!hasTool(k))getTool(k); });
   /* 他会在深谈里漏出一件事 —— 那件事，可能是解开别人的钥匙 */
-  var CLUEOF={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', wenxu:'wx_mute'};
+  var CLUEOF={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', yat:'wx_mute'};
   if(CLUEOF[who]&&!hasClue(CLUEOF[who])){
     setTimeout(function(){ learnClue(CLUEOF[who]); },2600);
   }
@@ -4496,7 +5479,7 @@ function startLook(who,nd){
 function restAtHome(){
   if(rnd()<0.55)try{ heroThink(); }catch(e){}     /* 一个人的时候，他才想这些 */
   if(S.day>=3&&!hasTool('scan'))getTool('scan');   /* 一个人待久了，他会开始注意自己的身体 */
-  if(S.day>=6&&!hasTool('reach'))getTool('reach');
+  if(S.day>=5&&!hasTool('reach'))getTool('reach');   /* 15 天制：提前到第 5 夜 */
   renderScene('flat','none',false);
   setCap('出租屋');
   /* 回家本身不补心力：只有“真的睡下”才恢复，否则可反复回家补满再出门，一夜刷完所有事 */
@@ -4578,12 +5561,11 @@ function afterAction(){
   try{ if(SCENES[curRoom]) setCap(SCENES[curRoom].name); }catch(e){}
   /* 心力耗尽不是失败，只是你陪不动了 */
   if(S.spirit<=0){ tooTired(); return; }
-  /* 走到天台不等于立刻收尾：先听燕安滕把话说完（第二次上来），或三个字已经凑齐了 */
-  if(curRoom==='roof' && S.seg>=4 && !S.over && !S.finale){
-    var frNow=Object.keys(S.frags||{}).length;
-    if(S.flags['roof_been']){ startFinale(); return; }   /* 第二次上来，才收尾 */
-    S.flags['roof_been']=1; save();                       /* 第一次：先听她把话说完 */
-  }
+  /* 以前这里会自动收尾：只要在天台做了两件事（聊两句、看一眼栏杆），
+     roof_been 一置位，下一次 afterAction 就 startFinale()。
+     结果"上天台说说话"这件事本身就会把结局顶出来 —— 玩家什么都没决定，故事就结束了。
+     现在收尾只由玩家自己开口触发（见 askFinale / 天台栏杆那一头），
+     或者天数真的走完（finish）。站在天台上聊天，就只是聊天。 */
   /* 同一块"怎么走"的教学，由 freeRoam() 在开场给一次；这里只是兜底，
      两边共用 hintedMove，所以永远不会出现第二次。 */
   var nl=$('#noteLine');
@@ -4592,6 +5574,48 @@ function afterAction(){
     nl.textContent='走到门口按 E 上街 · 方向键 / WASD 走动'; noteFade();
   }
 }
+/* ===== 收尾：只在你自己开口的时候发生 =====
+   三条能收尾的路，全都要玩家明确选一次：
+     ① 天数走完（finish）—— 自然结束
+     ② 天台栏杆那一头，按 E 说「我准备好了」（askFinale）—— 提前收
+     ③ 撑不住了之后选「回去躺下」（tooTired）
+   单纯上天台、跟燕安滕说话、站着看天，都不会再触发结局。 */
+function finaleReady(){
+  var d=S.day||1, fr=Object.keys(S.frags||{}).length;
+  var deepN=0, mx=0, k;
+  ['hemu','zi','baigao','yat'].forEach(function(x){
+    if(S.flags['deep_'+x])deepN++;
+    if((S.rel[x]||0)>mx)mx=S.rel[x];
+  });
+  /* 得真的走过一段才算：天数过三分之二，或者已经拿到三个字，
+     或者跟谁深谈过一次 —— 三者满足其一，才让你开口。 */
+  return (d>=10) || fr>=3 || (deepN>=1 && mx>=4);
+}
+function finaleWhy(){
+  var d=S.day||1;
+  if(d<10 && Object.keys(S.frags||{}).length<3)
+    return ['（你把手放在栏杆上。）','（还不到时候。）','（这条街上，你还有些话没听到。）','（再走几夜。）'];
+  return ['（你想说点什么，又咽回去了。）','（算了。今晚就站一会儿。）'];
+}
+function askFinale(){
+  if(S.over||S.finale){ return; }
+  if(!finaleReady()){ sayLines(finaleWhy(),function(){ afterAction(); }); return; }
+  clearTalk();
+  sayLines([
+    '（你走到栏杆这一头。）',
+    '（下面那条街，你走了很多遍。）',
+    '（要把这一夜收掉吗。）'
+  ],function(){
+    var h='<div class="opts">', fns=[];
+    h+=optHTML(1,'（开口。就到这儿。）',null,'—','把这一夜收掉');
+    fns.push(function(){ startFinale(); });
+    h+=optHTML(2,'（再走走）',null,'—','今晚还不收');
+    fns.push(function(){ afterAction(); });
+    h+='</div>';
+    optsEl.innerHTML=h; bindOpts(fns);
+  });
+}
+
 /* 撑不住了：也是一条走法（不判失败） */
 function tooTired(){
   clearTalk();
@@ -4652,7 +5676,7 @@ function PIECES(){
 function startFinale(){
   S.finale=true; save();
   var fr=Object.keys(S.frags||{}).length;
-  var deepN=0, _mw=null, _mx=0; ['hemu','zi','baigao','wenxu'].forEach(function(k){ if((S.rel[k]||0)>=4)deepN++; if((S.rel[k]||0)>_mx){_mx=S.rel[k];_mw=k;} });
+  var deepN=0, _mw=null, _mx=0; ['hemu','zi','baigao','yat'].forEach(function(k){ if((S.rel[k]||0)>=4)deepN++; if((S.rel[k]||0)>_mx){_mx=S.rel[k];_mw=k;} });
   var end = (_mx>=5&&_mw&&S.flags['deep_'+_mw]) ? ('SEE_'+_mw.toUpperCase())
           : (fr>=3&&deepN>=2)?'看见' : (fr>=2?'门口' : '路过');
   try{ fxLB(true); }catch(e){}                 /* 演出：黑条拉入（收尾的黑场感） */
@@ -4782,6 +5806,22 @@ function endingBy(kind){
 /* 旧接口保留（有些地方还在调），但不再跳去早期版 */
 /* 早期接口已清理：offerNight / 旧 nextDay 空壳（它们会把游戏卡在"永远第一天"） */
 
+/* 每晚抽一张：从「没发生过 + 条件已满足 + 天数够了」的卡里随机。
+   不再按天号对号入座 —— 那样第二周目开头完全是复读。
+   留 12% 的夜什么都不发生，节奏才有松有紧。 */
+function pickEvent(){
+  var d=S.day||1, used=S.eventDone||{}, pool=[], i;
+  if(rnd()<0.12)return null;
+  for(i=0;i<EVENTS.length;i++){
+    var e=EVENTS[i];
+    if(used[e.id])continue;
+    if(e.min&&d<e.min)continue;
+    if(e.cond&&!e.cond())continue;
+    pool.push(e);
+  }
+  if(!pool.length)return null;
+  return pool[(Math.random()*pool.length)|0];
+}
 function playEvent(ev){
   S.eventDone[ev.id]=true;
   setCap('事件');
@@ -4797,7 +5837,7 @@ function playEvent(ev){
         var c=o.c||{};
         if(c.sp<0)cost(-c.sp); else if(c.sp>0)gain(c.sp);
         if(c.rel)bump(c.rel,1);
-        if(c.relAll)['hemu','zi','baigao','wenxu'].forEach(function(x){bump(x,c.relAll)});
+        if(c.relAll)['hemu','zi','baigao','yat'].forEach(function(x){bump(x,c.relAll)});
         if(c.item)S.flags['item_'+c.item]=true;
         if(c.know)S.known['k'+ev.id]=true;
         save();
@@ -4908,9 +5948,9 @@ function newLoop(){
   var j=S.journal||[], kn=S.knows||{}, lp=(S.loop||1)+1;
   var ins=S.insight||0, emp=S.empath||0;   /* 跨周目保留：你的见识与共情会留下 */
   S={day:1,night:lp,seg:0,phase:0,spirit:72,loop:lp,
-     rel:{hemu:0,zi:0,baigao:0,wenxu:0},
+     rel:{hemu:0,zi:0,baigao:0,yat:0},
      insight:ins, empath:emp,
-     flags:{},seen:{},journal:j,known:{},frags:{},stage:{},times:{},
+     flags:{},seen:{},said:{},journal:j,known:{},frags:{},stage:{},times:{},
      lowDays:0,route:null,eventDone:{},over:false,finale:false,knows:kn};
   save();
   $('#ending').classList.remove('on');
@@ -5039,7 +6079,7 @@ function loadSpr(){
       SPR[d+'_'+f]=im;
     })(dirs[i],fr[j]);
   }
-  ['hemu','zi','baigao','wenxu','aji'].forEach(function(nm){
+  ['hemu','zi','baigao','yat','aji','chideng'].forEach(function(nm){
     var im=new Image(); im.src='assets/npc/'+nm+'.png'; SPR[nm]=im;
   });
   var p=new Image(); p.src='assets/hero/portrait.png'; SPR.portrait=p;
@@ -5050,19 +6090,26 @@ var ROOMS={
  street:{
   floor:[0,52,120,38], spawn:[10,62],
   solid:[[0,0,120,30]],
+  npc:{id:'chideng',x:38,y:82},
   inter:[
-    {r:[2,40,26,30],   lab:'回出租屋',     act:'enter', to:'flat'},
-    {r:[30,38,22,32],  lab:'便利店',       act:'enter', to:'store'},
-    {r:[54,36,22,34],  lab:'街角 · 琴房',  act:'enter', to:'piano'},
-    {r:[78,38,22,32],  lab:'放映厅',       act:'enter', to:'cinema'},
-    {r:[102,30,17,40], lab:'街角 · 天台',act:'enter', to:'roof'},
+    {r:[1,40,24,30],   lab:'回出租屋',     act:'enter', to:'flat'},
+    {r:[26,38,21,32],  lab:'便利店',       act:'enter', to:'store'},
+    {r:[49,36,21,34],  lab:'街角 · 琴房',  act:'enter', to:'piano'},
+    {r:[72,38,21,32],  lab:'放映厅',       act:'enter', to:'cinema'},
+    {r:[95,30,16,40],  lab:'街角 · 天台',  act:'enter', to:'roof'},
+    {r:[113,32,7,48],  lab:'两家中间那道缝 · 后巷', act:'enter', to:'alley'},
     {r:[44,20,3,38],   lab:'路灯',         act:'lamp'},
     {r:[74,20,3,38],   lab:'路灯',         act:'lamp'},
     {r:[16,62,14,6],   lab:'一滩水',       act:'look', k:'puddle'},
     {r:[66,64,10,8],   lab:'一只猫',       act:'look', k:'cat'},
-    {r:[90,30,12,10],  lab:'街角蹲着个人', act:'look', k:'aji'},
+    /* 诺斯图（引子）：放在 cinem/roof 两门之间的街角地面上。
+       原来在 y30-40（墙上），玩家在地面 y52 起根本够不到 —— 街角这个人从来没被触发过。
+       新位置不与任何门 zone 重叠：玩家贴上去提示就是他，不会被门抢走。 */
+    {r:[84,76,14,12],  lab:function(){ return (S.times&&S.times.aji>0)?'街角（人不在）':'街角蹲着个人' }, act:'look', k:'aji'},
     {r:[20,64,10,10],  lab:'贴着的寻物启事', act:'look', k:'notice'},
-    {r:[100,60,16,14], lab:'一棵树',       act:'look', k:'tree'}
+    {r:[100,60,16,14], lab:'一棵树',       act:'look', k:'tree'},
+    {r:[34,64,10,18],  lab:'等车的人',     act:'npc', who:'chideng'},
+    {r:[30,78,20,12],  lab:'公交站长椅',   act:'look', k:'bus_seat'}
   ]},
 
  flat:{
@@ -5094,7 +6141,7 @@ var ROOMS={
     {r:[38,58,18,26], lab:'何木',       act:'npc', who:'hemu'},
     {r:[22,74,14,12], lab:'墙边的储物柜', act:'look', k:'locker'},
     {r:[6,79,14,9], lab:'后门 · 通出租屋', act:'pass', to:'flat', x:8, y:80},
-    {r:[102,74,12,12], lab:'后门（通小巷）', act:'pass', to:'piano', x:6, y:80},
+    {r:[102,74,12,12], lab:'后门 · 通后巷', act:'pass', to:'alley', x:30, y:80},
   ]},
  piano:{
   floor:[4,58,112,30], spawn:[16,80],
@@ -5107,7 +6154,7 @@ var ROOMS={
     {r:[10,12,26,28], lab:'窗',         act:'look', k:'win'},
     {r:[24,58,18,26], lab:'籽',         act:'npc', who:'zi'},
     {r:[108,58,12,32],lab:'出去',       act:'door'},
-    {r:[6,80,16,8], lab:'后门（通小巷）', act:'pass', to:'store', x:108, y:80},
+    {r:[6,80,16,8], lab:'后门 · 通后巷', act:'pass', to:'alley', x:88, y:80},
     {r:[90,74,16,12], lab:'侧门（通放映厅）', act:'pass', to:'cinema', x:8, y:80},
   ]},
  cinema:{
@@ -5126,17 +6173,37 @@ var ROOMS={
     {r:[4,58,10,14], lab:'侧门（通琴房）', act:'pass', to:'piano', x:98, y:80},
     {r:[36,80,14,8], lab:'上楼的梯子', act:'pass', to:'roof', x:44, y:78},
   ]},
+ alley:{
+  floor:[30,56,60,34], spawn:[58,86],
+  solid:[[0,0,30,90],[90,0,30,90]],
+  npc:{id:'aji',x:66,y:62},
+  inter:[
+    {r:[40,84,30,6],  lab:'回街上',          act:'door'},
+    {r:[16,50,14,18], lab:'墙上的涂鸦',      act:'look', k:'al_graf'},
+    {r:[20,44,12,14], lab:'便利店的后窗',    act:'look', k:'al_win'},
+    {r:[86,44,14,16], lab:'消防梯',          act:'pass', to:'roof', x:44, y:78},
+    {r:[72,58,14,16], lab:'旧电话亭',        act:'look', k:'al_phone'},
+    {r:[30,58,14,12], lab:'铁皮垃圾桶',      act:'look', k:'al_bin'},
+    {r:[50,64,14,10], lab:'纸箱',            act:'look', k:'al_box'},
+    {r:[62,74,16,10], lab:'一滩积水',        act:'look', k:'al_puddle'},
+    {r:[30,76,12,10], lab:'后门 · 通便利店', act:'pass', to:'store', x:104, y:80},
+    {r:[88,76,12,10], lab:'侧门 · 通放映厅', act:'pass', to:'cinema', x:98, y:80},
+    {r:[58,56,16,20], lab:'墙根蹲着个人',    act:'npc', who:'aji'}
+  ]},
  roof:{
   floor:[4,66,112,24], spawn:[10,84],
   solid:[[86,36,24,36],[8,56,22,18]],
-  npc:{id:'wenxu',x:70,y:74},
+  npc:{id:'yat',x:70,y:74},
   inter:[
     {r:[0,0,120,44],  lab:'抬头看天',   act:'look', k:'sky'},
     {r:[86,36,24,36], lab:'水塔',       act:'look', k:'tank'},
     {r:[8,56,22,18],  lab:'通风口',     act:'look', k:'vent'},
     {r:[34,46,44,18], lab:'晾着的衣服', act:'look', k:'line'},
     {r:[0,64,120,10], lab:'栏杆',       act:'look', k:'rail'},
-    {r:[62,66,18,24], lab:'燕安滕',       act:'npc', who:'wenxu'},
+    {r:[62,66,18,24], lab:'燕安滕',       act:'npc', who:'yat'},
+    /* 收尾点：只有玩家自己走过来按 E 才会进入结局。
+       没到时候这里不显示提示（lab 返回空串），避免"莫名其妙出现一个选项"。 */
+    {r:[36,74,16,14], lab:function(){ try{ return finaleReady()?'（想清楚了，就说）':'' }catch(e){ return '' } }, act:'finale'},
     {r:[112,66,8,24], lab:'回去',       act:'door'},
     {r:[88,74,12,12], lab:'下楼的梯子', act:'pass', to:'cinema', x:102, y:80},
   ]}
@@ -5145,7 +6212,7 @@ var ROOMS={
 (ROOMS.street.inter).push(
   {r:[6,66,10,10],   lab:'墙根有字',    act:'look', k:'tr_wall'},
   {r:[40,66,12,10],  lab:'压着的旧海报',act:'look', k:'tr_poster'},
-  {r:[112,64,8,12],  lab:'站牌背面',    act:'look', k:'tr_bus'});
+  {r:[4,78,10,10],   lab:'站牌背面',    act:'look', k:'tr_bus'});   /* 原来在 x112，现在那里是后巷的门 */
 (ROOMS.flat.inter).push(
   {r:[100,60,14,10], lab:'抽屉最里面',  act:'look', k:'tr_drawer'},
   {r:[30,72,12,10],  lab:'窗台',        act:'look', k:'tr_plant2'},
@@ -5162,6 +6229,10 @@ var ROOMS={
   {r:[30,62,12,10],  lab:'墙上的旧海报',act:'look', k:'tr_poster2'},
   {r:[76,72,14,10],  lab:'最后排的座位',act:'look', k:'tr_seat'},
   {r:[8,72,14,10],   lab:'放映记录本',  act:'look', k:'tr_log'});
+(ROOMS.alley.inter).push(
+  {r:[38,70,12,10],  lab:'被涂掉的那一行',  act:'look', k:'tr_alley1'},
+  {r:[54,80,14,10],  lab:'地上的粉笔印',    act:'look', k:'tr_alley2'},
+  {r:[58,58,12,10],  lab:'电话亭玻璃上的字',act:'look', k:'tr_alley3'});
 (ROOMS.roof.inter).push(
   {r:[20,70,14,10],  lab:'栏杆上的新漆',act:'look', k:'tr_rail2'},
   {r:[60,72,14,10],  lab:'角落的易拉罐',act:'look', k:'tr_cans'},
@@ -5172,7 +6243,8 @@ var PLACES=[
   {id:'store', name:'便利店', open:0,  desc:'你打工的地方，也是这条街唯一还亮的。', who:'hemu'},
   {id:'piano', name:'琴房',   open:1,  desc:'街角一处。路过时听见里面有琴声。', who:'zi'},
   {id:'cinema',name:'放映厅', open:2,  desc:'下雨，进来避雨。第十三分钟有点问题。', who:'baigao'},
-  {id:'roof',  name:'天台',   open:3,  desc:'天快亮了，抬头能看见星星。', who:'wenxu'}
+  {id:'roof',  name:'天台',   open:3,  desc:'天快亮了，抬头能看见星星。', who:'yat'},
+  {id:'alley', name:'后巷',   open:4,  desc:'便利店和琴房中间那道缝。白天没人走，夜里能抄近路。', who:'aji'}
 ];
 
 var FRAMES={
@@ -5180,7 +6252,8 @@ var FRAMES={
  store: ['#333a4a','#3f4759','#4a4a55'],
  piano: ['#3a3242','#463c52','#5b4630'],
  cinema:['#26203a','#2f2846','#1e1a2e'],
- roof:  ['#0f1428','#3a3f55','#4a4a52']
+ roof:  ['#0f1428','#3a3f55','#4a4a52'],
+ alley: ['#1b1a26','#232033','#2a2636']
 };
 var P={x:80,y:400,dir:'down',mov:0};
 var cam={x:0,y:0}, wcv=null, wg=null, wtick=0, wTimer=null, npcGone={};
@@ -5218,21 +6291,33 @@ function blocked(x,y){
   return false;
 }
 var stepT=0;
+/* 脚步：走路这件事得听得见。
+   三种地面三种音色 —— 街上是湿的（闷），屋里是木/水泥（干脆），
+   天台是铁皮（亮一点）；后巷有碎石，收尾带一点点沙。
+   左右脚交替时音高差半档，走起来才不是"嘀嘀嘀"。
+   沉默机制下不停脚步，只压低 —— 人还在走，脚步不会跟着消失。 */
+var stepFoot=0;
 function footstep(){
-  if(!sfxOn||silActive)return;
+  if(!sfxOn)return;
   var ac=audio(); if(!ac)return;
   if(ac.state==='suspended')try{ac.resume()}catch(e){}
-  var wet=(curRoom==='street');
-  /* 低频脚步用低通收一下，变成柔和的"噗/嗒"，不刺不闷 */
-  var base=wet?120:200, wav=wet?'sine':'triangle', dur=wet?0.10:0.06;
+  var wet=(curRoom==='street'||curRoom==='alley');
+  var metal=(curRoom==='roof');
+  var base=metal?250:(wet?118:196);
+  var wav=metal?'square':(wet?'sine':'triangle');
+  var dur=metal?0.05:(wet?0.11:0.065);
+  var lpF=metal?1500:(wet?820:1000);
+  stepFoot=1-stepFoot;                       /* 左右脚 */
   var o=ac.createOscillator(), g=ac.createGain(), lp=ac.createBiquadFilter();
-  lp.type='lowpass'; lp.frequency.value=900;
-  o.type=wav; o.frequency.value=base*(1+(Math.random()*2-1)*0.10);
+  lp.type='lowpass'; lp.frequency.value=lpF;
+  o.type=wav;
+  var jitter=(Math.random()*2-1)*0.07;
+  o.frequency.value=base*(1+jitter)*(stepFoot?1.06:0.94);
   o.connect(lp); lp.connect(g); g.connect(MASTER);
   var t=ac.currentTime;
-  var vol=wet?0.072:0.062;   /* 比人声略低，但清晰可闻 */
+  var vol=(metal?0.055:(wet?0.082:0.068))*(silActive?0.4:1);
   g.gain.setValueAtTime(0.0001,t);
-  g.gain.exponentialRampToValueAtTime(vol,t+0.006);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002,vol),t+0.006);
   g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   o.start(t); o.stop(t+dur+0.02);
 }
@@ -5249,12 +6334,41 @@ function updateCam(){
   /* 人放在画面 72% 高处：上方留出店门、路灯、天台——荧惑看的是这些 */
   cam.y = WH>vh ? clamp(P.y-vh*0.72, 0, WH-vh) : -(vh-WH)/2;
 }
+/* —— NPC 待机动作：站着的人，每一秒都不一样。
+   呼吸（慢起伏）+ 重心摇摆（左右微移）+ 每隔几秒的一下小动作：
+   何木是手上的活停一下、籽是绷住、白诰是顿一顿、燕安滕是随风、
+   诺斯图是不规律地晃、迟灯是换个重心。
+   每人一组参数（IDLE）—— 疲惫的慢、紧绷的轻、懒散的不规律。
+   只用位移，不旋转不缩放：像素立绘一插值就糊，立刻露馅。 */
+var IDLE={
+  hemu:  {sw:1.0, swSpd:0.014, br:0.9, brSpd:0.050, act:1100},
+  zi:    {sw:0.6, swSpd:0.030, br:0.7, brSpd:0.062, act:900},
+  baigao:{sw:0.5, swSpd:0.011, br:0.6, brSpd:0.040, act:1300},
+  yat: {sw:1.3, swSpd:0.010, br:1.0, brSpd:0.044, act:1500},
+  aji:   {sw:1.2, swSpd:0.020, br:0.8, brSpd:0.055, act:1000},
+  chideng:{sw:0.9,swSpd:0.012, br:1.1, brSpd:0.046, act:1600}
+};
+function idleOffset(id,t){
+  var p=IDLE[id]; if(!p)return{dx:0,dy:0};
+  var ph=(id.charCodeAt(0)*7+id.length*53)%628/100;      /* 相位：每个人错开，不会齐刷刷一起晃 */
+  var dx=Math.sin(t*p.swSpd+ph)*p.sw;
+  if(id==='aji')dx+=Math.sin(t*0.061+ph*2.1)*0.55;       /* 诺斯图：再加一档不规律的 */
+  var dy=Math.sin(t*p.brSpd+ph*1.7)*p.br*0.5;
+  var tt=t*33, cyc=(tt+ph*97)%p.act;                     /* t 是帧（约 33ms/帧），换算成毫秒 */
+  if(cyc<p.act*0.10) dy-=Math.sin(cyc/(p.act*0.10)*Math.PI)*1.6;   /* 小动作：一顿 */
+  return{dx:dx,dy:dy};
+}
 function drawChar(g,id,x,y,dir,moving,t){
-  var im=null, bob=moving?(Math.floor(t/6)%2?1:0):(Math.sin(t*0.05)>0?0:1);
+  var im=null, bob=0;
   if(id==='hero'){
+    bob=moving?(Math.floor(t/6)%2?1:0):(Math.sin(t*0.05)>0?0:1);
     var fr=moving?['0','1','2'][Math.floor(t/6)%3]:'stand';
     im=SPR[dir+'_'+fr];
-  }else im=SPR[id];
+  }else{
+    im=SPR[id];
+    if(!moving){ var io=idleOffset(id,t); x+=io.dx; y+=io.dy; }
+    else bob=Math.floor(t/6)%2?1:0;
+  }
   R(g,x-16*KC,y-2*KC,32*KC,3*KC,'rgba(0,0,0,.34)');
   if(im&&im.complete&&im.naturalWidth){
     g.drawImage(im, Math.round(x-30*KC), Math.round(y-120*KC+bob*KC), 60*KC, 120*KC);
@@ -5263,7 +6377,7 @@ function drawChar(g,id,x,y,dir,moving,t){
     R(g,x-10,y-84+bob,20,24,'#e8b98f');
   }
 }
-var OUTDOOR={street:1,roof:1};   /* 只有街上和天台真的淋得到天气；室内不该下雨、也不该有星空 */
+var OUTDOOR={street:1,roof:1,alley:1};   /* 街上、天台、后巷都淋得到天气（后巷有雨丝）；室内不该下雨、也不该有星空 */
 function worldWeather(g,t,w,x0,y0,vw,vh){
   var i,x,y;
   if(w==='none')return;            /* 室内：不铺天色、不落雨丝 */
@@ -5370,7 +6484,11 @@ function nearestInter(){
 }
 function updateTip(){
   var it=nearestInter(), tip=$('#tip'); if(!tip)return;
-  if(it&&it!==tipOn){ tip.innerHTML='<kbd>E</kbd>'+it.lab; tip.classList.add('on'); tipOn=it; }
+  if(it&&it!==tipOn){
+    var lb=(typeof it.lab==='function')?it.lab():(it.lab||'');
+    if(!lb){ tip.classList.remove('on'); tipOn=null; return; }
+    tip.innerHTML='<kbd>E</kbd>'+lb; tip.classList.add('on'); tipOn=it;
+  }
   else if(!it&&tipOn){ tip.classList.remove('on'); tipOn=null; }
   try{ curNear(!!it); }catch(e){}      /* 自定义光标：靠近可互动物时光环张开 */
 }
@@ -5386,43 +6504,52 @@ function doInter(it){
     return; }
   if(it.act==='npc'){ verbNPC(it.who); return; }
   if(it.act==='look'){ verbThing(it.k); return; }
+  if(it.act==='finale'){ askFinale(); return; }
 }
 var LOOKS={
- win:['（玻璃上的雨是斜的。街边的路灯坏了一盏，剩一盏。）','（对面有一扇窗还亮着。你看了很久。）','（对面那栋楼，五层。你认得那扇窗。）','（你只上去过一次。后来就再也没上去。）','（雨打在玻璃上，声音比屋里大。）','（对面那扇窗，今晚还亮着。你没数过它亮了多少晚。）'],
+ win:['（玻璃上的雨是斜的。街边的路灯坏了一盏，剩一盏。）','（对面有一扇窗还亮着。你看了很久。）','（对面那栋楼，五层。你认得那扇窗。）','（你只上去过一次。后来就再也没上去。）','（雨打在玻璃上，声音比屋里大。）','（对面那扇窗，今晚还亮着。你没数过它亮了多少晚。）','（玻璃上有一道旧胶带印。你贴过什么，早就忘了。）'],
  phone:['（屏幕亮起来：01:15。又是这个时间。）',
     '（草稿箱里躺着一条没发出去的消息。）',
     '（你点开过很多次。上面是四个字。）',
     '（「我马上到」。）',
-    '（那一天，你没有按发送。）'],
- desk:['（桌上摊着几张纸，最上面那张只写了半行。一年前写到这儿，就停了。）','（抽屉最里面有一把钥匙。不是开这扇门的。）','（收据、课程表、一支快没水的笔。）','（你把纸理齐，没看上面写了什么。）'],
- umb:['（伞骨断了一根，撑开的时候会塌一角。）','（伞是别人的。你一直没还。也没敢还。）','（伞尖还在滴水。）'],
- star:['（你画的星图，连线和天上的对不上。）','（三颗星：雪、露、星。你也不记得为什么是这三个。）','（旁边用铅笔写过一个日期，又擦掉了。）'],
- shelf:['（货架最里面那排，生产日期是去年的。）','（有人每天把临期的东西挑出来，放在柜台边。）','（你拿了一瓶水，又放回去。）'],
- fridge:['（冰柜的灯是这屋里最冷的光。）','（玻璃擦得很干净，擦的人大概擦了很多遍。）','（冷气从缝里漏出来，落在你鞋上。）'],
- till:['（收银机上贴着一张便条：「关东煮 22 点后打折」。）','（柜台下面放着一双换下来的鞋。）','（抽屉半开着，里面是一沓写满又划掉的字。）'],
- oden:['（锅一直开着。这么晚了，没有人买。）','（热气一股一股冒上去，灯底下看得见。）','（他隔一会儿就掀盖看一眼，又盖上。）','（没人买。这一锅还是留着。）'],
- seat:['（靠窗的老位置。椅子上有一道坐出来的痕。）','（从这个角度，他在灯下，你在暗处。）','（坐在这儿，才听得清他说话。）'],
- plant:['（窗台上的植物。土是干的，裂了一道缝。）','（买的时候想的是：养活一个东西试试。）','（它还活着。它比你以为的能扛。）','（你隔了很久才想起浇水。它没有怪你。）','（你很久没浇水了。它还没死。）'],
- notice:['（一张寻物启事，纸都晒白了，钉得很牢。）','（照片那一角缺了，剩下的字被雨泡花。）','（一年了。没有人来撕。）','（你把它揭起来一角。背面用铅笔写过一行字。）','（涂掉了。但那个字的起笔，你认得。）'],
- tree:['（一棵树，长在路灯和墙中间。）','（树干上系过一根红绳，早就褪成白的。）','（打的是一个死结。许愿的人才打那种结。）','（绳头断过一次，后来又被人接上了。）','（叶子让雨打得贴在地上。）','（你没在树下站过。今天站了一会儿。）'],
+    '（那一天，你没有按发送。）','（锁屏是一张很旧的自拍。两个人，都看不清脸。）'],
+ desk:['（桌上摊着几张纸，最上面那张只写了半行。一年前写到这儿，就停了。）','（抽屉最里面有一把钥匙。不是开这扇门的。）','（收据、课程表、一支快没水的笔。）','（你把纸理齐，没看上面写了什么。）','（桌角压着一枚硬币，立着。你每次来都还是立着的。）'],
+ umb:['（伞骨断了一根，撑开的时候会塌一角。）','（伞是别人的。你一直没还。也没敢还。）','（伞尖还在滴水。）','（伞柄上缠着一段线。不是你的，也从来没拆。）'],
+ star:['（你画的星图，连线和天上的对不上。）','（三颗星：雪、露、星。你也不记得为什么是这三个。）','（旁边用铅笔写过一个日期，又擦掉了。）','（你画的那三颗，连起来其实不像任何东西。但你每次看都觉得像。）'],
+ shelf:['（货架最里面那排，生产日期是去年的。）','（有人每天把临期的东西挑出来，放在柜台边。）','（你拿了一瓶水，又放回去。）','（最下层有一包没人买的糖。包装褪了色，价格标签换过三次。）'],
+ fridge:['（冰柜的灯是这屋里最冷的光。）','（玻璃擦得很干净，擦的人大概擦了很多遍。）','（冷气从缝里漏出来，落在你鞋上。）','（冷柜最里面结了一层薄霜。霜上有人用指尖写过字，化了。）'],
+ till:['（收银机上贴着一张便条：「关东煮 22 点后打折」。）','（柜台下面放着一双换下来的鞋。）','（抽屉半开着，里面是一沓写满又划掉的字。）','（抽屉里那沓字，有一页写着「今天也谢谢你」。不是你写的。）'],
+ oden:['（锅一直开着。这么晚了，没有人买。）','（热气一股一股冒上去，灯底下看得见。）','（他隔一会儿就掀盖看一眼，又盖上。）','（没人买。这一锅还是留着。）','（锅边浮着一层油花。他搅了一下，油花散开又合上。）'],
+ seat:['（靠窗的老位置。椅子上有一道坐出来的痕。）','（从这个角度，他在灯下，你在暗处。）','（坐在这儿，才听得清他说话。）','（椅背上有一道浅浅的指甲印。谁坐在这儿想事情，想到掐进木头里。）'],
+ plant:['（窗台上的植物。土是干的，裂了一道缝。）','（买的时候想的是：养活一个东西试试。）','（它还活着。它比你以为的能扛。）','（你隔了很久才想起浇水。它没有怪你。）','（你很久没浇水了。它还没死。）','（叶尖黄了一点点。你盯着看，好像它在跟你较劲，看谁先认输。）'],
+ notice:['（一张寻物启事，纸都晒白了，钉得很牢。）','（照片那一角缺了，剩下的字被雨泡花。）','（一年了。没有人来撕。）','（你把它揭起来一角。背面用铅笔写过一行字。）','（涂掉了。但那个字的起笔，你认得。）','（照片是一年前的。纸边卷了，像被人反复揭过又按回去。）'],
+ tree:['（一棵树，长在路灯和墙中间。）','（树干上系过一根红绳，早就褪成白的。）','（打的是一个死结。许愿的人才打那种结。）','（绳头断过一次，后来又被人接上了。）','（叶子让雨打得贴在地上。）','（你没在树下站过。今天站了一会儿。）','（树根旁边有人摆过一块小石头。不知是谁，也不知为什么。）'],
+ bus_seat:['（公交站的长椅。椅面是干的——有人刚擦过。）','（椅背上刻了两个小字，被雨泡得发胀。）','（站牌上写着：末班 23:40。下一趟，天亮。）','（椅子总是外侧先湿。肯坐里头的人，是懂这条街的。）','（椅腿旁边放着两颗糖。糖纸是旧的。）','（椅面中间有一道缝。坐久了的人，会不自觉往两边挪。）'],
  book:['（一本值班登记本，塑封皮裂了。）',
     '（翻到一年前那一页：01:02 有人经过。01:15 有人到。）',
     '（中间空着一段，什么也没写。）',
     '（01:02 到 01:15——十三分钟。）',
-    '（有人用铅笔在这一行旁边画了一道，很轻。是白诰的字。）'],
- cup:['（两个搪瓷杯。一个在他手边，一个放在对面。）','（对面那个，从来没被动过。）','（杯壁有一道磕出来的疤。）'],
- piano:['（琴盖是合着的。你伸手碰了一下，没打开。）','（有一个键的音不太准。你记得是哪一个。）','（谱子在架子上翻开着，停在某一页。）'],
- stand:['（谱架上的谱子有一小节是空的。）','（空白处用铅笔画了一个很小的记号。）','（你翻回前一页，两页是一样的。）','（那一小节，她每次都会跳过去。）'],
- paper:['（墙上钉着两张纸，一张是课程表，一张是手写的。）','（手写那张只有一句：「今天也谢谢你。」）','（纸的边缘卷起来了，钉得很牢。）'],
- screen:['（银幕上有光，但放的是什么看不清。）','（第十三分钟的时候，画面会停一下。）','（你坐在这儿，什么也没看，坐着本身就像在看。）','（光一明一暗，落在你手上。）'],
- proj:['（放映机还热着。机身有一道旧划痕。）','（胶片盘转得很慢，声音比画面清楚。）','（机器上贴着一张标签，字被磨掉了一半。）'],
- sky:['（今晚只出来三颗星。）','（云很低，像压在街面上。）','（你抬头看了一会儿，脖子有点酸。）'],
- tank:['（水塔的外壳锈了一片，摸上去是粉的。）','（水在里面晃的声音，隔着铁能听见。）','（塔身有人用粉笔写过什么，被雨冲没了。）'],
- vent:['（通风口在响，像有人在低声说话。）','（风口是暖的。这附近还有人在。）','（你把手放在上面，暖了一会儿。）'],
- line:['（晾着的衣服还没干，摸上去是潮的。）','（一件外套，袖口磨白了。不是你的尺码。）','（风把它们吹得一起晃。）'],
- rail:['（栏杆是凉的。你把手放上去，又收回来。）','（从这儿看下去，街很小。）','（栏杆上有一道旧的划痕，像是被谁抓过。）','（划痕很浅。像是有人在那儿数过什么。）'],
- locker:['（铁皮柜，漆掉了一块。）','（挂锁锈着。）','（柜门上有人用指甲划过一道。）'],
- puddle:['（一滩水。路灯在里面碎成一片。）','（雨点落进去，一圈一圈，又平了。）','（水面上有你自己的影子。你看了它一会儿。）']
+    '（有人用铅笔在这一行旁边画了一道，很轻。是白诰的字。）','（登记本最后一页，有人写「来过」，又划掉，改成「路过」。再划掉。）'],
+ cup:['（两个搪瓷杯。一个在他手边，一个放在对面。）','（对面那个，从来没被动过。）','（杯壁有一道磕出来的疤。）','（对面的杯子内壁有一圈茶渍。是有人喝过，不是从来没动过。）'],
+ piano:['（琴盖是合着的。你伸手碰了一下，没打开。）','（有一个键的音不太准。你记得是哪一个。）','（谱子在架子上翻开着，停在某一页。）','（琴凳底下掉了一颗纽扣。不是你的尺码。）'],
+ stand:['（谱架上的谱子有一小节是空的。）','（空白处用铅笔画了一个很小的记号。）','（你翻回前一页，两页是一样的。）','（那一小节，她每次都会跳过去。）','（谱子边角有牙印。谁咬着谱子想事情，咬出了印子。）'],
+ paper:['（墙上钉着两张纸，一张是课程表，一张是手写的。）','（手写那张只有一句：「今天也谢谢你。」）','（纸的边缘卷起来了，钉得很牢。）','（手写那张的背面，还有一行更小的字：「你今天也来了吗。」）'],
+ screen:['（银幕上有光，但放的是什么看不清。）','（第十三分钟的时候，画面会停一下。）','（你坐在这儿，什么也没看，坐着本身就像在看。）','（光一明一暗，落在你手上。）','（银幕上的光里飘着灰尘。你看着灰尘，比看着电影久。）'],
+ proj:['（放映机还热着。机身有一道旧划痕。）','（胶片盘转得很慢，声音比画面清楚。）','（机器上贴着一张标签，字被磨掉了一半。）','（机器侧面贴着一张便利贴：放完记得关。字歪歪扭扭。）'],
+ sky:['（今晚只出来三颗星。）','（云很低，像压在街面上。）','（你抬头看了一会儿，脖子有点酸。）','（你认不出星座。但你知道哪几颗是这条街的，因为你见过。）'],
+ tank:['（水塔的外壳锈了一片，摸上去是粉的。）','（水在里面晃的声音，隔着铁能听见。）','（塔身有人用粉笔写过什么，被雨冲没了。）','（水塔里的水，白天和夜里声音不一样。你听了一年才听出来。）'],
+ vent:['（通风口在响，像有人在低声说话。）','（风口是暖的。这附近还有人在。）','（你把手放在上面，暖了一会儿。）','（风口的声音，有时候像有人在隔壁说话。你分不清是不是真的。）'],
+ line:['（晾着的衣服还没干，摸上去是潮的。）','（一件外套，袖口磨白了。不是你的尺码。）','（风把它们吹得一起晃。）','（一件小孩的衣裳混在里面。不是你的，也不像是谁的。）'],
+ rail:['（栏杆是凉的。你把手放上去，又收回来。）','（从这儿看下去，街很小。）','（栏杆上有一道旧的划痕，像是被谁抓过。）','（划痕很浅。像是有人在那儿数过什么。）','（栏杆上有个用手抹出来的亮印。是有人天天扶着，磨出来的。）'],
+ locker:['（铁皮柜，漆掉了一块。）','（挂锁锈着。）','（柜门上有人用指甲划过一道。）','（锁眼里塞着半截火柴。谁想捅开它，又没捅。）'],
+ puddle:['（一滩水。路灯在里面碎成一片。）','（雨点落进去，一圈一圈，又平了。）','（水面上有你自己的影子。你看了它一会儿。）','（水里你的倒影，被路灯染成橙色。你看了好一会儿。）'],
+ /* —— 后巷（「看」的说法；「碰一下」另见 TOUCH）—— */
+ al_graf:['（整面墙都是涂鸦。底下有一行被人涂掉了。）','（隔着手，能摸出笔画：起笔很轻，收笔很重。）','（你没有去抠它。）','（涂鸦最上面，有人新喷了一行小字：「还在这」。不知道指什么。）'],
+ al_win:['（便利店的后窗。毛玻璃。）','（里头有人影在走动，一趟一趟。）','（这巷子里唯一的光，是从这儿漏出来的。）','（后窗玻璃上贴着一张儿童画的贴纸。早该掉了，还粘着。）'],
+ al_phone:['（旧电话亭。听筒挂着，线垂到地上。）','（玻璃上有雾。有人用手指写过一串数字，又擦了。）','（号码盘磨得发亮。被人拨过很多次，每次都没拨完。）'],
+ al_bin:['（铁皮垃圾桶，盖是开的。）','（最上面压着一张收据。日期是一年前的。）','（你没翻。）','（垃圾桶里有一只孤零零的鞋。另一只不知道在哪。）'],
+ al_box:['（纸箱靠着墙。）','（里面有声音。）','（你蹲下来看：一只猫，和四只还没睁眼的小猫。）','（纸箱里那窝猫，今天好像多了一只。又好像没有。）'],
+ al_puddle:['（一滩积水，映着那扇后窗。）','（光在水里晃，碎成一片一片。）','（积水里映着后窗的光。光晃一下，像有人在那头动了动。）']
 };
 /* 一个东西（一间屋、一件物）其实有好几句话。
    抽取时先给还没看过的，全看完再从头来——否则随机抽到重复的，会让人以为“这里没什么可看”。 */
@@ -5438,6 +6565,27 @@ function freshPick(key,pool){
   if(s0.indexOf(idx)<0)s0.push(idx);
   return pool[idx];
 }
+/* 跨周目 + 不重复：同一周目内不抽到同一句；第 2/3 周目优先给专属新台词 */
+function pickSaid(key,pool){
+  if(!pool||!pool.length)return '（你看了一会儿。）';
+  var sd=S.said=S.said||{}; var s0=sd[key]=sd[key]||[];
+  var fresh=[],i;
+  for(i=0;i<pool.length;i++){ if(s0.indexOf(i)<0)fresh.push(i); }
+  var idx;
+  if(fresh.length){ idx=fresh[(Math.random()*fresh.length)|0]; }
+  else { s0.length=0; idx=(Math.random()*pool.length)|0; }
+  if(s0.indexOf(idx)<0)s0.push(idx);
+  return pool[idx];
+}
+/* 第几周目，给哪一套台词：1→基础；2→基础+新；3+→基础+新+更新 */
+function loopPool(n,name){
+  var base=n[name]||[];
+  if((S.loop||1)>=3 && n[name+'3']) return base.concat(n[name+'2']||[]).concat(n[name+'3']);
+  if((S.loop||1)>=2 && n[name+'2']) return base.concat(n[name+'2']);
+  return base;
+}
+/* 沉默到头时说的那段：第 2 周目起换成更深的一层 */
+function deepLines(who){ var n=NPCS[who]; return ((S.loop||1)>=2 && n.deep2)? n.deep2 : n.deep; }
 function lookAt(k){
   var pool=LOOKS[k]||['（你看了一会儿。）'];
   var ln=freshPick(k,pool);
@@ -5449,7 +6597,7 @@ function lookAt(k){
 function renderPanel(){
   var pl=openPlaces(), h='<div class="places">';
   /* 与街上亮灯同一套规则：没亮的门，这里也不列 */
-  var seen=S.seen||{}, order=['flat','store','piano','cinema','roof'], open={flat:1}, oi;
+  var seen=S.seen||{}, order=['flat','store','piano','cinema','roof','alley'], open={flat:1}, oi;
   for(oi=0;oi<order.length;oi++){
     if(seen[order[oi]])open[order[oi]]=1;
     if(oi>0&&seen[order[oi-1]])open[order[oi]]=1;
@@ -5458,6 +6606,7 @@ function renderPanel(){
   if(S.seg>=2)open.piano=1;
   if(S.seg>=3)open.cinema=1;
   if(S.seg>=4)open.roof=1;
+  if(seen.cinema)open.alley=1;
   var kn=0;
   pl.forEach(function(p,i){
     if(!open[p.id])return;
@@ -5488,7 +6637,9 @@ function enterRoom(id,who){
   var rm=ROOMS[id];
   P.x=wv(rm.spawn[0]); P.y=wv(rm.spawn[1]); P.dir='down'; P.mov=0;
   if(rm.npc){
-    npcGone[rm.npc.id] = (rnd()<0.16 && (S.rel[rm.npc.id]||0)<3);
+    /* 不再在这里掷骰：renderScene() 是 enterRoom 的别名，对话中一调用就会重掷，
+       人会当着玩家的面消失。缺席由 rollHere() 每晚决定一次。 */
+    npcGone[rm.npc.id] = !hereTonight(rm.npc.id);
     SC.who=rm.npc.id;
   }else SC.who=null;
   var e=$('#uPlace'); if(e&&SCENES[id])e.textContent=SCENES[id].name;
@@ -5508,6 +6659,8 @@ function enterRoom(id,who){
   try{ sfx('enter'); }catch(err){}            /* 进入场景：一个柔和的"落位"音，区分不同空间 */
   try{ paintHero(); }catch(err){}
   updateCam(); try{ paintWorld(); }catch(err){}
+  /* 入场落定：给舞台加一次 .enter，让场景"活"着浮进来（只动 transform/opacity） */
+  try{ var _st=$('#stage'); if(_st){ _st.classList.remove('enter'); void _st.offsetWidth; _st.classList.add('enter'); } }catch(e){}
   if(!wTimer)wTimer=setInterval(worldLoop,33);
 }
 var kb={}, tdir=null, jvec={x:0,y:0};
@@ -5566,19 +6719,19 @@ function initCursor(){
     if(!stage||!curEl)return;
     document.body.classList.add('pcur');
     function at(e){
-      var r=stage.getBoundingClientRect();
-      curTx=e.clientX-r.left; curTy=e.clientY-r.top;
-      var t=e.target;
-      /* 指针在画布上 → 光标跟手；在 UI 按钮上 → 张开提示可点 */
-      var onUI=!!(t.closest&&t.closest('button,.opt,.pb,.pad>*,.of,.igb,.hp-ask button'));
-      curEl.classList.toggle('on',onUI);
+      /* #cur 已是 fixed 挂在 body 上，直接用视口坐标 */
+      curTx=e.clientX; curTy=e.clientY;
+      /* 悬停反馈走 near（收紧描边，由 setCurNear 控制），这里只管跟手 */
     }
     function tick(){
       curX+=(curTx-curX)*.3; curY+=(curTy-curY)*.3;
       curEl.style.transform='translate('+curX.toFixed(1)+'px,'+curY.toFixed(1)+'px)';
       requestAnimationFrame(tick)}
-    stage.addEventListener('pointermove',at,{passive:true});
-    stage.addEventListener('pointerdown',function(){curEl.classList.add('down')},{passive:true});
+    /* 绑在 window 上，不能只绑 stage：开场标题层是盖在 stage 上的全屏 div，
+       指针那会儿根本不在 stage 里 —— 光标会一直停在初始的 -200,-200（屏幕外），
+       而系统光标又被 pcur 的 cursor:none 藏了，于是标题页上鼠标是彻底看不见的。 */
+    addEventListener('pointermove',at,{passive:true});
+    addEventListener('pointerdown',function(){curEl.classList.add('down')},{passive:true});
     addEventListener('pointerup',function(){curEl.classList.remove('down')},{passive:true});
     /* 打开任何浮层时把"靠近"提示收掉，避免光环隔着遮罩亮 */
     addEventListener('keydown',function(e){
@@ -5760,21 +6913,29 @@ var CROWD=[
     '在最后一排坐着，看空银幕',
     '第 13 分钟的时候，他起身去倒了杯水',
     '散场后他一个人把椅子一把把立起来']},
-  {id:'wenxu', lock:10,tx:[
+  {id:'yat', lock:10,tx:[
     '在天台上站了很久，没打伞',
     '把望远镜调了焦距，又调回去',
     '今天带了两把伞，一把没用上',
     '在水箱旁边坐着，风把他的话吹散了',
     '数了三颗星，只数了三颗',
-    '他在栏杆边站到很晚，然后自己下来了']}
-];
-var CROWD_EXTRA=[
-  {id:'aji',   lock:0,tx:[
-    '蹲在街角，冲每个路过的人抬杠',
+    '他在栏杆边站到很晚，然后自己下来了']},
+  {id:'aji',   lock:11,tx:[
+    '蹲在后巷墙根，冲每个路过的人抬杠',
     '说这条街「戏太假」，但一直没走',
     '把某扇门推开看了一眼，又关上',
-    '啃着关东煮，嘴上嫌弃，手没停'],
-   name:'诺斯图'},
+    '啃着关东煮，嘴上嫌弃，手没停',
+    '在数路灯。数到街口那盏，停了很久',
+    '今晚他话很少。就那么蹲着']},
+  {id:'chideng',lock:12,tx:[
+    '在公交站等末班车，等了一趟又一趟',
+    '把保温杯的杯套翻开，看一眼照片，又合上',
+    '今天带了两颗糖，一颗也没吃',
+    '站在长椅外侧，把里头干的位置让出来',
+    '看了一次表。看的其实是街口',
+    '今晚他来得比车早。他一直都比车早']}
+];
+var CROWD_EXTRA=[
   {id:'yibu',  lock:0,tx:[
     '整夜在街上游荡，尾巴卷着',
     '你坐下来，它就跳上来蹭你',
@@ -5791,9 +6952,11 @@ function renderCrowd(){
   var h='',i,j,c,seen4=0;
   for(i=0;i<CROWD.length;i++){
     c=CROWD[i];
-    if(!S.seen||!S.seen[c.id]){
+    /* 解锁看「见过这个人」（S.times），不是房间（S.seen）——
+       以前错用房间名当人名，四个人永远显示「你还没去过那里」 */
+    if(!S.times||!(S.times[c.id]>0)){
       h+='<div class="cr lock"><canvas class="av" width="12" height="12" data-f="none"></canvas>'
-        +'<span class="nm">？？？</span><span class="tx">你还没去过那里。</span></div>';
+        +'<span class="nm">？？？</span><span class="tx">你还没见过他。</span></div>';
       continue;
     }
     seen4++;
@@ -5803,8 +6966,7 @@ function renderCrowd(){
   for(j=0;j<CROWD_EXTRA.length;j++){
     c=CROWD_EXTRA[j];
     var show=false;
-    if(c.id==='aji') show=((S.loop||1)>=2||!!S.flags.met_aji);
-    else if(c.id==='yibu') show=!!S.flags.met_yibu;
+    if(c.id==='yibu') show=!!S.flags.met_yibu;
     if(!show)continue;
     h+='<div class="cr"><canvas class="av" width="12" height="12" data-f="'+c.id+'"></canvas>'
       +'<span class="nm">'+c.name+'</span><span class="tx">'+pick(c.tx)+'</span></div>';
@@ -5848,7 +7010,8 @@ var GUESS={
     '（你猜：别人跟他说话的时候，他得先想一下，怎么回答才算正常。）',
     '（你猜：抽屉里那封信，他每天都要摸一下才睡得着。）',
     '（你猜：他把「欢迎光临」说得那么响，是怕屋里太静。）',
-    '（你猜：腊肉他其实吃不完。他只想有人问他一句「吃完了吗」。）'],
+    '（你猜：腊肉他其实吃不完。他只想有人问他一句「吃完了吗」。）',
+    '（你猜：他每天多摆的那瓶水，是给那个总也不来的人留的。）'],
   zi:[
     '（你猜：那一小节她空着，是因为不知道该写成什么。）',
     '（你猜：如果有人接下去弹，她就不用自己决定怎么结束。）',
@@ -5857,7 +7020,8 @@ var GUESS={
     '（你猜：你站在门口那一次，她弹错了一个音。你没说。）',
     '（你猜：她合上琴盖的时候，手指总是最后离开的。）',
     '（你猜：她练到手指发疼，是因为疼的时候就不用想别的了。）',
-    '（你猜：她记得你中学时踢过几次她的椅子。）'],
+    '（你猜：她记得你中学时踢过几次她的椅子。）',
+    '（你猜：她每天擦那架琴，是在等那个教她的人哪天推门进来。）'],
   baigao:[
     '（你猜：第十三分钟那句话，他倒回去听了十几遍。）',
     '（你猜：不是听不清，是听清以后不知道怎么办。）',
@@ -5866,8 +7030,9 @@ var GUESS={
     '（你猜：有人在旁边坐着的时候，那句话好像没那么难听。）',
     '（你猜：他擦那个杯子，是唯一能让手停下来的事。）',
     '（你猜：片子讲了什么他早忘了。他只记得第十三分钟。）',
-    '（你猜：他把「按规定」挂在嘴上，是因为别处的规矩他都没守住。）'],
-  wenxu:[
+    '（你猜：他把「按规定」挂在嘴上，是因为别处的规矩他都没守住。）',
+    '（你猜：他每晚多倒的那杯水，是给「第十三分钟」里那个人留的位子。）'],
+  yat:[
     '（你猜：他在等一个人，把那句话说完整。）',
     '（你猜：今晚只出来三颗星。他说够了。）',
     '（你猜：他不怕黑。他怕天亮。）',
@@ -5875,12 +7040,66 @@ var GUESS={
     '（你猜：你今天上来了。他记着这个。）',
     '（你猜：他不看照片，是因为看一眼就得想一整夜。）',
     '（你猜：他每周三上去，是替她守着那个位置。）',
-    '（你猜：他说「不冷」的时候，手其实在袖子里攥着。）']
+    '（你猜：他说「不冷」的时候，手其实在袖子里攥着。）',
+    '（你猜：他每周三上来，是因为可帕玲以前每周三给他打电话。）'],
+  aji:[
+    '（你猜：他说「别去」，是因为他去过。）',
+    '（你猜：他每晚都在这条街上，是因为这里有事没完。）',
+    '（你猜：他知道所有窗户里发生的事。他一扇一扇看过。）',
+    '（你猜：他劝你别伸手，是因为他伸过。）',
+    '（你猜：他帽兜里藏着东西。不是吃的。）',
+    '（你猜：他不是在等你。他是在等一个不会来的人。）',
+    '（你猜：他说话难听，是怕你听出来他担心。）',
+    '（你猜：他数过这条街上有几盏灯。比你数得清。）',
+    '（你猜：他帽兜里那张折了四折的纸，是一个没能送出去的地址。）'],
+  chideng:[
+    '（你猜：他等的不是车，是车还没来的那段时间。）',
+    '（你猜：他每天来，是怕有一天她来了，找不着他。）',
+    '（你猜：那句「我马上到」，他设成过闹钟，又一个个删了。）',
+    '（你猜：他把糖带着，是因为她爱吃糖。）',
+    '（你猜：他认得这条街上每一盏路灯。等的时候只能数灯。）',
+    '（你猜：他不敢去巷子里找，是怕希望没了。）',
+    '（你猜：他把保温杯抱得那么紧，是怕里面那句话凉了。）',
+    '（你猜：他早就知道等不到了。他只是在等自己甘心。）',
+    '（你猜：他每天来，是怕她哪天真的来了，在站台找不着他。）']
+};
+/* 第 2 周目起：你的「猜测」更深一层，且不与基础池重复 */
+var GUESS2={
+ hemu:['（你猜：他那瓶水，是从头来就给那孩子留的，不是后来才加的。）',
+       '（你猜：他每天多摆的那瓶，其实是给自己留的——怕哪天那孩子来了，他不在。）',
+       '（你猜：他数三遍零钱，是因为数数的时候，不用想别的。）',
+       '（你猜：他笑一下又收回去，是怕你以为他在示好，反倒疏远。）',
+       '（你猜：他说「你来了也行」，是这三年里，头一回有人愿意留下。）'],
+ zi:['（你猜：她那首写不完的曲子，其实写完了，只是没敢弹最后一句。）',
+     '（你猜：她复制的那份谱子，是给窗外那个老人的。）',
+     '（你猜：她手抖，是因为那天沈老师走，她在琴房等到关门。）',
+     '（你猜：她弹错音不重来，是故意留着那个错，像留个记号。）',
+     '（你猜：她让你坐琴凳，是因为你来了，她才敢坐到琴边。）'],
+ baigao:['（你猜：第十三分钟那句话，是白诰自己想对谁说的，他借了片子里的人嘴。）',
+         '（你猜：他每晚多倒的那杯水，是给那个散场不走姑娘的，他一直记得她坐哪。）',
+         '（你猜：他把胶片留着，是怕忘了师父，也怕忘了自己为什么守着这厅。）',
+         '（你猜：他拧紧螺丝，是因为手不占着点什么，他就会去想那个人。）',
+         '（你猜：他说「屋里不空」，其实是在说，银幕亮着，她就还在。）'],
+ yat:['（你猜：他每周三上去，不是替可帕玲守，是怕自己忘了她长什么样。）',
+      '（你猜：那三句话，他背了无数遍，可真要转交，又怕交错了人。）',
+      '（你猜：他手机充着电，是在等一个再也不会响的号码亮起来。）',
+      '（你猜：他不让碰那盆多肉，是怕一动，就承认她真的不在了。）',
+      '（你猜：他说「星够了」，是骗自己——他每晚都数，数到天亮也没数够。）'],
+ aji:['（你猜：他守着后巷，是因为那扇三楼窗的人，只有他能看见。）',
+      '（你猜：他帽兜里那张纸，地址他早背下了，只是不敢按门铃。）',
+      '（你猜：他劝你别伸手，是怕你比他勇敢，反衬出他怂。）',
+      '（你猜：他数七盏灯，是替那扇窗的人数的——第七盏灭了，他替它记着。）',
+      '（你猜：他蹲在纸箱边，是怕那窝猫没了，这条街上就再没活物替人守夜。）'],
+ chideng:['（你猜：他等的不是车，是「她还在路上」这个念头，撑着他每天来。）',
+         '（你猜：他带两颗糖，一颗给她，一颗给自己——怕自己先撑不住。）',
+         '（你猜：他把伞往你这边偏，是习惯了往空处偏，因为从前那把伞，是给她打的。）',
+         '（你猜：他说「我马上到」，其实是她说的，他记成了自己说的。）',
+         '（你猜：他每天来站台，是怕她哪天真来了，扑空，像他当年那样。）']
 };
 
 /* 你永远是你：只是看着他，猜他在想什么。猜的不一定对。 */
 function watchHim(who){
-  var pool=GUESS[who]; if(!pool){ afterAction(); return; }
+  var pool=(((S.loop||1)>=2 && typeof GUESS2!=='undefined' && GUESS2[who])?GUESS2[who].concat(GUESS[who]):GUESS[who]); if(!pool){ afterAction(); return; }
   var t=$('#talk'); if(t)t.classList.add('view');
   setCap('看着'+NPCS[who].name);
   setMood('sad');
@@ -5936,11 +7155,14 @@ $('#btnStart').addEventListener('click',function(){
 });
 $('#btnAuto').addEventListener('click',function(){
   autoSay=!autoSay;
+  try{ if(autoSay)localStorage.removeItem('yd30_auto_off'); else localStorage.setItem('yd30_auto_off','1'); }catch(e){}
   setTb('btnAuto','自动',autoSay?'开':'关');
   this.classList.toggle('on',autoSay);
   try{ sfx('tap'); }catch(e){}
   if(autoSay&&_sayGo)_sayGo();
 });
+/* 顶栏「自动」初始状态对齐默认值（默认开；玩家关过就是关） */
+try{ setTb('btnAuto','自动',autoSay?'开':'关'); $('#btnAuto').classList.toggle('on',autoSay); }catch(e){}
 $('#btnBook2').addEventListener('click',function(){ load(); renderBook(); toggleBook(); });
 $('#btnBook3').addEventListener('click',function(){ renderBook(); toggleBook(); });
 $('#btnBook').addEventListener('click',function(){ toggleBook(); try{sfx($('#book').classList.contains('on')?'open':'close')}catch(e){} });
@@ -5967,10 +7189,10 @@ $('#btnWipe').addEventListener('click',function(){
   if(!confirm('清空全部进度（含手册）？'))return;
   try{localStorage.removeItem(KEY)}catch(e){}
   try{localStorage.removeItem('xljk_endings')}catch(e){}
-  S={day:1,phase:0,spirit:72,loop:1,rel:{hemu:0,zi:0,baigao:0,wenxu:0},
+  S={day:1,phase:0,spirit:72,loop:1,rel:{hemu:0,zi:0,baigao:0,yat:0},
      insight:0,empath:0,
      flags:{},seen:{},journal:[],known:{},lowDays:0,route:null,eventDone:{},over:false,
-     knows:{hemu:0,zi:0,baigao:0,wenxu:0}};
+     knows:{hemu:0,zi:0,baigao:0,yat:0}};
   save();
   try{ paintLoopMarks(); }catch(e){}        /* 清空后立刻刷新周目标记，不然残留一排旧框 */
   toast('已清空');
@@ -5995,7 +7217,7 @@ $('#btnHelpQuit').addEventListener('click',function(){ closeHelp(); try{paintLoo
 /* 周目标记 */
 function paintLoopMarks(){
   var box=$('#loopMarks'); if(!box)return;
-  var names=['hemu','zi','baigao','wenxu'], h='', any=false;
+  var names=['hemu','zi','baigao','yat'], h='', any=false;
   /* 只列"你真的了解过"的人。一个都没有，就整块不出现 —— 全 0/4 的框没有信息，只是碍眼 */
   names.forEach(function(id){
     var k=(S.knows&&S.knows[id])||0;
@@ -6023,15 +7245,23 @@ function fxTween(set,from,to,ms,step,cb){
 function fxZoom(tx,ty,z,ms,cb){
   if(FX.lock)return;
   FX.on=true; FX.tx=tx; FX.ty=ty;
-  $('#lbT').classList.add('on'); $('#lbB').classList.add('on');
+  setLB(true);
   fxTween(function(v){FX.z=v},FX.z,z,ms||520,40,cb);
 }
 function fxZoomOut(ms,cb){
   fxTween(function(v){FX.z=v},FX.z,1,ms||480,40,function(){
     FX.on=false; FX.z=1;
-    $('#lbT').classList.remove('on'); $('#lbB').classList.remove('on');
+    setLB(false);
     if(cb)cb();
   });
+}
+/* 黑边开关的唯一出口：DOM 的 on 类和 body 的 lb-on 必须同步 ——
+   CSS 靠 lb-on 把底部 UI 顶上去，漏一个就会黑条盖对话框 */
+function setLB(on){
+  try{ document.body.classList.toggle('lb-on',!!on); }catch(e){}
+  var a=$('#lbT'), b=$('#lbB');
+  if(a)a.classList.toggle('on',!!on);
+  if(b)b.classList.toggle('on',!!on);
 }
 function fxFocus(who){
   var rm=ROOMS[curRoom];
@@ -6040,7 +7270,7 @@ function fxFocus(who){
   else if(rm&&rm.npc&&rm.npc.id===who){ tx=wv(rm.npc.x); ty=wv(rm.npc.y)-60; }
   fxZoom(tx,ty,2.1,600);
 }
-function fxLB(on){ $('#lbT').classList.toggle('on',!!on); $('#lbB').classList.toggle('on',!!on); }
+function fxLB(on){ setLB(on); }
 /* 胶片颗粒开关：开场与结局轻轻盖一层，像一段被拍下来的影像 */
 function fxGrain(on){ var g=document.getElementById('grain'); if(!g)return; g.classList.toggle('on',!!on); }
 /* 漏光开关：结局那一段，让画面暖一点，像带子受了光 */
@@ -6172,7 +7402,7 @@ var ITEMS={
  relic_hemu:{n:'还是热的饭团',d:'他每天买同一种。那天他多买了一个，放在台阶上。'},
  relic_zi:{n:'一盘旧磁带',d:'一首弹到一半的曲子。那一小节，她这次没有空过去。'},
  relic_baigao:{n:'用了很久的搪瓷杯',d:'杯口磕掉了一小块瓷。他递给你的时候，里面是满的。'},
- relic_wenxu:{n:'第二把伞',d:'他每次都说「今天没带伞」。那天他带了两把。'},
+ relic_yat:{n:'第二把伞',d:'他每次都说「今天没带伞」。那天他带了两把。'},
  key:{n:'一把旧钥匙',d:'铜的，齿磨圆了。不像是开谁家的门。'},
  note:{n:'一封没寄出去的信',d:'没有收件人，也没有落款。折了两折，压得很平。'}
 };
@@ -6195,9 +7425,9 @@ var GIVE={
         umbrella:{rel:1,t:['（你把伞靠在墙边。）','（她看了一眼，又看了一眼。）','「……这把伞，我找了很久。」'],jr:'她说那把伞她找了很久。'} },
  baigao:{film:{rel:3,t:['（你把空胶片盒递给他。）','（他接过去，翻过来看标签。）','「空的。」','（他还是把它放进了机器。）','「放一会儿也行。」'],jr:'他把空盒子放进放映机，放了一会儿。',seed:1},
         oden:{rel:1,t:['（他把关东煮接过去，放在机器旁边。）','（一直到凉了都没动。）'],jr:'他接过去了，但放到凉了都没动。'} },
- wenxu:{umbrella:{rel:3,t:['（你把伞递给她。）','（她愣了一下。）','「……你还留着。」','（她接过伞，没有撑开，只是拿在手里。）'],jr:'她说「你还留着」。伞是她的。',seed:1},
-        chalk:{rel:2,t:['（你把粉笔给她。）','（她笑了。）','（她在地上画了三颗星。）','（雪、露、星。）'],jr:'她用那截粉笔在地上画了三颗星。',seed:1},
-        candy:{rel:1,t:['（你把糖给她。）','「甜的。」','（她收下了，没吃。）'],jr:'她收下了糖，没吃。'} }
+ yat:{umbrella:{rel:3,t:['（你把伞递给他。）','（他愣了一下。）','「……你还留着。」','（他接过伞，没有撑开，只是拿在手里。）'],jr:'他说「你还留着」。伞是可帕玲的，他一直替她收着。',seed:1},
+        chalk:{rel:2,t:['（你把粉笔给他。）','（他笑了。）','（他在地上画了三颗星。）','（雪、露、星。）'],jr:'他用那截粉笔在地上画了三颗星。',seed:1},
+        candy:{rel:1,t:['（你把糖给他。）','「甜的。」','（他收下了，没吃。）'],jr:'他收下了糖，没吃。'} }
 };
 function hasItem(id){ return S.bag&&S.bag.indexOf(id)>=0; }
 function takeItem(id){
@@ -6257,7 +7487,7 @@ letter:['................','................','................','.kkkkkkkkkkkkk
 var ART={
   umbrella:'umbrella', draft:'phone', oden:'oden', page:'sheet', film:'film', chalk:'chalk', candy:'candy', key:'key', note:'letter',
   hemu_msg:'letter', wx_mute:'phone', zi_parts:'sheet', bg_tape:'film',
-  relic_hemu:'onigiri', relic_zi:'cassette', relic_baigao:'mug', relic_wenxu:'umbrella'
+  relic_hemu:'onigiri', relic_zi:'cassette', relic_baigao:'mug', relic_yat:'umbrella'
 };
 function hasArt(id){ return !!(ART[id]&&PIX[ART[id]]); }
 /* 一张卡上要显示的东西从哪来：线索 / 行囊 / 心力工具箱 */
@@ -6355,7 +7585,7 @@ var HER_CHAT=[
    ['x','（你没有删过它。）'],
    ['x','（你只是每天点开看一眼，再关掉。）'],
    ['x','（这样已经一年了。）']]},
- {id:'bro', who:'哥', need:function(){return !!S.flags['deep_wenxu']}, lines:[
+ {id:'bro', who:'哥', need:function(){return !!S.flags['deep_yat']}, lines:[
    ['t','燕安滕'],
    ['l','我妹手机里那条，我留着。'],
    ['l','你要是哪天想说什么，跟我说。'],
@@ -6427,25 +7657,25 @@ function hpShow(id){
 
 /* ---------- 交互动词：物件 ---------- */
 var TOUCH={
- win:['（你用手指在起雾的玻璃上划了一下。水珠顺着那道线滑下去。）','（窗是老的，推不动多少。）'],
- phone:['（你按亮屏幕，又按灭。）','（屏幕上有一道裂。你一直没去修。）'],
- desk:['（你把纸理齐。最上面那张写了半行，你没去看写的什么。）','（抽屉卡了一下，你没用力拉。）'],
- umb:['（你撑开又合上。塌的那一角会先落下来。）'],
- star:['（你用手指沿着那条连线划过去。三颗星。）'],
- shelf:['（你碰了碰货架，铁架子晃了一下。）'],
- fridge:['（冷气扑在脸上。你没关门，站了一秒。）'],
- till:['（你把手放在柜台上。木头的，被磨得很光。）'],
- oden:['（锅一直开着。这么晚了，没有人买。）','（热气一股一股冒上去，灯底下看得见。）'],
- seat:['（靠窗的老位置。椅子上有一道坐出来的痕。）'],
- piano:['（你按下去一个键。声音不太准。你记得是哪一个。）'],
- stand:['（你翻了一页。下一页和这一页，是一样的。）'],
- paper:['（你用手把卷起来的边压平。）'],
- screen:['（你伸手去接那道光。手上是暖的。）'],
- proj:['（机身是热的。你把手缩回来。）'],
- sky:[], tank:['（你敲了敲塔身。里面是空的，声音很大。）'],
- vent:['（你把手放在风口上。是暖的。）'],
- line:['（你碰了一下那件外套的袖口。是潮的。）'],
-  rail:['（你握紧栏杆。手心里有一点锈。）'],
+ win:['（你用手指在起雾的玻璃上划了一下。水珠顺着那道线滑下去。）','（窗是老的，推不动多少。）','（你对着玻璃哈了口气，画了个很小的圈。很快就没了。）'],
+ phone:['（你按亮屏幕，又按灭。）','（屏幕上有一道裂。你一直没去修。）','（你按亮又按灭，第三次。像在等什么人回。）'],
+ desk:['（你把纸理齐。最上面那张写了半行，你没去看写的什么。）','（抽屉卡了一下，你没用力拉。）','（你拉开抽屉又推回去。什么都没拿。）'],
+ umb:['（你撑开又合上。塌的那一角会先落下来。）','（你撑开伞，雨点落在上面。你站了一秒，收回去。）','（伞骨有一根断了，用铁丝缠着。缠的人手很稳。）','（你在原地转了半圈，看雨在伞上散开成一片。）'],
+ star:['（你用手指沿着那条连线划过去。三颗星。）','（你用指尖点了点那三颗星。纸薄得透光。）','（其中一颗你描过很多次，纸都起毛了。）','（第三颗一直没描。你怕描了，它就不亮了。）'],
+ shelf:['（你碰了碰货架，铁架子晃了一下。）','（最上面一层空着，落了灰。）','（有个位置摆过东西。阴影比别处浅一点。）','（你没去碰那块干净的阴影。）'],
+ fridge:['（冷气扑在脸上。你没关门，站了一秒。）','（冷藏格里有一瓶水，拧开了又拧上。）','（灯坏了，里面暗着。你伸手进去，摸到了凉。）','（你没拿。你只是确认它还凉着。）'],
+ till:['（你把手放在柜台上。木头的，被磨得很光。）','（台面下有道小缝，塞着一张对折的收据。）','（你没抽。收据的边角已经软了。）','（你敲了敲台面，声音闷闷的，像隔着很多年。）'],
+ oden:['（锅一直开着。这么晚了，没有人买。）','（热气一股一股冒上去，灯底下看得见。）','（竹签剩了两根，斜插在锅边。）','（你数了数，今天少了一串。是谁拿走的，你不知道。）','（汤还在滚。你站了一会儿，没去搅。）'],
+ seat:['（靠窗的老位置。椅子上有一道坐出来的痕。）','（你坐下去，刚好嵌进那道痕里。）','（从这个角度，能看见门口进来的人，而他看不见你。）','（你理解他为什么总让你坐这儿了。）'],
+ piano:['（你按下去一个键。声音不太准。你记得是哪一个。）','（你弹了那首她总绕过去的曲子，只弹到那一小节。）','（音是歪的，但歪得有道理。）','（你没弹完。弹完了，就没人来接了。）'],
+ stand:['（你翻了一页。下一页和这一页，是一样的。）','（乐谱翻到结尾，又回到开头。）','（最后一页夹着一张纸条：曲终，未完。）','（你合上谱架，像替谁把话收住。）'],
+ paper:['（你用手把卷起来的边压平。）','（纸上是密密麻麻的字，字迹很用力。）','（最上面一行写着日期，后面被划掉了。）','（你没读下去。有些纸，平了就够了。）'],
+ screen:['（你伸手去接那道光。手上是暖的。）','（银幕上的光落在你掌心，是一小片移动的蓝。）','（你把手抽回来，那片蓝跟着灭了。）','（你说不清刚才碰的是光，还是谁的梦。）'],
+ proj:['（机身是热的。你把手缩回来。）','（镜头盖内面有一行铅笔字：给还愿意看的人。）','（你没敢碰镜头。怕一碰，就替谁做完了那件事。）','（机器嗡嗡响着，像在替谁把话说到一半。）'],
+ sky:['（你抬头看了很久。）','（今晚的云很厚，星只有零星的几颗。）','（但最亮的那一颗，始终在。）','（你数了数，还是三颗。多出来的那颗，是你自己。）'], tank:['（你敲了敲塔身。里面是空的，声音很大。）','（油漆掉了一块，露出生锈的底。）','（塔顶积了雨水，映着头顶那点天光。）','（你敲第二下，声音和刚才不一样了——它也在听。）'],
+ vent:['（你把手放在风口上。是暖的。）','（风里带着一点油烟味，是楼上谁家还没睡。）','（你把手收回来的时候，暖意还留在掌心。）','（这条街的夜，是从这些缝隙里漏出来的。）'],
+ line:['（你碰了一下那件外套的袖口。是潮的。）','（衣摆被风吹起来，扫过你的脚踝。）','（口袋是空的，但形状像个手机。）','（你没去掏那个不存在的手机。）'],
+  rail:['（你握紧栏杆。手心里有一点锈。）','（风从指缝里穿过去，凉得很快。）','（栏杆上有个新补的漆点，盖着底下的刻字。）','（你用手指沿着那道刻痕摸，摸到一半断了。）'],
   tr_wall:['（墙根处有一行字，是用钥匙尖划的，很浅。）','（「有人在这条街等过一个人。」）','（没有落名字。划线的人也没打算让谁看见。）'],
   tr_poster:['（布告栏最底下压着一张旧海报。）','（一年前那场放映的。角上写着两个座位号。）','（一个撕过，一个没撕。）'],
   tr_bus:['（站牌背面贴过东西，撕掉了。）','（剩下一点胶，粘着一根很长的头发。）'],
@@ -6464,7 +7694,17 @@ var TOUCH={
   tr_rail2:['（栏杆上有一道新漆，盖着底下的刻痕。）','（刻痕是一个字。看不全了。）'],
   tr_cans:['（角落里堆着几个易拉罐。）','（都是同一种。有人在这儿坐过很多次。）'],
   tr_ticket2:['（栏杆内侧夹着半张票根。）','（和某个人手里那半张，正好是一张。）','（它已经皱了很久。）'],
- puddle:['（你伸脚碰了一下。凉的。）','（水纹晃开，又慢慢合上。）']
+ puddle:['（你伸脚碰了一下。凉的。）','（水纹晃开，又慢慢合上。）','（水面映出你的脸，被踩碎了又聚回来。）','（你没再碰。有些倒影，看一眼就够了。）'],
+ /* —— 后巷 —— */
+ al_graf:['（整面墙都是涂鸦。红的、青的、金的。）','（底下有一行被人涂掉了，涂得很用力。）','（隔着那层漆，还能摸出笔画——起笔很轻，收笔很重。）','（有人不想让别人看见这一行。）','（也有人不甘心，又用指甲抠过。）'],
+ al_win:['（便利店的后窗。毛玻璃，看不清里面。）','（能看见一个人影在里头走动，一趟一趟。）','（这巷子里唯一的光，就是从这儿漏出来的。）','（你贴着墙站了一会儿。玻璃是暖的。）'],
+ al_phone:['（一台旧电话亭，投币口还能用。）','（听筒挂着，线很长，垂到地上。）','（玻璃上有一层雾。有人用手指在上面写过一串数字，又擦了。）','（擦得不干净。你还认得出前三位。）'],
+ al_bin:['（铁皮垃圾桶，盖是开的。）','（里面一半是空纸箱，一半是雨水。）','（最上面压着一张收据。日期是一年前的。）','（你没翻。有些东西翻出来就得管。）'],
+ al_box:['（一个纸箱，靠墙放着。）','（里面有声音。）','（你蹲下来。一只猫，和四只还没睁眼的小猫。）','（猫看见你，没有跑。它只是看着你。）','（你在旁边站了很久。谁也没动。）'],
+ al_puddle:['（一滩积水，映着那扇后窗。）','（光在水里晃，碎成一片一片。）','（你踩进去。水是凉的，鞋里进了水。）','（你没有马上走开。）'],
+ tr_alley1:['（那行被涂掉的字，你数了数笔画。）','（七个字。前三个还能认：「她那天」。）','（后面四个，涂的人大约用了整管漆。）','（你没有去抠它。有些字抠开了，就不是原来那句了。）'],
+ tr_alley2:['（地上有一圈粉笔印，画得很方。）','（是跳房子的格子。画到第七格就停了。）','（粉笔是白的，被雨泡过，边上糊了。）','（这条巷子里的孩子，很久没来画过了。）','（你没有擦掉它。）'],
+ tr_alley3:['（电话亭玻璃上，那串数字。）','（前三位是这一片的区号。后八位你没看完。）','（有人在这儿打过一通很长的电话。）','（那通电话，大概没有打通。）','（你把手指按在那串数字上，按了一会儿，收了回来。）']
 };
 /* 靠窗的座位：离他远一点，他才说得下去 */
 function seatThing(){
@@ -6637,8 +7877,8 @@ function verbThing(k){
 }
 
 /* ---------- 依芽（白猫彩蛋）/ 诺斯图（街角反谜） ---------- */
-/* 依芽：心协的白猫。她见过这条街上的所有人，
-   所以她会在你卡住的时候，往某个方向看一眼。你不一定马上懂。 */
+/* 依芽：心协的白猫。它见过这条街上的所有人，
+   所以它会在你卡住的时候，往某个方向看一眼。你不一定马上懂。 */
 function catThing(){
   S.flags.met_yibu=true; save();
   if(S.spirit<=18){
@@ -6652,7 +7892,7 @@ function catThing(){
       '（徽章边角磨圆了。戴着它的人，戴了很久。）',
       '（项圈内侧刻过一个字。磨掉了，看不出是谁的名字。）',
       '（你不知道它从哪来。但它让你觉得——这条路上，不是只有你一个人。）',
-      '（她忽然扭头，朝一个方向看了一会儿。）',
+      '（它忽然扭头，朝一个方向看了一会儿。）',
       '（那个方向有灯。）'
     ],function(){
       gain(8); paintSpirit();
@@ -6673,64 +7913,39 @@ function catThing(){
     ],function(){ afterAction(); });
   }
 }
-/* 诺斯图：反谜。别人都藏着话，他直接把答案告诉你——而你反而不敢信 */
-var AJI_LINES=[
-  '「听哥一句：那便利店老哥，你直接走，别听他念叨。」',
-  '「天台那个？你上去就是听他慢慢说。别去。」',
-  '「放映厅那个最没劲，守着破机器一年，图什么。」',
-  '「琴房那个？你站门口听就行，别进去。进去她就不弹了。」',
-  '「这条街我熟。我在这儿蹲的时间，比你年纪都大。」',
-  '「别问我叫什么。问了也白问。」',
-  '「我说话你别全信。我自己都懒得信自己。」',
-  '「你要是睡不着，就当我陪你站会儿。别的我也不敢说。」',
-  '「别谢我。谢过我的人，后来都没什么好下场。」',
-  '「你口袋里那几颗东西，集齐了又能怎么样。」',
-  '「下雨天别抬头。抬头眼睛会进水。」',
-  '「你跟那个人，到最后也没说清楚吧。……别瞪我，我瞎猜的。」',
-  '（他说这话的时候，眼睛没看你。）',
-  '「你别老盯着那扇窗看。窗户不会自己开。」',
-  '「这条街上，谁都在等一个电话。就是没人先打。」',
-  '「我看你走第六遍了。……我没说这条街，我说你这个人。」',
-  '「趁还来得及。」'
-];
+/* 街角的诺斯图：引子。正式相识在后巷 —— 后巷才是他的地方。
+   三楼窗户那一晚，挪进了 NPCS.aji 的节点（aji_n4），由后巷的正式对话触发。 */
 function ajiThing(){
   S.flags.met_aji=true; save();
-  var first=!S.flags['aji_first']; S.flags['aji_first']=1; save();
-  var lines=['（街角蹲着个人，帽兜拉得很低。）'];
-  lines.push(first?'「哟，又卡这条街上了？」':'「又是你。这条街没有别的路走了是吧。」');
-  lines.push(pick(AJI_LINES));
-  sayLines(lines,function(){
-    var h='<div class="opts">', fns=[];
-    h+=optHTML(1,'「……你谁啊。」',null,'—','');
-    fns.push(function(){ sayLines(['「我是谁不重要。」','「一个没名没姓、蹲在街角啃关东煮的闲人罢了。」','「重要的是——你别跟他们一个个耗。」','（他咬了口关东煮，含糊地笑。）','（你忽然觉得，他说的不全错，但也不全对。）'],function(){ afterAction(); }); });
-    h+=optHTML(2,'「我自己的路，我自己走。」',null,'—','');
-    fns.push(function(){ sayLines(['「行行行，你走。」','「反正你最后还是会回到那扇门前。」','「——这话你别往心里去。我这人说的话，十句里九句是废话。」','（他冲你摆摆手，像早看透了。）'],function(){ afterAction(); }); });
-    if(S.flags['aji_guess']&&!S.flags['aji_upstairs']){
-      h+=optHTML(3,'「你在楼上。」',null,'—','你问过一次了');
-      fns.push(function(){
-        S.flags['aji_upstairs']=1; save();
-        sayLines(['（他没有笑。）','「……你怎么知道。」','「我在楼上。三楼那扇窗户后面。」','「我看见街上站着一个人。」','「雨那么大，他就那么站着，也不走。」','「我看了很久。」','「我没下去。」','「那天晚上，我一步都没有下去。」','（关东煮的汤凉了。他端着，没喝。）','（他没有说那句「我瞎猜的」。）','（他不是坏人。他只是，也一直没有伸手。）'],function(){
-          jrAdd('hero','这一夜 · 街角那个人说，那一晚他就在楼上，看见我一个人站在雨里。他一直没有下来。');
-          afterAction();
-        });
-      });
-    }
-    h+=optHTML(4,'「你那一晚，在哪儿。」',null,'—','');
-    fns.push(function(){
-      if(S.flags['aji_upstairs']){ sayLines(['「还问？」','「你都知道我在哪儿了。」','（他别过脸去，看街的另一头。）'],function(){ afterAction(); }); return; }
-      sayLines(['（他笑了。笑到一半，收了回去。）','「你猜。」','（他低下头，不再看你。）','（你等了一会儿。他没有要说下去的意思。）'],function(){
-        if(!S.flags['aji_guess']){ S.flags['aji_guess']=1; save();
-          jrAdd('hero','这一夜 · 街角那个人，我问他那一晚在哪儿。他说：你猜。'); }
-        afterAction();
-      });
-    });
-    h+='</div>';
-    optsEl.innerHTML=h; bindOpts(fns);
-  });
+  /* 已经在后巷混熟了 —— 街角这里只剩一句指路 */
+  if(S.times&&S.times.aji>0){
+    sayLines([
+      '（街角空着。他人不在这儿。）',
+      '（后巷墙根。他说过，蹲在那儿，比蹲在这儿多。）'
+    ],function(){ afterAction() });
+    return;
+  }
+  /* 第一次：引子。他不说自己在哪儿，只让你去后巷 */
+  sayLines([
+    '（街角蹲着个人，帽兜拉得很低。）',
+    '（他抬眼皮看了你一下，又低下。）',
+    '「哟。又卡这条街上了？」',
+    '「我住的地方不体面，就不请你上去了。」',
+    '「想找我——后巷。两家中间那道缝，一直走到里头。」',
+    '（他往巷口那边抬了抬下巴。）',
+    '「蹲着说话，比站着说话省力气。」'
+  ],function(){ afterAction() });
 }
 
 /* ---------- 交互动词：人 ---------- */
 function verbNPC(who){
+  /* 人不在就别给对话选项了 —— 以前立绘消失了还能聊，就是因为这里没查。 */
+  if(!hereTonight(who)){
+    optsEl.innerHTML='';                       /* 上轮留下的选项一并收掉，别让缺席的人还能被"点"到 */
+    sayLines((ABSENT[who]||['（这里没有人。）']).concat(['（今晚他不在这儿。明晚再来。）']),
+      function(){ afterAction(); });
+    return;
+  }
   var n=NPCS[who], rel=S.rel[who]||0;
   var h='<div class="opts">', fns=[], i=0;
   h+=optHTML(++i,'说话',null,'-1','和他说几句');
@@ -6900,7 +8115,7 @@ var PUZZLE_META={
   hemu:  {word:'雪', title:'锅里一直开着',   kind:'切字'},
   zi:    {word:'露', title:'空着的那一小节', kind:'接拍'},
   baigao:{word:'星', title:'第十三分钟',     kind:'胶片'},
-  wenxu: {word:'—',  title:'三句话',         kind:'答题'}
+  yat: {word:'—',  title:'三句话',         kind:'答题'}
 };
 function puzzleSolved(who){ return !!(S.flags&&S.flags['puz_'+who]); }
 function markPuzzle(who){ if(!who)return; S.flags=S.flags||{}; if(!S.flags['puz_'+who]){ S.flags['puz_'+who]=1; save(); } }
@@ -7271,8 +8486,18 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   end:function(k){endingBy(k)},finale:function(){startFinale()},
   fold:function(){try{foldOpts()}catch(e){}},
   lamp:function(){lampRest()},to:function(x,y){P.x=x;P.y=y},wv:function(v){return wv(v)},
+  /* 15 天制 / 后巷 / 今晚在不在 / 收尾 —— 自检与调试用（和上面同一套出口） */
+  DAYS:function(){return DAYS},
+  ROOMS:function(){return ROOMS},SCENES:function(){return SCENES},PLACES:function(){return PLACES},
+  FRAMES:function(){return FRAMES},STREET_DROP:function(){return STREET_DROP},
+  enter:function(id){enterRoom(id)},
+  here:function(w){return hereTonight(w)},roll:function(){rollHere()},gone:function(){return npcGone},
+  finaleReady:function(){return finaleReady()},askFinale:function(){askFinale()},
+  EVENTS:function(){return EVENTS},pickEvent:function(){return pickEvent()},
+  foot:function(){footstep()},footSrc:function(){return String(footstep)},LOOKS:function(){return LOOKS},
+  IDLE:function(){return IDLE},idleOff:function(id,t){return idleOffset(id,t)},
   chapter:function(d){return chapterName(d||S.day)},
-  get SC(){return SC},paint:function(){return paintScene()},
+  get SC(){return SC},
   visit:function(w){ if(!w||!NPCS[w])return; visitNPC(w); },
   beat:function(w,nd){startBeatPuzzle(w,nd||null)},
   film:function(w,nd){startFilmPuzzle(w,nd||null)},
@@ -7286,31 +8511,71 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   rollWeather:rollWeather, CLUE:CLUE, hasClue:hasClue, learnClue:learnClue, PIECES:PIECES};
 })();
 
-/* ===== 手机：自动横屏 + 触屏标记（网页自己转，不依赖系统转屏） ===== */
+/* ===== 手机：自动横屏 =====
+   手机上这个游戏是横着玩的。竖屏进来时自动把画面转过来 ——
+   不是"给个按钮让你自己转"，而是进来就是横的；真想竖着玩可以点「竖着玩」关掉。
+
+   两种宿主，两套做法：
+     ① 独立打开（不是 iframe）→ 自己转：html.rot90 把整页旋转 90°。
+     ② 嵌在官网 iframe 里  → 不能自转（会溢出到 iframe 外面被裁掉），
+        改成 postMessage 请父页把「容器 + 全屏」转过去。
+   另外能锁系统方向就锁（Android Chrome 全屏下可用；iOS 不支持，忽略即可）。 */
 (function(){
   var H=document.documentElement, B=document.body, KEY='yd30_port', hintDone=false;
+  var inFrame=false;
+  try{ inFrame = (window.self!==window.top); }catch(e){ inFrame=true; }
+
   function isPhone(){ try{ var m=Math.min(screen.width||9999,screen.height||9999);
     return m<600 || (matchMedia('(pointer:coarse)').matches && m<900); }catch(e){ return false; } }
-  function pref(){ try{ return sessionStorage.getItem(KEY); }catch(e){ return null; } }
+  /* 没选过就默认横屏 —— 这是"手机端开始游戏自动横屏"的关键 */
+  function pref(){ try{ var v=sessionStorage.getItem(KEY); return (v===null||v==='')?'1':v; }catch(e){ return '1'; } }
   var hint=document.getElementById('rothint');
-  function apply(){
+
+  /* why='auto' 是"我根据屏幕比例算出来的"，'user' 是"玩家自己按了按钮"。
+     必须区分：父页把容器转成横屏之后，iframe 就变成横的了，
+     我下一轮又会算出"已经是横屏，不用转"并发 auto:'0' 回去 —— 父页若照做就会抖个不停。
+     所以父页只在 user 时才真的取消旋转。 */
+  function askParent(kind,why){
+    if(!inFrame)return;
+    try{ parent.postMessage({__yd30:'landscape', want:kind, why:why||'auto'}, '*'); }catch(e){}
+  }
+  var lockTried=false;
+  function lockLand(){
+    /* 尽力而为：绝大多数手机浏览器（尤其 iOS）会拒绝，拒绝就靠网页自己转。
+       两个坑：① 只调一次 —— 重复调用第二次会被 AbortError 取消；
+               ② Promise 的 reject 不会被 try/catch 抓住，必须 .catch，
+                  否则控制台会被一排未处理的 AbortError 刷屏。 */
+    if(lockTried)return false; lockTried=true;
+    var r=null;
+    try{ var o=screen.orientation||screen.mozOrientation||screen.msOrientation;
+      if(o&&o.lock)r=o.lock('landscape'); }catch(e){}
+    if(!r){ try{ if(screen.lockOrientation)r=screen.lockOrientation('landscape'); }catch(e){} }
+    if(r&&r.catch)r.catch(function(){});
+    return !!r;
+  }
+
+  function apply(why){
     var rl=(innerWidth||0)>(innerHeight||0), ph=isPhone();
     var touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
     if(touch){ B.classList.add('touch'); try{ touchifyButtons(); }catch(e){} }
-    var rot = ph && !rl && pref()==='1';   /* 默认不自动转屏；按"转屏"按钮手动开启 */
+    var want = (ph && !rl && pref()==='1');
+    var rot  = want && !inFrame;      /* iframe 里自转会被裁，交给父页 */
     var was=H.className+'|'+B.className;
     H.classList.toggle('rot90', rot);
     B.classList.toggle('touch', touch);
     B.classList.toggle('hland', rot || rl);
+    if(inFrame) askParent(want?'1':'0', why||'auto');
     if(hint) hint.classList.toggle('on', rot && !hintDone);
     if(was !== H.className+'|'+B.className){ try{ window.dispatchEvent(new Event('resize')); }catch(e){} }
+    if(rot||rl) lockLand();
   }
-  function setPref(v){ try{ sessionStorage.setItem(KEY,v); }catch(e){} apply(); }
+  function setPref(v,why){ try{ sessionStorage.setItem(KEY,v); }catch(e){} apply(why||'auto'); }
   window.__ydRot=setPref;
+  window.__ydIsFrame=function(){return inFrame};
   var br=document.getElementById('btnRot');
-  if(br) br.addEventListener('click', function(){ setPref(pref()==='0'?'1':'0'); });
+  if(br) br.addEventListener('click', function(){ setPref(pref()==='0'?'1':'0','user'); });
   var hx=document.getElementById('rothintX');
-  if(hx) hx.addEventListener('click', function(){ hintDone=true; setPref('0'); });
+  if(hx) hx.addEventListener('click', function(){ hintDone=true; setPref('0','user'); });
   addEventListener('resize', apply);
   addEventListener('orientationchange', function(){ setTimeout(apply,120); });
   apply(); setTimeout(apply,300); setTimeout(apply,1000);
@@ -7342,6 +8607,45 @@ window.addEventListener('error',function(ev){
   try{ var o=$('#itemGet'); if(o)o.classList.remove('on'); }catch(e){}
   try{ if(typeof toast==='function')toast('（这里卡了一下。你还可以继续走。）'); }catch(e){}
 });
+
+/* ===== UI 活起来：按压波纹（纯 transform/opacity，单元素瞬时，不卡；尊重「减少动效」） ===== */
+(function(){
+  try{ if(matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return; }catch(e){}
+  var SEL='#top .tb,#hud .opts .opt,.pixbtn,#panelBody .place,.igb,.thgo,.acts button,'+
+          '.veil .in button,#btnStart,.hintbar .help,.book .acts button,'+
+          '.endList .acts button,.rothint .x,.thelp .thgo,.crowd button';
+  function rip(el,e){
+    var r=el.getBoundingClientRect();
+    var s=document.createElement('span'); s.className='rp';
+    var cx=(e&&e.clientX!=null)?e.clientX:r.left+r.width/2;
+    var cy=(e&&e.clientY!=null)?e.clientY:r.top+r.height/2;
+    var x=cx-r.left, y=cy-r.top;
+    var d=Math.max(r.width,r.height)*2.4;
+    s.style.left=x+'px'; s.style.top=y+'px';
+    s.style.width=d+'px'; s.style.height=d+'px';
+    s.style.margin=(-d/2)+'px 0 0 '+(-d/2)+'px';
+    el.appendChild(s);
+    s.addEventListener('animationend',function(){ if(s.parentNode)s.parentNode.removeChild(s); });
+  }
+  function add(el){
+    if(!el||el._rfx)return; el._rfx=1;
+    try{ if(getComputedStyle(el).position==='static')el.style.position='relative'; }catch(e){}
+    el.classList.add('rfx');
+    el.addEventListener('pointerdown',function(e){ try{ rip(el,e); }catch(err){} });
+  }
+  function wire(){ try{ [].slice.call(document.querySelectorAll(SEL)).forEach(add); }catch(e){} }
+  window.__rfxWire=wire;
+  wire();
+  /* 动态生成的选项/出门地点：DOM 变动时 rAF 节流补接，不漏接也不反复扫 */
+  try{
+    var pend=false;
+    function schedule(){ if(pend)return; pend=true; requestAnimationFrame(function(){ pend=false; wire(); }); }
+    var _mo=new MutationObserver(schedule);
+    ['opts','panelBody','endListBody','talkLogBody','outfitBox','toolBox','menuAttr','crowd'].forEach(function(id){
+      var n=document.getElementById(id); if(n)_mo.observe(n,{childList:true,subtree:true});
+    });
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
