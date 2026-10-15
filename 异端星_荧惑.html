@@ -14,7 +14,7 @@
   --p-bg:#0b0a12;    /* 底 */
   --p-bg2:#151221;   /* 面板 */
   --p-bg3:#201b31;   /* 面板亮 */
-  --p-line:#e6dcc8;  /* 骨白 · 边框与正文 */
+  --p-line:#e6dcc8;
   --p-ink:#07060c;   /* 描黑 */
   --p-txt:#e6dcc8;
   --p-mut:#8b849c;
@@ -23,27 +23,26 @@
   --p-pur:#8f6fb0;   /* 紫 */
   --p-teal:#5ba3a0;  /* 雾青 */
   --p-grn:#7fa86b;   /* 草绿 */
-  /* --ui：正文与对话。像素画面 + 清晰文字，中文才读得下去 */
+
   --ui:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
-  /* --mono：数字/英文/标号/快捷键 —— 这些保留像素味 */
+
   --mono:"Zpix","DotGothic16",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --px:"Zpix","DotGothic16","Silkscreen","Press Start 2P",
       ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
   --hair:1px;
-  /* 顶栏实际高度 / 移动端摇杆区高度 —— 由 JS 实测写入，避免硬编码导致遮挡 */
+
   --topH:58px;
   --padH:168px;
   --barH:38px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;height:100%}
-html,body{overscroll-behavior:none;   /* 别在手机上拉出橡皮筋，画面会被拽动 */
-  -webkit-tap-highlight-color:transparent}   /* 点按钮别闪一下灰块 */
+html,body{overscroll-behavior:none;
+  -webkit-tap-highlight-color:transparent}
 body{background:var(--p-bg);color:var(--p-txt);font-family:var(--ui);font-size:15.5px;line-height:2.05;
   letter-spacing:.015em;overflow-x:hidden;-webkit-font-smoothing:antialiased;
   background-image:radial-gradient(120% 90% at 50% 0%,rgba(90,80,140,.10),rgba(0,0,0,0) 62%)}
-/* 手机上长按会弹出「复制/分享」、双击会缩放、拖动会选中文字 —— 全是误操作，一并关掉。
-   注意只关界面元素，对话框正文保留可选（玩家想复制台词时还能选）。 */
+
 body.touch{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 body.touch .hud .talk .t,body.touch .veil .in,body.touch .book{user-select:text;-webkit-user-select:text}
 body.touch canvas,body.touch .pad,body.touch .top{touch-action:none}
@@ -51,13 +50,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 img{max-width:100%;display:block}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges}
 ::selection{background:var(--p-gold);color:var(--p-ink);text-shadow:none}
-/* 像素字体只用在"数字/英文/标号/键位"上，保持那股味道 */
+
 .top .day em,.en,.idx,.k,#uTime,.cap,.sil .lab,em,.px{font-family:var(--mono)}
 .hud .talk .tname{font-family:var(--mono);letter-spacing:.14em}
 .hud .opts .opt .k{font-family:var(--mono)}
 :focus-visible{outline:2px solid var(--p-gold);outline-offset:2px}
 
-/* 像素框：外硬边 + 黑描边 + 硬投影 */
 .pbox{background:var(--p-bg2);border:var(--hair) solid var(--p-line);
   box-shadow:0 14px 34px -12px rgba(0,0,0,.66)}
 
@@ -77,12 +75,12 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges}
   color:var(--p-txt);background:var(--p-bg2);transition:none}
 .top .tb:hover{background:var(--p-gold);color:var(--p-ink);text-shadow:none}
 .top .tb.on{background:var(--p-line);color:var(--p-ink);text-shadow:none}
-/* 顶栏按钮：文字 + 图标分两层，触屏只留图标（一排放得下） */
+
 .top .tb .lb{margin-right:4px}
 .top .tb .ic{opacity:.9}
 body.touch .top .tb .lb{display:none}
 body.touch .top .tb{padding:3px 6px;font-size:13px}
-/* 极窄屏才收掉最长的那一条，其余进度徽章都留着 */
+
 @media(max-width:520px){#goal3{display:none}}
 
 /* ---------- 主角面板 ---------- */
@@ -102,7 +100,6 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 .hero-s.crit{color:var(--p-red)}
 .hero-s.tired{color:var(--p-teal)}
 
-/* 心率圆（保留原节点，像素化） */
 .spirit{width:26px;height:26px;flex:none;display:none}
 .spirit svg{width:100%;height:100%;display:block;overflow:visible}
 .spirit .ring{fill:none;stroke:var(--p-line);stroke-width:2}
@@ -113,7 +110,6 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 .spirit.burn .ring{stroke:var(--p-red);stroke-dasharray:3 2}
 .spirit .dot{fill:var(--p-gold)}
 
-/* 心力呼吸：一颗跟着阶段换节奏的小点（稳 3.4s → 烧着 1.1s） */
 .hintbar .breath{width:7px;height:7px;flex:none;border-radius:50%;background:var(--p-gold);
   box-shadow:0 0 0 1px rgba(230,220,200,.22);animation:breathPulse var(--breath,3.2s) ease-in-out infinite}
 .hintbar .breath.tired{background:var(--p-teal)}
@@ -129,7 +125,6 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 .col-l{min-width:0}
 .col-r{min-width:0}
 
-/* 左：场景（像素 canvas） */
 .scene{position:relative;aspect-ratio:4/3;background:#0e0c17;overflow:hidden;
   border:var(--hair) solid var(--p-line);box-shadow:0 14px 34px -12px rgba(0,0,0,.66)}
 .scene canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -159,7 +154,7 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 
 /* 右：文本 */
 .cap{font-size:11.5px;letter-spacing:.24em;color:var(--p-gold);padding:2px 0 10px}
-/* 关系进度（不写数字，只用点） */
+
 .who .bond{display:flex;align-items:center;gap:4px;margin:2px 0 10px}
 .who .bond i{width:9px;height:9px;display:block;border:1px solid var(--p-line);background:transparent}
 .who .bond i.on{background:var(--p-gold);border-color:var(--p-gold)}
@@ -280,8 +275,7 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 
 /* 结局 / 覆盖层 */
 .veil{position:fixed;inset:0;z-index:95;background:var(--p-bg);display:none;overflow:auto}
-/* 内容比视口高时（横屏布局高只有 390、标题屏文案又多），align-items:center 会把
-   上半截顶出滚动区、永远滚不到 —— 改用 margin:auto：矮了居中，高了从顶上开始滚 */
+
 .veil.on{display:flex;padding:26px;animation:pnlIn .3s ease}
 .veil .in{max-width:620px;width:100%;margin:auto}
 .veil .outfits{display:none;margin:8px 0 4px;border-top:var(--hair) solid var(--p-line);padding-top:12px}
@@ -358,25 +352,15 @@ body.touch .top .tb{padding:3px 6px;font-size:13px}
 .talk.view p{color:#d9cfe8}
 /* ---------- 全屏舞台 ---------- */
 .stage{position:fixed;left:0;right:0;top:var(--topH);bottom:var(--barH);z-index:10;background:#0b0a12;overflow:hidden}
-/* ===== 自定义光标：夜里的一粒暖光 =====
-   这个游戏是深夜、雨、路灯。所以光标不该是系统白箭头 —— 换成一粒会呼吸的暖金光。
-   只换"看得见的那一点"，命中判定照旧交给浏览器；触屏与减少动效下完全不启用。 */
-/* 必须挂在 body 层 + position:fixed + 最高层级：
-   以前它关在 .stage（z-index:10 的层叠上下文、overflow:hidden）里且自身 z-index:4，
-   结果对话框(60)/菜单(80~96)/顶栏(60) 全都压在它上面 —— 面板一开光标就"消失"。
-   现在固定在视口上、永远最顶层。 */
+/* ===== 自定义光标：夜里的一粒暖光 ===== */
+
 #cur{position:fixed;left:0;top:0;z-index:999;pointer-events:none;display:none;
   width:20px;height:20px;margin:-10px 0 0 -10px}
-/* 可见性由 body.pcur 常驻控制（以前这里只有 display:none 而没有任何显示规则，
-   而 body.pcur 又把系统光标 cursor:none 藏掉 → 鼠标在游戏里彻底看不见）。
-   不能用 .on 当显示开关 ——
-   at() 里 .on 是「悬停在 UI 上」的意思，鼠标一挪到画布上 on 就被摘掉，
-   光标又没了（这正是「有时看得见有时看不见」的另一半原因）。 */
+
 body.pcur #cur{display:block}
 body.pcur{cursor:none}
 body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none}
-/* 之前是三层 + 强发光 + mix-blend-mode:screen，太花也太重（大面积混合模式合成）。
-   现在只留两笔：中间一个小实心点 + 一圈很淡的描边，靠近可互动的东西时描边收紧。 */
+
 #cur i{position:absolute;display:block;border-radius:50%}
 #cur .c1{left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;
   background:var(--p-gold,#ffd489);box-shadow:0 0 4px rgba(0,0,0,.55);
@@ -384,7 +368,7 @@ body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none
 #cur .c2{left:50%;top:50%;width:19px;height:19px;margin:-9.5px 0 0 -9.5px;
   border:1px solid rgba(255,212,137,.4);opacity:.6;transform:scale(1);
   transition:transform .18s cubic-bezier(.2,.9,.3,1.4),opacity .18s,border-color .18s}
-/* 靠近可互动的东西时描边收紧 —— 提示「这里能按 E」，但不喧宾夺主 */
+
 #cur.near .c2{transform:scale(.78);opacity:1;border-color:rgba(255,212,137,.95)}
 #cur.near .c1{transform:scale(1.15)}
 #cur.down .c1{transform:scale(.7)}
@@ -421,10 +405,7 @@ body.pcur button,body.pcur .pad>*,body.pcur .opt,body.pcur [onclick]{cursor:none
 @media(hover:none) and (pointer:coarse){.pad{display:flex}}
 body.touch .pad{display:flex}
 
-/* ===== 手机端界面优化 =====
-   1) 摇杆与按键按屏幕短边自适应缩放，小屏不再挤成一团；
-   2) 交互提示条 / 对话框上移到摇杆之上，避免被 pad 完全盖住；
-   3) 顶栏按钮在窄屏收紧，避免换行把舞台顶下去。 */
+/* ===== 手机端界面优化 ===== */
 .pad{--S:clamp(100px,32vmin,138px);--N:calc(var(--S)*0.43)}
 .pad .stick{width:var(--S);height:var(--S)}
 .pad .stick .nub{width:var(--N);height:var(--N);margin:calc(var(--N)/-2) 0 0 calc(var(--N)/-2)}
@@ -432,11 +413,11 @@ body.touch .pad{padding:10px 12px}
 body.touch .pad .pb.e{width:clamp(58px,17vmin,66px);height:clamp(58px,17vmin,66px);font-size:14px}
 body.touch .pad .pb.x,body.touch .pad .pb.z{width:clamp(46px,13vmin,52px);height:clamp(46px,13vmin,52px);font-size:12.5px}
 body.touch .pad .pb em{font-size:8.5px}
-/* 提示条：抬到摇杆上方（tip 在 stage 内，只需避让 pad） */
+
 body.touch .stage .tip{bottom:calc(var(--padH) + 8px)}
-/* 对话框：hud 是 fixed，需同时避让底部操作条和摇杆区 */
+
 body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
-/* 窄屏顶栏：按钮收紧 + 允许换行，进度徽章保留（不再整块隐藏） */
+
 @media(max-width:640px){
   html .top .in{gap:4px;padding:3px 8px}
   .hero-n em{display:none}
@@ -448,11 +429,11 @@ body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
   .hero-n{font-size:11px}
   .hero-n em{font-size:9.5px}
   html .top .day{font-size:11.5px}
-  .top .day em{display:none}          /* "DAY 01 / 20" 与「第 1 天」重复，窄屏让位 */
+  .top .day em{display:none}
   html .top .pl{font-size:10px;letter-spacing:0;padding:2px 5px;white-space:nowrap}
   .top .sp{display:none}
 }
-/* 横屏（矮屏）：顶栏压成一行，徽章只留最要紧的两条，把高度让给画面 */
+
 @media(max-height:520px){
   html .top .in{min-height:38px;padding:2px 6px;gap:3px}
   html .top .pl{font-size:9.5px;padding:1px 4px}
@@ -465,15 +446,12 @@ body.touch .hud{bottom:calc(var(--barH) + var(--padH) + 4px)}
   .hintbar .in{padding:3px 10px}
   #tPhase,#goal2,#goal3{display:none}
 }
-/* iOS 底部那条小黑杠：@supports 包住，万一解析失败也不会让整条声明作废 */
+
 @supports (padding-bottom: env(safe-area-inset-bottom)){
   body.touch .hintbar .in{padding-bottom:calc(5px + env(safe-area-inset-bottom))}
 }
 
-/* ===== 手机横屏后的安全区 =====
-   页面被 rotate(90deg) 转过来之后，屏幕四条边和 CSS 的上下左右是错位的：
-     CSS 的「上」= 屏幕右边，「下」= 屏幕左边，「左」= 屏幕底部，「右」= 屏幕顶部。
-   所以把 env() 按这个对应关系转一遍再用，刘海和小黑杠才不会压住顶栏或摇杆。 */
+/* ===== 手机横屏后的安全区 ===== */
 html.rot90{
   --sat:env(safe-area-inset-right,0px);
   --sab:env(safe-area-inset-left,0px);
@@ -486,32 +464,28 @@ html.rot90{
   html.rot90 .hintbar .in{padding-bottom:calc(5px + var(--sal))}
 }
 
-/* ===== 触控热区：手指没有鼠标那么准 =====
-   iOS/Android 的可点区域建议不小于 44px。顶栏按钮和底部条在手机上全部抬到这个数，
-   并且用 ::after 把热区向外扩（视觉上不变大，实际更好点）。 */
-/* 注意：不能给 .pad .pb 加 position:relative —— 方向键是 relative 到 .dpad 的绝对定位，
-   一旦改成 relative，left/top 就从"定位"变成"偏移"，整个摇杆会散架。
-   它们本身已有 44~66px，直接用固定尺寸就够手指点。 */
+/* ===== 触控热区：手指没有鼠标那么准 ===== */
+
 body.touch .top .tb{min-width:42px;min-height:34px}
-body.touch .top .tb{position:relative}          /* .tb 原本是 static，加 relative 不影响布局 */
+body.touch .top .tb{position:relative}
 body.touch .top .tb::after{content:'';position:absolute;inset:-6px -4px}
 body.touch .hintbar button{min-height:34px;padding:4px 12px}
 body.touch .hud .opts .opt{min-height:44px}
-/* 关闭/合上这类按钮在角上，手机上要更靠内一点，别贴着边沿 */
+
 body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px}
-/* 手机底部操作条：键盘提示无意义，只留「需要帮忙」和心力，条子变薄 */
+
 @media(max-width:700px){
   .hintbar .kb{display:none}
   .hintbar .in{justify-content:flex-end;padding:5px 12px;gap:10px}
 }
 
 /* ---------- 底部对话浮层：只有选项按钮可点，文本框永不吞点击 ---------- */
-/* flex 列布局 + 高度上限：内容永远从底部长起，超出部分在内部滚，
-   不会顶出屏幕顶部变成点不到的区域（横屏布局高只有 390 时尤其明显）。
-   上限 = 视口高 - 底栏 - 摇杆区，和 bottom 偏移同源，横竖屏都自动对齐 */
+
 .hud{position:fixed;left:0;right:0;bottom:38px;z-index:40;pointer-events:none;
-  display:flex;flex-direction:column;justify-content:flex-end;
+  display:flex;flex-direction:column;
   max-height:calc(100% - var(--barH) - var(--padH) - 4px)}
+
+.hud>.cap,.hud>.talk,.hud>.opts,.hud>.sil{width:100%}
 .hud .cap,.hud .talk,.hud .opts,.hud .sil,.hud .note-line{pointer-events:none}
 .hud .opts{max-height:44vh;overflow-y:auto;overflow-x:hidden}
 .hud .opts .opt{pointer-events:auto}
@@ -531,14 +505,14 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
   box-shadow:0 0 0 1px rgba(7,6,12,.85),0 14px 34px -12px rgba(0,0,0,.95),
              inset 0 1px 0 rgba(255,255,255,.05);
   padding:14px 18px;min-height:84px;max-height:34vh;overflow:auto;
-  /* 没有台词时整个框(含边框/底)都不出现 —— 否则清空的瞬间会露一个空黑框 */
+
   opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
 .hud .talk.on{opacity:1;visibility:visible}
 .hud .talk.fade{opacity:0}
-/* 结束提示：一段话讲完、没有选项时，淡出前先落这一行 —— 别悄无声息地收框 */
+
 .hud .talk p.eend{margin:9px 0 2px;text-align:center;font-size:11px;letter-spacing:.32em;
   color:var(--p-mut);opacity:.9;animation:none;caret-color:transparent}
-/* 贴着他站：字淡下去 —— 他声音小了，你听不清 */
+
 .hud .talk.near p{animation:none;opacity:.5}
 .hud .talk.near .tface{opacity:.5}
 .hud .talk:empty{display:none}
@@ -546,9 +520,9 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
   border-left:var(--hair) solid var(--p-line);border-right:var(--hair) solid var(--p-line);
   border-bottom:var(--hair) solid var(--p-line)}
 .hud .opts:empty{display:none}
-/* 内层 <div class="opts"> 只是分组容器，不要再套一层深色框（否则出现双层空黑框、看起来像“黑色空白框框”） */
+
 .hud .opts .opts{background:transparent;border:0;margin:0;padding:0;max-width:none}
-/* 任何时候选项区里没有任何按钮，就彻底隐藏，杜绝空黑框 */
+
 .hud .opts:not(:has(.opt)){display:none}
 .hud .sil{max-width:880px;margin:0 auto;background:rgba(11,10,18,.90);padding:10px 14px}
 .hud .note-line{max-width:880px;margin:4px auto 0;padding:5px 14px;display:none;
@@ -576,10 +550,9 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
 .panel .ph em{display:block;font-style:normal;font-size:11.5px;letter-spacing:.06em;color:var(--p-mut);margin-top:5px}
 .panel .pacts{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
 
-/* 群像浮层：默认收起，按 V 展开 */
 .crowd{position:fixed;right:12px;top:70px;z-index:60;width:min(320px,calc(100vw - 24px));
   display:none;background:rgba(11,10,18,.94);
-  /* 人多时条目会超过一屏：限高 + 内部滚，别长出屏幕外够不着 */
+
   max-height:calc(100% - 78px);overflow:auto}
 .crowd.on{display:block}
 
@@ -590,18 +563,18 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
 /* ========== UI 升级覆盖块 ========== */
 /* 暗角 */
 .stage .vig{position:absolute;inset:0;pointer-events:none;z-index:3;
-  /* 暗角 + 冷暖分离：上方压一点冷，下方带一点地面的暖 —— 画面才有"空气" */
+
   background:
     radial-gradient(ellipse at 50% 40%,rgba(0,0,0,0) 48%,rgba(4,3,10,.44) 100%),
     linear-gradient(180deg,rgba(34,44,88,.13) 0%,rgba(0,0,0,0) 38%,rgba(70,38,22,.09) 100%)}
-/* 互动提示：双层像素框 + 立体键帽 */
+
 .stage .tip{background:rgba(7,6,12,.94);border:2px solid var(--p-gold);
   box-shadow:0 0 0 2px #07060c,0 14px 34px -12px rgba(0,0,0,.66);padding:8px 18px;z-index:6}
 #uHint{opacity:0;transition:opacity .8s ease}
 #uHint.on{opacity:1}
 .stage .tip kbd{background:var(--p-gold);color:var(--p-ink);border:1px solid #07060c;
   border-bottom-width:3px;padding:0 6px;margin-right:8px;font-size:11.5px;text-shadow:none}
-/* 对话框：头像 + 名牌 + 入场动画 */
+
 .hud .talk{animation:talkin .22s steps(3)}
 @keyframes pnlIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes talkin{from{transform:translateY(8px)}to{transform:none}}
@@ -621,22 +594,22 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
   opacity:.6;transform:scale(0);animation:rp .52s cubic-bezier(.2,.7,.3,1) forwards;will-change:transform,opacity}
 @keyframes rp{to{transform:scale(1);opacity:0}}
 @media(prefers-reduced-motion:reduce){.rfx>.rp{display:none}}
-/* 顶栏开关：开启时一层缓慢呼吸的暖光（只动 opacity，合成层，不卡） */
+
 .top .tb.on{position:relative}
 .top .tb.on::after{content:'';position:absolute;inset:-2px;border-radius:9px;
   box-shadow:0 0 0 1px var(--p-line);opacity:.2;animation:tglow 2.8s ease-in-out infinite;pointer-events:none}
 @keyframes tglow{0%,100%{opacity:.18}50%{opacity:.6}}
-/* 场景切换：进场轻轻落定（translateY+opacity，GPU 合成，不动 canvas 像素） */
+
 .stage.enter{animation:stageIn .42s cubic-bezier(.22,.61,.36,1)}
 @keyframes stageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-/* 出门面板：从下轻轻浮起 */
+
 .panel.on .pin{animation:panelIn .32s cubic-bezier(.2,.9,.3,1.1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){
   .stage.enter,.panel.on .pin{animation:none}
   .top .tb.on::after{display:none}
 }
-/* 选项：hover 金箭头 */
+
 .hud .opts .opt{padding-left:26px;position:relative}
 .hud .opts .opt::before{content:'';position:absolute;left:9px;top:50%;transform:translateY(-50%);
   width:0;height:0;border:5px solid transparent;border-left:7px solid transparent;opacity:0}
@@ -645,12 +618,12 @@ body.touch .veil .acts button,body.touch .thgo{min-height:44px;padding:10px 16px
 /* 顶栏按钮按下 */
 .top .tb:active{transform:translate(1px,1px)}
 .pixbtn:active{transform:translate(1px,1px)}
-/* 键帽立体化（底部提示条等） */
+
 kbd{border-bottom-width:2px !important;box-shadow:0 1px 0 rgba(0,0,0,.6)}
 /* 天气图标 */
 #wxIco{width:14px;height:14px;image-rendering:pixelated;display:inline-block;
   vertical-align:-3px;margin-right:5px}
-/* toast 更醒目 */
+
 .toast{border:2px solid var(--p-gold);box-shadow:0 0 0 2px #07060c,0 14px 34px -12px rgba(0,0,0,.66);
   background:rgba(11,10,18,.96);color:var(--p-gold)}
 /* 心力条底槽 */
@@ -664,27 +637,26 @@ kbd{border-bottom-width:2px !important;box-shadow:0 1px 0 rgba(0,0,0,.6)}
   pointer-events:none;transition:height .5s steps(7)}
 #lbT{top:0}#lbB{bottom:0}
 #lbT.on,#lbB.on{height:12.5vh}
-/* 上下黑边各带一排齿孔，像胶片边缘 */
+
 #lbT.on::after,#lbB.on::before{content:'';position:absolute;left:0;right:0;height:8px;
   background-image:repeating-linear-gradient(90deg,rgba(206,200,220,.13) 0 8px,rgba(0,0,0,0) 8px 24px);
   background-size:24px 8px}
 #lbT.on::after{top:10px}
 #lbB.on::before{bottom:10px}
-/* 黑边演出时：底部/右上的常驻 UI 整体让出黑条的高度 —— 否则 z-index:80 的黑条
-   会把 z-index:40 的对话框连底盖住（对话演到一半，字被黑边吃掉） */
+
 body.lb-on .hud{bottom:calc(12.5vh + 38px)}
 body.lb-on .hintbar{bottom:12.5vh}
 body.lb-on .pad{bottom:12.5vh}
 body.lb-on .crowd{top:calc(12.5vh + 8px)}
-/* 位移和黑边同步（同一条 steps(7) 曲线），别一格一格错开 */
+
 .hud,.hintbar,.pad,.crowd{transition:bottom .5s steps(7),top .5s steps(7)}
-/* 横屏布局高只有 390：12.5vh 的黑边会吃掉半个多屏幕，统一压到 46px */
+
 html.rot90 #lbT.on,html.rot90 #lbB.on{height:46px}
 html.rot90 body.lb-on .hud{bottom:calc(46px + var(--barH) + 4px)}
 html.rot90 body.lb-on .hintbar{bottom:46px}
 html.rot90 body.lb-on .pad{bottom:46px}
 html.rot90 body.lb-on .crowd{top:54px}
-/* 横屏：手册/钢琴/胶片/谜题的内边距按布局高重算，别把内容挤出首屏 */
+
 html.rot90 .btin,html.rot90 .pnoin,html.rot90 .fmin,html.rot90 .pzin{padding-top:clamp(14px,4vh,26px)}
 #tcard{position:fixed;inset:0;z-index:82;display:flex;flex-direction:column;align-items:center;
   justify-content:center;background:rgba(7,6,12,.93);opacity:0;pointer-events:none;transition:opacity .5s}
@@ -693,25 +665,25 @@ html.rot90 .btin,html.rot90 .pnoin,html.rot90 .fmin,html.rot90 .pzin{padding-top
   text-shadow:0 14px 34px -12px rgba(0,0,0,.66);text-align:center;line-height:1.8}
 #tcard em{font-style:normal;font-size:12px;letter-spacing:.24em;color:var(--p-mut);margin-top:16px;text-align:center}
 #flash{position:fixed;inset:0;z-index:84;background:#fff;opacity:0;pointer-events:none}
-/* 胶片颗粒：给关键场景一层“拍下来的”质感（静态、低透明，不抢画面也不吃性能） */
+
 #grain{position:fixed;inset:0;z-index:96;pointer-events:none;opacity:0;transition:opacity 1.6s ease;
   background-size:150px 150px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 #grain.on{opacity:.12;animation:grainstep .7s steps(3,end) infinite}
 @keyframes grainstep{0%{background-position:0 0}33.3%{background-position:-42px 24px}66.6%{background-position:26px -36px}100%{background-position:0 0}}
-/* 无障碍：系统设了“减少动效”时，关掉装饰层（颗粒闪动 / 扫描线），保留必要的画面 */
+
 @media (prefers-reduced-motion: reduce){
   #grain.on{animation:none}
   .scan{background:none}
   #grain{transition:opacity .3s}
 }
-/* 漏光：暖色光晕，用在结局，像胶片边缘进了光（不用混合模式，省性能） */
+
 #leak{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:0;transition:opacity 2.2s ease;
   background:
     radial-gradient(120% 90% at 88% 12%,rgba(255,168,92,.42),rgba(255,120,60,.14) 42%,rgba(0,0,0,0) 72%),
     radial-gradient(90% 80% at 8% 92%,rgba(255,206,140,.22),rgba(0,0,0,0) 62%)}
 #leak.on{opacity:.9}
-/* 结局页的演职员表：像一段电影片尾 */
+
 .credits{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);
   font:12px/2 monospace;letter-spacing:.06em;text-align:center}
 .credits .ch{color:#cfc6e0;letter-spacing:.34em;margin-bottom:8px;font-size:11px}
@@ -720,7 +692,7 @@ html.rot90 .btin,html.rot90 .pnoin,html.rot90 .fmin,html.rot90 .pzin{padding-top
 /* ========== 谜题层 ========== */
 #puz{position:fixed;inset:0;z-index:88;display:none;background:rgba(7,6,12,.97);overflow:auto}
 #puz.on{display:block}
-/* 接拍：那一小节是空的 */
+
 #beat{position:fixed;inset:0;z-index:88;display:none;background:rgba(5,5,10,.97);overflow:auto}
 #beat.on{display:block}
 .btin{max-width:520px;margin:0 auto;padding:clamp(30px,9vh,70px) clamp(14px,4vw,26px) 70px;text-align:center}
@@ -847,10 +819,8 @@ html.rot90 .btin,html.rot90 .pnoin,html.rot90 .fmin,html.rot90 .pzin{padding-top
   margin-top:3px;letter-spacing:.02em;line-height:1.8}
 .hud .opts .opt .k{color:var(--p-gold);opacity:.8}
 
-/* 选项出现时收起对话区（原代码只加 class，缺这条规则 → 一直露一个空黑框） */
 .hud .talk.hidden{display:none}
 .hud .talk.hidden{height:0;min-height:0;margin:0;padding:0;border:0;overflow:hidden}
-
 
 /* ===== 手机：自动横屏（网页自己旋转，不依赖系统转屏） ===== */
 html.rot90{position:absolute;top:0;left:0;width:100vh;width:100dvh;height:100vw;height:100dvw;
@@ -866,9 +836,10 @@ body.hland.touch .pad .pb.e{width:58px;height:58px}
 body.hland.touch .pad .pb.x,body.hland.touch .pad .pb.z{width:46px;height:46px}
 body.hland.touch .hud .cap,body.hland.touch .hud .talk,body.hland.touch .hud .opts,
 body.hland.touch .hud .sil,body.hland.touch .hud .note-line{max-width:58%}
+
+body.hland .hud{bottom:calc(var(--barH) + 6px);max-height:calc(100% - var(--barH) - 12px)}
 body.hland.touch #pop{right:calc(24% + 8px)}
 
-/* 「把手机横着拿」一过性提示 */
 .rothint{position:fixed;z-index:190;left:50%;top:12px;transform:translateX(-50%);display:none;
   align-items:center;gap:12px;padding:8px 14px;background:rgba(11,10,18,.95);
   border:var(--hair) solid var(--p-gold);box-shadow:none;
@@ -878,7 +849,6 @@ body.hland.touch #pop{right:calc(24% + 8px)}
 .rothint b{font-weight:400;color:var(--p-gold)}
 .rothint .x{border:1px solid #3a3350;color:var(--p-mut);padding:1px 8px;font-size:11px;white-space:nowrap;flex:none}
 
-/* 触屏首次操作说明（手机上只弹一次，之后永不再来） */
 .thelp{position:fixed;inset:0;z-index:196;display:none;
   background:rgba(5,4,10,.74);padding:16px;overflow:auto}
 .thelp.on{display:flex}
@@ -895,8 +865,6 @@ body.hland.touch #pop{right:calc(24% + 8px)}
   border:var(--hair) solid var(--p-line);background:var(--p-bg2);color:var(--p-txt)}
 .thelp .thgo:active{background:var(--p-gold);color:var(--p-ink)}
 
-
-/* 她的手机 · 聊天记录（Missed Messages 式） */
 #herPhone{position:fixed;inset:0;z-index:91;display:none;align-items:center;justify-content:center;
   padding:18px;background:rgba(5,4,10,.96)}
 #herPhone.on{display:flex}
@@ -940,7 +908,7 @@ body.hland.touch #pop{right:calc(24% + 8px)}
 #endList .erow.tot{border-bottom:none;margin-top:8px}
 #endList .erow.tot .enm{color:var(--p-gold,#e8c06a);letter-spacing:.14em}
 #endList .fine2{font-size:12px;margin-top:10px;opacity:.8}
-/* 对话：一句话一句话地说 */
+
 .hud .talk p{transition:opacity .3s ease}
 .hud .talk p.i{opacity:.72;text-align:center;font-size:12.5px}
 .hud .talk p.q{text-align:left}
@@ -990,13 +958,11 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
   background-attachment:fixed;
   background-image:radial-gradient(140% 110% at 50% -20%,rgba(104,92,164,.14),rgba(0,0,0,0) 58%)}
 
-/* 按需浮层：玻璃 + 细边 + 圆角 + 柔影 */
 .pbox,.book .who,.pin,.pzrow,#talkLog .lg,.fmtime,#endList .lg,.help .lg,.menu .lg,.about .in>.card{
   background:var(--glass);border:1px solid var(--line2);border-radius:var(--rl);
   box-shadow:var(--sh);backdrop-filter:blur(14px) saturate(1.08)}
 .crowd,.sil,.book .who.now{background:var(--glass);border:1px solid var(--line2);border-radius:var(--rl);box-shadow:var(--shs)}
 
-/* 顶栏（常驻，不用 blur） */
 .top{background:linear-gradient(180deg,rgba(12,10,20,.95),rgba(10,9,17,.80));
   border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.45)}
 .top .in{min-height:56px}
@@ -1026,7 +992,6 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
 .stage .tip kbd{background:var(--hi);color:#14101f;border:none;border-radius:5px;padding:1px 6px;box-shadow:none}
 .under{letter-spacing:.05em}
 
-/* 对话：干净面板 + 名牌 chip */
 .hud .talk{background:var(--glass);border:1px solid var(--line2);border-radius:var(--rl);
   box-shadow:var(--sh);padding:16px 20px 18px}
 .hud .talk .thead{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:11px;gap:11px}
@@ -1041,7 +1006,6 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
 .hud .talk p.q{color:var(--hi)}
 .hud .talk.near p{opacity:.6}
 
-/* 选项：干净卡片 + 柔和高亮 */
 .hud .opts{border-top:none;margin-top:12px}
 .hud .opts .opt{padding:12px 14px 12px 30px;border:none;border-radius:var(--rs);
   background:var(--glass2);margin:6px 0;box-shadow:none;
@@ -1090,7 +1054,6 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
 .crowd h4{letter-spacing:.05em;color:#b6a6d6;border-bottom:1px solid var(--line);padding-bottom:7px}
 .crowd .cr{border-bottom:1px solid rgba(255,255,255,.05);padding:7px 0}
 
-/* 全屏浮层（按需出现，可 blur） */
 .veil{background:radial-gradient(130% 110% at 50% -10%,rgba(28,23,44,.95),rgba(8,7,14,.975));backdrop-filter:blur(8px)}
 .veil .idx{letter-spacing:.34em;color:var(--mut);font-size:11.5px}
 .veil h1{font-size:clamp(40px,9vw,66px);letter-spacing:.06em;font-weight:400;color:var(--txt);margin:6px 0 4px}
@@ -1110,7 +1073,6 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
 .veil .acts button.ghost:hover{background:rgba(244,217,164,.14);color:var(--hi);border-color:var(--hi)}
 .veil .fine{letter-spacing:.02em;line-height:1.95;color:var(--mut)}
 
-/* 谜题/接拍/胶片 面板 */
 .pzrow{border-radius:var(--rs);background:var(--glass2);padding:14px 16px;margin-bottom:10px}
 .pzrow:hover{background:rgba(244,217,164,.10)}
 .pzrow .mk{border-radius:5px}
@@ -1138,14 +1100,12 @@ body{font-size:15px;line-height:1.92;letter-spacing:.004em;color:var(--txt);
 #herPhone .hp-ask button{border:1px solid var(--line2);border-radius:9px;letter-spacing:.06em;color:var(--hi)}
 #herPhone .hp-ask button:hover{background:var(--hi);color:#14101f}
 
-/* 结局收集 / 关于 */
 #endList .erow{border-bottom:1px solid rgba(255,255,255,.05)}
 #endList .erow .enm{letter-spacing:.03em}
 #endList .erow.tot .enm{color:var(--hi)}
 .about .bel{border-left:3px solid var(--hi);color:var(--hi)}
 .about .acts-list span{border:1px solid var(--line2);border-radius:8px}
 
-/* toast / 场景名 / 字幕条 */
 .toast{border:1px solid var(--line2);border-radius:10px;box-shadow:var(--shs);
   background:rgba(14,12,22,.94);color:var(--p-gold)}
 .cap{letter-spacing:.24em}
@@ -1184,7 +1144,6 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 .top .tb:hover{background:rgba(242,207,143,.16);border-color:var(--hi);color:var(--hi)}
 .top .tb.on{background:var(--hi);color:#241a10}
 
-/* 对话框：RPG 窗口 —— 内描边 + 四角装饰块 */
 .hud .talk{position:relative;border:1px solid var(--line2);border-radius:14px;
   box-shadow:var(--sh),inset 0 0 0 1px rgba(240,224,190,.06);
   background:linear-gradient(180deg,rgba(35,28,40,.86),rgba(26,21,31,.88))}
@@ -1198,21 +1157,17 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 .hud .talk .thead.dim .tname{background:rgba(255,255,255,.09);color:var(--mut)}
 .hud .talk p.q{color:var(--hi)}
 
-/* 选项：暖色卡 + 手账味 */
 .hud .opts .opt{background:linear-gradient(180deg,rgba(46,37,53,.7),rgba(38,30,44,.7))}
 .hud .opts .opt:hover{background:rgba(242,207,143,.15)}
 .opt .k,.hud .opts .opt .k{color:var(--hi)}
 
-/* 按钮：RPG 微高光 */
 .top .tb,.veil .acts button,.book .close,.pxnbtn,.pixbtn{
   background-image:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.06))}
 
-/* 顶栏按钮 / 标题 */
 .veil h1{color:#f3ede0}
 .veil .idx{color:var(--hi);letter-spacing:.36em}
 .veil .en{color:var(--mut)}
 
-/* 手册 → 手账：暖暗纸底 + 装订感 */
 .book{background:linear-gradient(180deg,#171219,#110e15)}
 .book .in{border-left:1px solid rgba(240,224,190,.06)}
 .book h2{color:var(--hi)}
@@ -1227,7 +1182,6 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 .book .note{color:var(--mut);border-top:1px solid var(--line)}
 .book .close:hover{background:var(--hi);color:#241a10}
 
-/* 出门面板 / 群像 / 沉默条 暖化 */
 .panel .ph,.crowd h4,.sil .lab{color:var(--hi)}
 .place:hover{background:rgba(169,143,208,.24)}
 .crowd h4{color:#c3b0dd}
@@ -1238,7 +1192,6 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 .about .bel{color:var(--hi);border-left-color:var(--hi)}
 #endList .erow.tot .enm{color:var(--hi)}
 
-/* 提示 / toast / 场景名 暖化 */
 .stage .tip{border-color:var(--line2)}
 .stage .tip kbd{background:var(--hi);color:#241a10}
 .toast{border-color:var(--line2)}
@@ -1247,7 +1200,7 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 /* ==========================================================================
    暖调层 ②：手账手册 · 过场月亮 · 情绪色温
    ========================================================================== */
-/* —— A. 手册 → 手账纸 —— */
+
 .book .in{background-image:none}
 .book .who{position:relative;
   background:
@@ -1273,7 +1226,6 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 .who .bond em{color:var(--mut)}
 .book .note{background:rgba(255,255,255,.02);border-radius:12px;padding:14px 16px;border:1px solid var(--line)}
 
-/* —— C. 过场卡：黑屏 + 月亮 + 引言 —— */
 #tcard{background:radial-gradient(120% 100% at 50% 0%,rgba(22,17,30,.97),rgba(5,4,9,.995))}
 #tcard::before{content:'';width:52px;height:52px;border-radius:50%;margin-bottom:26px;
   background:radial-gradient(circle at 36% 34%,#f7f1e0,#cdc4ad 60%,#a79d85);
@@ -1307,7 +1259,6 @@ body{background-image:radial-gradient(145% 115% at 50% -20%,rgba(156,120,88,.13)
 #tcard em::before{content:'';display:inline-block;width:26px;height:1px;background:var(--hi);
   vertical-align:middle;margin-right:12px;opacity:.6;transform:skewX(-24deg)}
 
-/* 对话框：等待玩家点击时的光标 */
 body.touch .hud .talk p.waitc::after{content:''}
 .hud .talk p.waitc::after{content:'▍';display:inline-block;margin-left:3px;color:var(--hi);
   opacity:.65;animation:waitblink 1s steps(2,end) infinite}
@@ -1315,8 +1266,7 @@ body.touch .hud .talk p.waitc::after{content:''}
 </style>
 </head>
 <body>
-<!-- 自定义光标：挂在最外层、不被任何面板盖住。
-     必须写在脚本之前 —— 脚本是内联同步执行的，放后面它取到的就是 null。 -->
+
 <div id="cur" aria-hidden="true"><i class="c1"></i><i class="c2"></i></div>
 
 <!-- ======= 顶栏 ======= -->
@@ -1358,7 +1308,7 @@ body.touch .hud .talk p.waitc::after{content:''}
 <!-- ======= 全屏舞台：能走动的房间 ======= -->
 <div class="stage" id="stage">
   <canvas id="world"></canvas>
-  <!-- 自定义光标：一粒会呼吸的暖光，和官网同源。触屏/减少动效时不启用 -->
+
   <div class="scan"></div>
   <div class="vig"></div>
   <div class="under">
@@ -1370,7 +1320,6 @@ body.touch .hud .talk p.waitc::after{content:''}
   </div>
   <div class="tip" id="tip"></div>
 
-  <!-- 移动端操作：可拖拽摇杆 + 沉默/别过脸/互动 -->
   <div class="pad" id="pad">
     <div class="stick" id="stick">
       <div class="base"></div><div class="ring"></div><div class="nub" id="nub"></div>
@@ -1559,7 +1508,6 @@ body.touch .hud .talk p.waitc::after{content:''}
 <div id="piano"><div class="pnoin" id="pianoIn"></div></div>
 <div id="film"><div class="fmin" id="filmIn"></div></div>
 
-
 <!-- ======= 她的手机 · 聊天记录 ======= -->
 <div id="herPhone">
   <div class="hp">
@@ -1596,8 +1544,6 @@ body.touch .hud .talk p.waitc::after{content:''}
   </div>
 </div>
 
-
-<!-- 结局载入层（有呼吸感，不直接弹出） -->
 <div id="endLoad">
   <div class="el-en" id="elEn"></div>
   <div class="el-t" id="elT"></div>
@@ -1612,7 +1558,6 @@ body.touch .hud .talk p.waitc::after{content:''}
   <button class="pixbtn ghost close" id="talkLogClose" type="button">合上</button>
 </div></div>
 
-<!-- 关于心协（协会展示） -->
 <div class="veil about" id="about">
   <div class="in">
     <div class="idx">关于心协</div>
@@ -1633,7 +1578,6 @@ body.touch .hud .talk p.waitc::after{content:''}
     <div class="acts"><button type="button" id="btnAboutClose" class="ghost">合上</button></div>
   </div>
 </div>
-
 
 <!-- ======= 「把手机横着拿」提示 ======= -->
 <div class="rothint" id="rothint" role="status">
@@ -1656,7 +1600,6 @@ body.touch .hud .talk p.waitc::after{content:''}
   </div>
 </div>
 
-
 <script>
 (function(){
 'use strict';
@@ -1664,13 +1607,13 @@ body.touch .hud .talk p.waitc::after{content:''}
 /* =========================================================================
    0. 常量与工具
    ========================================================================= */
-var KEY='xljk_save';  /* UNIFY_KEY */
+var KEY='xljk_save';
 var DAYS=15;
 var $=function(s){return document.querySelector(s)};
 var sceneEl=(function(){var e=$('#scene');return e||document.createElement('div')})(), talkEl=$('#talk'), optsEl=$('#opts');
 var silEl=$('#sil'), silFill=$('#silFill'), silTip=$('#silTip');
 var _skipFn=null;
-/* 选项一多，人会看不过来 —— 超过 6 项就折起来，留一个"还有 N 项" */
+
 function foldOpts(){
   var box=document.getElementById('opts'); if(!box||box._busy)return;
   var all=[].slice.call(box.querySelectorAll('.opt')), i;
@@ -1687,17 +1630,17 @@ function foldOpts(){
   });
   box.appendChild(b);
 }
-/* 选项渲染的唯一收口：渲染完立刻检查要不要折叠 */
+
 var _bindOpts0=bindOpts;
 bindOpts=function(fns){ _bindOpts0(fns); try{ foldOpts(); }catch(e){} };
 function talkSkip(){
   if(!talkEl||!talkEl.classList.contains('on'))return;
-  if(optsEl.innerHTML)return;              /* 有选项时，空格/点击留给选项 */
+  if(optsEl.innerHTML)return;
   if(_skipFn)_skipFn();
 }
 addEventListener('pointerdown',function(e){
   var t=e.target;
-  if(t&&t.closest&&t.closest('button,.opt,.place,.pin,.book,.panel,.crowd,#pad,.veil,.sil'))return;  /* 按钮/选项/面板留给它们自己 */
+  if(t&&t.closest&&t.closest('button,.opt,.place,.pin,.book,.panel,.crowd,#pad,.veil,.sil'))return;
   talkSkip();
 },{passive:true});
 addEventListener('keydown',function(e){
@@ -1709,12 +1652,12 @@ addEventListener('keydown',function(e){
 function clamp(v,a,b){return v<a?a:(v>b?b:v)}
 function pick(a){return a[(Math.random()*a.length)|0]}
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0, t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-/* 每天一条小事：抽完再洗，20 天里不重复 */
+
 function drawDaily(){
   var pool=(S.miscPool&&S.miscPool.length)?S.miscPool:shuffle(MISC.slice());
   var t=pool.shift(); S.miscPool=pool; save(); return t;
 }
-/* 今天他在做什么（同一天不换，前后两天不重） */
+
 var DAYNPC={
  hemu:[ '（今天他在补货。箱子堆在过道，你得侧身过去。）',
         '（今天他在对保质期。一排一排地看，看得很慢。）',
@@ -1741,7 +1684,7 @@ var DAYNPC={
       '（今天他的保温杯是满的。盖子拧得比哪回都紧。）',
       '（今天他来得早。站台上只有他一个。）']
 };
-/* 第 2 周目起，初次见面那天的状态：你已经认得他，台词带「重逢」的松弛 */
+
 var DAYNPC2={
  hemu:[ '（今天他又在补货。看见你，他把箱子往边上挪了挪，给你让路。）',
         '（今天他对保质期。抬头冲你点了一下头，又低下头。）',
@@ -1768,12 +1711,7 @@ var DAYNPC2={
         '（今天保温杯满着。他拧开盖子递你：喝一口？）',
         '（今天他早来。长椅空着半边，他拍了拍：坐。）']
 };
-/* ===== 今晚在不在 =====
-   以前这个骰子掷在 enterRoom() 里 —— 而 renderScene() 就是 enterRoom 的别名，
-   对话中途一调用就重掷一次，人会当着你的面消失；更糟的是对话判定
-   （ROOMS[].inter 里 act:'npc' 是写死的常量）根本不看这个骰子，
-   于是"立绘没了，人还能聊"。
-   现在改成：每晚开场掷一次，整夜不变；绘制和对话都读同一份结果。 */
+/* ===== 今晚在不在 ===== */
 var ABSENT={
  hemu:  ['（便利店的灯亮着，柜台后面没人。）','（门没锁。他大概在后面搬货。）','（你等了一会儿。还是只有冰柜在响。）'],
  zi:    ['（琴房的窗是黑的。）','（门虚掩着，里面没有声音。）','（今天没有琴声。）'],
@@ -1788,8 +1726,7 @@ function rollHere(){
   ['hemu','zi','baigao','yat','aji','chideng'].forEach(function(w){
     var met=(S.times&&S.times[w]>0);
     var gone=false;
-    /* 第一次见面前不缺席 —— 别让人白跑一趟还不认识他 */
-    /* 好感 3 以上基本都在；连着两夜缺席也避开（不然会以为人没了） */
+
     if(met && (S.rel[w]||0)<4 && prev[w]!==d-1 && rnd()<0.14) gone=true;
     S.here[w]={d:d, gone:gone};
     if(gone) prev[w]=d;
@@ -1798,7 +1735,7 @@ function rollHere(){
 }
 function hereTonight(who){
   var h=S.here&&S.here[who];
-  if(!h||h.d!==(S.day||1))return true;      /* 没掷过就当在，别把人挡在门外 */
+  if(!h||h.d!==(S.day||1))return true;
   return !h.gone;
 }
 function dailyState(who){
@@ -1824,17 +1761,17 @@ var FIGS={
   yat :{hair:'#6fae72',skin:'#f0cba8',cloth:'#cfd8c8',pant:'#4a5240',shoe:'#262a1f',eye:'#2b2b33',glass:1},
   aji   :{hair:'#7a5aa0',skin:'#e9c6a2',cloth:'#5d3f7a',pant:'#2f2440',shoe:'#191423',eye:'#3a2b4a',hood:1},
   chideng:{hair:'#2e2c34',skin:'#e0b894',cloth:'#3a4a6b',pant:'#262b42',shoe:'#1c1a24',eye:'#2b2b33',scarf:'#a0554f',gray:1}
-  /* 依芽不走 FIGS：她的形象是 12×12 像素图纸 YIBU_WINTER（paintAvatars 直接铺） */
+
 };
 function R(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
-/* 细笔：不取整。一格=15px 之后，用 1/3 格画纹理才有精致感（R 取整会锁死在整格） */
+
 function Rf(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(x,y,w,h);}
-/* 稳定伪随机：同一个种子每次画出来一样（不然纹理每帧乱跳） */
+
 function hash1(n){var x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);}
 function pool(g,cx,cy,r,a){
   if(!(a>0))return;
   g.globalCompositeOperation='lighter';
-  /* 外圈柔光 + 内圈亮芯：两层，让灯"照亮一块地方"而不是"自己发亮" */
+
   for(var i=0;i<9;i++){
     var k=1-i/9, w=Math.max(1,r*2.6*k), h=Math.max(1,r*1.7*k);
     Rf(g,cx-w/2,cy-h/2,w,h,'rgba(255,206,130,'+(a*k*0.135).toFixed(3)+')');
@@ -1845,13 +1782,8 @@ function pool(g,cx,cy,r,a){
   }
   g.globalCompositeOperation='source-over';
 }
-/* drawFig 已删：它是被废掉的「场景 canvas」方案用的画人函数，
-   实际渲染走 sprite 管线，这条路径从未上线。 */
-/* ---------- 依芽 · 冬（心协冬季吉祥物） ----------
-   12×12 像素图纸，93 格，色号按 MARD（漫德）色卡：
-   C27 肤/身 · M10 耳爪尾 · H1 额带身 · F19 围巾 · H16 眼 ·
-   F14 耳内/腮红 · H2 侧脸 · M14 牌身 · F6 牌面。
-   围巾右端挂的小牌是彩蛋——走近了才看得见上面写着什么。 */
+
+/* ---------- 依芽 · 冬（心协冬季吉祥物） ---------- */
 var YIBU_WINTER=[
   '............',
   '..MM....MM..',
@@ -1872,10 +1804,10 @@ function drawYibu(g,x,y,s){
   for(r=0;r<12;r++){
     for(c=0;c<12;c++){
       ch=YIBU_WINTER[r].charAt(c); col=YIBU_WINTER_C[ch];
-      if(col)Rf(g,x+c*s,y+r*s,s,s,col);   /* 注意：宽高都是 s —— 少写一个 s 会让颜色落进 h 参数，整颗豆被 NaN 静默丢弃 */
+      if(col)Rf(g,x+c*s,y+r*s,s,s,col);
     }
   }
-  /* 牌子上的一道亮釉 + 挂牌的细绳（绳在围巾与牌之间，几乎看不见，但轮廓是「挂着」的） */
+
   Rf(g,x+10.62*s,y+8.86*s,0.1*s,0.34*s,'#6f5a44');
   Rf(g,x+11*s,y+10*s,s,0.14*s,'rgba(255,255,255,.28)');
 }
@@ -1911,7 +1843,7 @@ function weatherFx(g,t,w){
 function room(g,wall,floor,skirt,mode){
   var i,x,y;
   R(g,0,0,PW,GY,wall);
-  /* 墙面：细竖缝 + 砖块横缝 + 每块砖的上沿高光（1/3 格粒度，别是一整块纯色） */
+
   for(i=0;i<PW;i+=5)Rf(g,i,0,0.22,GY,'rgba(255,255,255,.035)');
   for(i=0;i<PW;i+=5)Rf(g,i+2.5,3,0.18,GY-3,'rgba(0,0,0,.13)');
   for(var _wy=6;_wy<GY-4;_wy+=6){
@@ -1966,13 +1898,13 @@ var SCENES={
  street:{
   name:'荧惑',
   lights:[{x:53,y:70,r:11,a:.42}],
-  draw:function(g,t,st){   /* 注意：签名与其他场景一致 (g, 帧tick, SC)。此前写成 (g,st,t) 导致 st.night=NaN，整条街被刷成上一笔的米色 */
-    var i, _nn=st.night||0;   /* 时段：0 下午 · 0.34 傍晚 · 0.62 夜里 · 0.86 深夜 */
-    /* 天：比别的场景暗，雨云 */
+  draw:function(g,t,st){
+    var i, _nn=st.night||0;
+
     var _sky = _nn<0.25?'#2b3048':(_nn<0.5?'#222740':(_nn<0.72?'#191d33':'#101324'));
     R(g,0,0,PW,32,_sky);
     R(g,0,0,PW,10,(_nn<0.5?'#1a1e33':'#0d0f1c'));
-    /* 天边：越晚越沉，傍晚留一线暖 */
+
     if(_nn<0.5){ Rf(g,0,25,PW,7,'rgba(222,150,96,'+(0.42*(0.5-_nn)/0.5).toFixed(3)+')'); }
     else { Rf(g,0,18,PW,14,'rgba(16,21,44,'+((_nn-0.5)*0.7).toFixed(3)+')'); }
     for(i=0;i<8;i++)R(g,(i*17+((t>>2)%17)),4+((i*5)%9),16,4,'#20223a');
@@ -1988,7 +1920,7 @@ var SCENES={
     R(g,0,54,PW,4,'#1f2033');
     R(g,0,58,PW,6,'#101120');
     for(i=0;i<20;i++)R(g,(i*6+3),57,3,1,'#1a1b2c');
-    /* —— 街面纹理：人行道铺砖（缝+明暗）+ 柏油颗粒 + 车道线 + 井盖 —— */
+
     var _x,_y,_r;
     for(_x=0;_x<PW;_x+=2.4) Rf(g,_x,30,0.17,26,'rgba(198,214,240,.055)');
     for(_y=30;_y<56;_y+=3.2) Rf(g,0,_y,PW,0.15,'rgba(198,214,240,.042)');
@@ -2009,8 +1941,7 @@ var SCENES={
     Rf(g,57.4,60.5,3.6,0.22,'rgba(255,255,255,.14)');
     Rf(g,20,55.4,9,0.5,'rgba(150,180,215,.22)'); Rf(g,20.4,55.6,8.2,0.3,'rgba(200,222,246,.16)');
     /* 沿街五家门面 */
-    /* 六家门面：为了给后巷腾一个门洞，前面五家各自收窄了一点。
-       宽度写进 SW，别再用三元表达式特判 —— 加第七家时不用改判断。 */
+
     var SHOP=[
       [1,'#4a3a2e','flat'],[26,'#dfe8f2','store'],[49,'#5b4630','piano'],
       [72,'#3a3242','cinema'],[95,'#2b3a52','roof'],[113,'#2f2c33','alley']
@@ -2019,14 +1950,14 @@ var SCENES={
     for(i=0;i<SHOP.length;i++){
       var sx=SHOP[i][0], lit=SC&&SC.opened&&SC.opened[SHOP[i][2]];
       var w=SW[SHOP[i][2]]||22;
-      /* —— 店面以上的楼体：近处的楼把远处的剪影挡掉，才有"一条街"的感觉 —— */
+
       var _fw=w+2, _fTop=(SHOP[i][2]==='roof')?20:7, _fH=28-_fTop;
       R(g,sx-1,_fTop,_fw,_fH,'#14151f');                                        /* 楼体 */
       Rf(g,sx-1,_fTop,_fw,0.5,'#22243a');                                       /* 楼顶压边 */
       Rf(g,sx-1,_fTop,0.5,_fH,'#0e0f18'); Rf(g,sx+w-0.5,_fTop,0.5,_fH,'#0e0f18');
       for(var _by=_fTop+1.2;_by<28;_by+=2.2)Rf(g,sx-1,_by,_fw,0.14,'rgba(190,205,235,.055)');   /* 砖缝·横 */
       for(var _bx2=0;_bx2<_fw;_bx2+=3.1)Rf(g,sx-1+_bx2,_fTop,0.14,_fH,'rgba(190,205,235,.045)');/* 砖缝·竖 */
-      /* 楼上的窗：几扇亮、几扇黑 —— 有人住，只是和你没关系 */
+
       var _rows=Math.max(1,Math.floor((_fH-3.5)/6)), _nw=Math.max(2,Math.floor((_fw-3)/5));
       for(var _r2=0;_r2<_rows;_r2++){
         var _wy2=_fTop+1.6+_r2*6;
@@ -2047,11 +1978,11 @@ var SCENES={
           Rf(g,_wx2-0.35,_wy2+3.4,3.3,0.5,'rgba(0,0,0,.40)');                 /* 窗台 */
         }
       }
-      /* 挂在楼外的空调外机和落水管 */
+
       Rf(g,sx+w-3.6,_fTop+4,2.4,1.8,'#2a2c40'); Rf(g,sx+w-3.6,_fTop+4,2.4,0.3,'rgba(255,255,255,.14)');
       Rf(g,sx+w-3.2,_fTop+5.8,1.6,0.3,'#1b1d29');
       Rf(g,sx+w-1.3,_fTop,0.5,_fH,'#20222f');
-      /* 店招：底板 + 字块 + 亮着的小灯 */
+
       R(g,sx+1,24.6,w-2,3,'#22243a'); Rf(g,sx+1,24.6,w-2,0.35,'rgba(255,255,255,.10)');
       for(var _ci=0;_ci<Math.floor((w-4)/2.2);_ci++){
         var _ck=hash1(i*11.7+_ci*2.3);
@@ -2068,7 +1999,7 @@ var SCENES={
       if(lit){
         R(g,sx+3,36,w-6,20,SHOP[i][1]);                /* 亮着的窗 */
         R(g,sx+3,36,w-6,1,'#0e0d18');
-        /* 屋里看得见的轮廓：货架 / 台面 / 一个人影（不是贴纸，是"有人在里面"） */
+
         var _inw=w-6;
         for(var _sh=0;_sh<3;_sh++){                                       /* 货架横板 */
           var _sy=39+_sh*5.4;
@@ -2095,17 +2026,17 @@ var SCENES={
         R(g,sx+w/2-0.8,50,1.6,2.4,'#2a2c40');                               /* 挂锁 */
       }
       Rf(g,sx-1,56,w+2,0.6,'#23252f');                 /* 门槛石 */
-      /* 没开门的店：门缝里也透一点光 —— 屋里有人，只是没开灯 */
+
       R(g,sx+w/2-2,51,4,4,'rgba(255,212,137,.55)');
       g.fillStyle='rgba(255,212,137,.11)'; g.fillRect(sx+w/2-9,51,18,6);
       if((i*5+t)%53<12){ g.fillStyle='rgba(255,222,170,.30)'; g.fillRect(sx+w/2-2,52,4,3); }
     }
-    /* 天台要高一点，顶上有天台栏杆 */
+
     R(g,102,18,17,12,'#191a2b');
     R(g,102,16,17,2,'#232438');
     for(i=0;i<6;i++)R(g,103+i*3,15,1,4,'#2a2b40');
     R(g,104,12,3,3,'#e6dcc8');                          /* 天台上的人影 */
-    /* 路灯：光池 + 灯杆（站在下面回心力） */
+
     var LAMP=[46,75];
     for(i=0;i<LAMP.length;i++){
       var lx=LAMP[i];
@@ -2126,7 +2057,7 @@ var SCENES={
       R(g,px+1,61,pw-2,1,'rgba(120,150,185,.09)');
     }
     R(g,90,32,10,7,'#2a2b3c'); R(g,91,33,8,5,'#c9c2ae');/* 寻物启事 */
-    /* —— 街边杂物：让这条街看起来真的有人住 —— */
+
     Rf(g,24,48,3.4,4.6,'#31344c'); Rf(g,24,46.6,3.8,1.5,'#3d4059');      /* 垃圾桶 */
     Rf(g,24,48,3.4,0.24,'rgba(255,255,255,.17)'); Rf(g,24,46.6,3.8,0.22,'rgba(255,255,255,.20)');
     Rf(g,24.3,49.4,2.8,0.22,'rgba(255,255,255,.13)'); Rf(g,24.3,51,2.8,0.22,'rgba(255,255,255,.11)');
@@ -2139,23 +2070,20 @@ var SCENES={
     Rf(g,46.4,47.6,1.6,0.5,'#525878');
     Rf(g,60,51,1.8,2.6,'#7a3a3a'); Rf(g,60.4,49.8,1,1.4,'#8f4444');      /* 消防栓 */
     Rf(g,60,49.8,1.8,0.22,'rgba(255,255,255,.24)');
-    /* 远处墙面：砖缝 + 一块块砖面的明暗（暗底靠提亮） */
+
     for(_x=0;_x<PW;_x+=1.6)Rf(g,_x,10,0.12,22,'rgba(190,205,235,.075)');
     for(_y=12;_y<32;_y+=1.9)Rf(g,0,_y,PW,0.1,'rgba(190,205,235,.055)');
     for(_x=0;_x<PW;_x+=3.2)for(_y=12;_y<32;_y+=3.8){
       if(((_x/3.2|0)+(_y/3.8|0))%2===0) Rf(g,_x+0.12,_y+0.1,1.48,1.8,'rgba(255,255,255,.030)');
     }
-    /* 近处地面：原来 y64 以下空着，补上铺装与积水 */
+
     R(g,0,64,PW,PH-64,'#0e0f1c');
     for(_x=0;_x<PW;_x+=4.6)Rf(g,_x,64,0.2,PH-64,'rgba(190,205,235,.045)');
     for(_y=64;_y<PH;_y+=4)Rf(g,0,_y,PW,0.18,'rgba(190,205,235,.035)');
     for(i=0;i<7;i++){var _px3=[14,33,52,70,90,104,116][i], _pw3=6+(i%3)*4;
       Rf(g,_px3,66+(i%4)*5,_pw3,2,'rgba(150,180,215,.14)');
       Rf(g,_px3+1,67+(i%4)*5,_pw3-2,1,'rgba(255,214,150,.10)');}
-    /* 猫：依芽 —— 心协的冬季吉祥物，12×12 像素图纸（MARD 色卡）。
-       围巾右端挂着个小牌；蹲下来走近了，才看得见牌上写着什么。
-       必须画在「近处地面」不透明填充之后 —— 猫蹲在地面上，
-       画在前面会被 y64 以下的地面整块盖掉。 */
+
     drawYibu(g,65.64,61.33,0.66);
     lg(g,46,72,24,7,'255,206,130',.34);
     lg(g,75,72,24,7,'255,206,130',.34);
@@ -2166,40 +2094,40 @@ var SCENES={
     /* 地上的纸屑与落叶 */
     Rf(g,22,68,1.6,1.2,'#c9c0ab'); Rf(g,58,70,1.4,1,'#8a7256');
     Rf(g,86,66,1.8,1.2,'#7fa86b'); Rf(g,104,72,1.4,1,'#c9c0ab');
-    /* —— 公交站：站牌 + 长椅。迟灯等车的地方（他等的不是车）—— */
+
     R(g,52,72,2,16,'#33364a');                                  /* 站牌杆 */
     R(g,49,68,8,5,'#2c3554'); R(g,50,69,6,3,'#3a4a6b');         /* 站牌 */
-    Rf(g,50,69.6,6,1,'#ffd489');                                /* 牌上那行字：夜里唯一还亮着的一行 */
+    Rf(g,50,69.6,6,1,'#ffd489');
     Rf(g,53,66.4,1,1,'#ffd489');                                /* 牌顶小灯 */
     R(g,30,82,18,2,'#4a3f5c'); R(g,30,82,18,1,'#5a4a6b');       /* 椅面 */
     R(g,30,79,18,3,'#3a3350'); R(g,30,79,18,1,'#4a4266');       /* 靠背 */
     R(g,31,84,1,4,'#241f33'); R(g,46,84,1,4,'#241f33');         /* 椅腿 */
     R(g,30,86,18,1,'rgba(0,0,0,.30)');                          /* 椅下阴影 */
     Rf(g,33,80.4,12,0.5,'rgba(150,180,215,.12)');               /* 椅上没干的水 */
-    /* 贴着的寻物启事：木牌+泛黄的纸（inter 20,64） */
+
     R(g,18,60,2,16,'#4a3f2c'); R(g,17.4,59.4,3.2,1,'#5e4c38');
     R(g,20,62,9,7,'#8a7256'); R(g,21,63,7,5,'#cfc6b0');
     R(g,22,64,5,1,'#6b6154'); R(g,22,65.4,4,1,'#6b6154'); R(g,22,66.6,3,1,'#6b6154');
     R(g,21,63,7,1,'#e2dac6'); Rf(g,20.6,61.4,1,1,'#c2453d');
-    /* 站牌背面（inter 4,78） */
+
     R(g,4,76,7,10,'#2c3554'); R(g,5,77,5,8,'#3a4a6b'); R(g,4,76,7,1,'#465480');
     Rf(g,5.6,79,3.6,1,'#ffd489'); Rf(g,5.6,81.4,3.6,1,'rgba(255,212,137,.4)');
-    /* 压着的旧海报（inter 40,66） */
+
     R(g,40,66,10,8,'#5a2c28'); R(g,41,67,8,6,'#c2453d');
     R(g,42,69,6,1,'#e6dcc8'); R(g,42,70.6,4,1,'#e6dcc8');
     Rf(g,40,73,10,0.5,'rgba(0,0,0,.30)'); Rf(g,44,66.4,1.6,1.2,'rgba(230,220,200,.20)');
-    /* 一棵树（inter 100,60）：树干+树冠+树根影子 */
+
     R(g,103,60,3,14,'#4a3a28'); R(g,103,60,3,1,'#5e4c38'); R(g,104,66,1,8,'#3a2c1e');
     R(g,100,52,9,8,'#2e4432'); R(g,101,53,7,6,'#3a563e');
     R(g,102,49,5,4,'#34503a'); R(g,103,50,3,2,'#40604a');
     Rf(g,101,53,3,1,'rgba(160,200,150,.18)');
     Rf(g,100,72,11,2,'rgba(0,0,0,.25)');
-    /* 店招霓虹：一闪一闪 */
+
     if((t>>4)%3!==0){R(g,32,26,18,2,'#ffd489'); R(g,65,26,14,2,'#5ba3a0');}
     /* 雨 */
     weatherFx(g,t,st.weather);
     /* 夜里越深越暗 */
-    /* 时段：下午还留着一点天光，越晚越收 */
+
     if(_nn<0.4){ Rf(g,0,0,PW,PH,'rgba(152,174,210,'+(0.22*(0.4-_nn)/0.4).toFixed(3)+')'); }
     R(g,0,0,PW,PH,'rgba(6,8,20,'+(0.06+st.night*0.20).toFixed(3)+')');
   }},
@@ -2208,7 +2136,7 @@ var SCENES={
   draw:function(g,t,st){
     var wd=st.night>0.5;
     room(g,wd?'#2f2a3d':'#423a5e',wd?'#40362a':'#584a36','#3a3350','wood');
-    /* 吊灯：电线+灯罩+光点呼吸 */
+
     R(g,30,0,1,7,'#1a1626'); R(g,27,7,7,3,'#4a3f5c'); R(g,28,10,5,1,'#2c2740');
     var lp=0.75+Math.sin(t*0.08)*0.25;
     R(g,29,10,3,1,warm(lp));
@@ -2225,7 +2153,7 @@ var SCENES={
     R(g,100,42,1,30,'#241f33'); R(g,113,42,1,30,'#241f33');
     R(g,111,57,2,2,'#ffd489');
     R(g,99,42,1,30,'#1a1626'); R(g,114,42,1,30,'#1a1626');
-    /* 桌+手机+桌上的东西 */
+
     R(g,52,52,34,3,'#5b4630'); R(g,54,55,2,17,'#4a3a28'); R(g,82,55,2,17,'#4a3a28');
     R(g,52,52,34,1,'#6e5638');
     R(g,68,49,4,3,'#1a1c2c'); R(g,69,50,2,1,'#ffd489');
@@ -2234,7 +2162,7 @@ var SCENES={
     /* 伞 */
     R(g,45,54,1,16,'#2a2f45');
     R(g,41,52,9,4,'#8f6fb0'); R(g,43,56,5,3,'#7a5c98'); R(g,41,52,9,1,'#a687c4');
-    /* 星图+连线（贴在床尾上方墙上，正对交互区） */
+
     R(g,12,38,20,17,'#1a2340'); R(g,12,38,20,1,'#6b5a48'); R(g,12,54,20,1,'#4a3c2c');
     var sx=[15,21,27,18,25],sy=[42,40,46,50,52],i;
     for(i=0;i<5;i++)R(g,sx[i],sy[i],1,1,'#e6dcc8');
@@ -2251,32 +2179,32 @@ var SCENES={
     /* 书堆+盆栽 */
     R(g,54,74,7,2,'#8a7256'); R(g,55,72,5,2,'#6b5a48'); R(g,55,70,4,2,'#4a4266');
     R(g,92,64,5,6,'#7a4a3a'); R(g,91,61,7,3,'#7fa86b'); R(g,92,59,2,2,'#5b8a4e'); R(g,95,60,2,2,'#5b8a4e');
-    /* 灯照到地上的光斑：吊灯・台灯・窗外的冷光 */
+
     lg(g,30,84,23,8,'255,206,130',.46);
     lg(g,70,82,12,5,'255,216,150',.38);
     lg(g,88,82,15,6,'150,182,232',.26);
-    /* 窗下有点潮（雨夜）・门边挂着一件外套・墙上插座与开关 */
+
     Rf(g,78,73,26,2.4,'rgba(150,182,232,.10)');
     Rf(g,84,74,14,1.2,'rgba(200,220,246,.10)');
     R(g,97,50,3,14,'#3b4a6b'); R(g,96,49,5,2,'#2c3550'); R(g,100,50,2,3,'#332b4a');
     R(g,50,44,3,4,'#2c2740'); R(g,50,45,1,1,'#0d0b14'); R(g,52,45,1,1,'#0d0b14');
     R(g,46,58,3,4,'#2c2740'); R(g,46,59,1,2,'#0d0b14');
-    /* 协会布告栏（inter 60,44）：软木板+图钉+几张纸条 */
+
     R(g,60,44,16,10,'#4a3a28'); R(g,61,45,14,8,'#8a7256');
     R(g,62,46,5,6,'#cfc6b0'); R(g,68,46.6,5,5,'#e6dcc8'); R(g,63,53,9,3,'#c2453d');
     Rf(g,63.6,46.6,1,1,'#c2453d'); Rf(g,69.6,47.2,1,1,'#5ba3a0');
     R(g,61,45,14,1,'#a08a68');
-    /* 窗台植物（inter 70,44）：墙上隔板+一盆绿 */
+
     R(g,70,50,10,1.4,'#6b5a48'); R(g,70,50,10,0.4,'#8a7256');
     R(g,73,45,5,5,'#7a4a3a'); R(g,72,43,7,3,'#7fa86b'); R(g,73.6,41.6,2,2,'#5b8a4e'); R(g,76,42.4,2,2,'#5b8a4e');
-    /* 挂历（inter 56,72） */
+
     R(g,62,73,10,11,'#4a3f5c'); R(g,63,74,8,9,'#cfc6b0'); R(g,63,74,8,2,'#c2453d');
     for(var _cl=0;_cl<3;_cl++)R(g,64,77.4+_cl*2.2,6,1,'#6b6154');
     Rf(g,66,72.4,2,1,'#c9c0ab');
-    /* 窗台下的小花盆（inter 30,72） */
+
     R(g,30,74,5,5,'#7a4a3a'); R(g,29,72.4,7,2,'#7fa86b'); R(g,30.6,71,2,2,'#5b8a4e');
     R(g,36,75,4,4,'#8a7256'); R(g,35.4,73.6,5.4,1.6,'#5b8a4e');
-    /* 门边的矮柜（inter 100,60）：抽屉最里面那格 */
+
     R(g,94,60,5,12,'#4a3f5c'); R(g,94,60,5,1,'#5d5075'); R(g,94,60,1,12,'#332b4a');
     R(g,95,63,3,1,'#2c2740'); R(g,95,67,3,1,'#2c2740'); Rf(g,96,64.4,1,1,'#c9c0ab'); Rf(g,96,68.4,1,1,'#c9c0ab');
     R(g,0,0,PW,4,'#241f33'); R(g,0,0,PW,1,'#322c48');
@@ -2296,7 +2224,7 @@ var SCENES={
     /* 监控 */
     R(g,104,13,6,4,'#1a1c2c'); R(g,102,14,2,2,'#1a1c2c'); R(g,108,14,1,2,'#4a4a55');
     R(g,109,15,1,1,'#c2453d');
-    /* 货架：框+商品+价签 */
+
     R(g,4,30,42,42,'#3c4252'); R(g,3,30,1,42,'#282e3c'); R(g,46,30,1,42,'#282e3c');
     R(g,4,30,42,2,'#6e7686');
     var gy=[38,50,62],ci=['#c2453d','#e0a33c','#7fa86b','#5ba3a0','#8f6fb0'],i2,j;
@@ -2309,7 +2237,7 @@ var SCENES={
       }
       for(j=0;j<5;j++)R(g,8+j*8,gy[i2]+1,5,1,'#e6dcc8');
     }
-    /* 冰柜：顶箱+冷光+饮品分层 */
+
     R(g,90,24,18,4,'#8a7256'); R(g,90,24,18,1,'#a08a68'); R(g,92,22,10,2,'#8a7256');
     R(g,90,28,26,44,'#7a8698'); R(g,89,28,1,44,'#525c6c'); R(g,116,28,1,44,'#525c6c');
     R(g,92,30,22,40,'#9fc3d8');
@@ -2317,7 +2245,7 @@ var SCENES={
     for(i2=0;i2<3;i2++){R(g,94+i2*7,32,4,8,'#cfe6f2'); R(g,94+i2*7,42,4,8,'#e2f0f8'); R(g,94+i2*7,52,4,8,'#bcd8e8');
       R(g,94+i2*7,32,4,1,'#f2fbff');}
     R(g,92,30,22,1,'rgba(255,255,255,.5)');
-    /* 收银台+关东煮+杂志 */
+
     R(g,50,58,36,14,'#6b5a48'); R(g,50,56,36,2,'#8a7256'); R(g,50,56,36,1,'#a08a68');
     R(g,50,58,36,1,'rgba(255,255,255,.08)');
     R(g,74,50,10,6,'#3a6a8a'); R(g,75,51,8,4,'#5b9ac0');
@@ -2331,16 +2259,15 @@ var SCENES={
     if(st.weather==='rain'||st.weather==='drizzle')
       for(i2=0;i2<10;i2++)R(g,67+((i2*5)%16),22+((i2*9)%26),1,2,'rgba(165,200,235,.4)');
     R(g,66,76,18,3,'#4a3f5c'); R(g,67,77,16,1,'#5d5075');
-    /* 顶灯・冰柜・柜台的冷光落到地砖上 */
+
     lg(g,60,84,36,8,'206,224,248',.28);
     lg(g,74,80,11,4,'255,206,130',.24);
     lg(g,103,80,15,6,'176,208,238',.30);
-    /* 商品在架子上的投影・门口的"小心地滑"小牌・收银台上那台旧收音机 */
+
     R(g,4,35,42,1,'rgba(0,0,0,.20)');
     R(g,52,70,4,5,'#e0a33c'); R(g,52,70,4,1,'#f2c060'); R(g,53,72,2,2,'#7a5a18');
     R(g,56,53,7,3,'#6b5a48'); R(g,56,53,7,1,'#8a7256'); R(g,58,51,3,2,'#4a4266');
-    /* —— 看得见、认得出的物件：认得出，才想凑近看 —— */
-    /* 关东煮的锅：锅体+汤格+竹签+热气（inter 88,74） */
+
     R(g,87,74,14,10,'#3a3f4a'); R(g,87,74,14,2,'#4a5060'); R(g,87,74,14,1,'#5a6274');
     R(g,88,75,12,1,'rgba(0,0,0,.30)');
     R(g,89,77,10,5,'#7a4a24'); R(g,89,77,10,1,'#96603a');
@@ -2348,23 +2275,23 @@ var SCENES={
     for(j=0;j<3;j++){R(g,90+j*3.4,72.6,1,3.4,'#e6dcc8'); R(g,90.7+j*3.4,72.6,0.7,1.2,'#c2453d');}
     if((t>>4)%2)Rf(g,92,70.6,1.5,2.6,'rgba(235,242,250,.17)');
     if((t>>4)%3)Rf(g,96,69.8,1.5,3,'rgba(235,242,250,.12)');
-    /* 靠窗的座位：小桌+两把椅子（inter 6,60） */
+
     R(g,5,65,9,2,'#6b5a48'); R(g,5,65,9,1,'#8a7256');
     R(g,6,67,1,6,'#4a3a28'); R(g,12,67,1,6,'#4a3a28');
     R(g,6,60,4,5,'#4a3f5c'); R(g,6,60,4,1,'#5d5075');
     R(g,13,60,4,5,'#3a3350'); R(g,13,60,4,1,'#4a4266');
     R(g,9,62,2,2,'#e0a33c');
-    /* 墙边的储物柜：铁皮柜+两个柜门（inter 22,74） */
+
     R(g,22,72,12,14,'#454a38'); R(g,22,72,12,2,'#565d44'); R(g,22,72,12,1,'#6a7152');
     R(g,23,75,10,1,'#23261c'); R(g,23,80,10,1,'#23261c');
     R(g,26,77,3,1,'#c9c0ab'); R(g,26,82,3,1,'#c9c0ab');
     R(g,22,72,1,14,'#2f3326'); R(g,33,72,1,14,'#2f3326');
-    /* 柜台下的账本（inter 30,62） */
+
     R(g,29,62,9,3,'#cfc6b0'); R(g,29,62,9,1,'#e2dac6'); R(g,30,63,7,1,'#6b6154'); R(g,30,64.4,5,1,'#6b6154');
-    /* 后门旁边的纸箱（inter 64,72） */
+
     R(g,62,71,12,9,'#6b5a48'); R(g,62,71,12,1,'#8a7256'); R(g,62,73,12,1,'#4a3a28');
     Rf(g,65,75,2,1,'#e6dcc8'); Rf(g,69,76,2,1,'#e6dcc8');
-    /* 冰柜前小凳子上的收音机（inter 100,60） */
+
     R(g,99,66,7,3,'#4a3f5c'); R(g,99,66,7,1,'#5d5075');
     R(g,100,62,6,4,'#5b4630'); R(g,100,62,6,1,'#6e563a'); R(g,101,63,4,1,'#3a2f22');
     R(g,103,61,1,2,'#c9c0ab'); R(g,101,60.6,3,0.4,'#8a7256');
@@ -2388,7 +2315,7 @@ var SCENES={
     R(g,54,17,1,4,'#c9c0ab'); R(g,54,16,2,2,'#e6dcc8');
     R(g,64,19,1,4,'#c9c0ab'); R(g,64,18,2,2,'#e6dcc8');
     R(g,72,21,1,4,'#c9c0ab');
-    /* 钢琴：盖反光+键+踏板 */
+
     R(g,42,46,46,26,'#1e1a28'); R(g,42,44,46,3,'#2b2436');
     R(g,42,44,46,1,'#3d3450'); R(g,44,46,10,1,'rgba(255,255,255,.10)');
     R(g,41,46,1,26,'#12101c'); R(g,88,46,1,26,'#12101c');
@@ -2409,11 +2336,11 @@ var SCENES={
     /* 落地灯+盆栽 */
     R(g,102,48,2,24,'#6b5a48'); R(g,98,42,10,6,'#e0a33c'); R(g,98,42,10,1,'#f2c060');
     R(g,30,64,6,7,'#7a4a3a'); R(g,29,60,8,4,'#7fa86b'); R(g,30,58,2,2,'#5b8a4e'); R(g,34,59,2,2,'#5b8a4e');
-    /* 吊灯・落地灯・窗外冷光落到木地板上 */
+
     lg(g,60,84,23,7,'255,206,130',.42);
     lg(g,102,82,15,5,'255,216,150',.42);
     lg(g,15,82,14,5,'150,182,232',.24);
-    /* 落地灯的电线蜿蜒到墙根・墙角一只谱箱・墙上两个挂钩 */
+
     for(var _w=0;_w<10;_w++)Rf(g,100-_w*2.6,74+Math.sin(_w*0.9)*1.2-0.5,2.6,0.5,'#241f33');
     R(g,4,62,7,9,'#6b5a48'); R(g,4,62,7,1,'#8a7256'); R(g,5,64,5,1,'#4a3a28'); R(g,5,67,5,1,'#4a3a28');
     R(g,76,16,2,3,'#3a3350'); R(g,84,16,2,3,'#3a3350');
@@ -2424,7 +2351,7 @@ var SCENES={
     room(g,'#26203a','#2f2846','#1e1a2e','concrete');
     /* 吸音板竖条 */
     for(var i=0;i<4;i++){R(g,2+i*2,6,1,60,'rgba(0,0,0,.25)');R(g,110+i*2,6,1,60,'rgba(0,0,0,.25)');}
-    /* 银幕：布纹框+闪烁画面 */
+
     R(g,20,6,80,42,'#8a7256'); R(g,21,7,78,40,'#6b5a48');
     R(g,22,8,76,38,'#e6dcc8'); R(g,24,10,72,34,'#b9c6dc');
     var f=(t>>2)%6;
@@ -2442,7 +2369,7 @@ var SCENES={
     R(g,4,8,12,7,'#0f2a1c'); R(g,5,9,10,5,'#1e5a38');
     R(g,7,10,2,3,'#8ee6b0'); R(g,10,10,2,3,'#8ee6b0');
     var gl=(t>>4)%2; if(gl)R(g,4,8,12,1,'#2e7a4c');
-    /* 椅子：三排+扶手高光+红毯过道 */
+
     var sy=[54,62,70],i2;
     for(i2=0;i2<3;i2++){
       var rowx=[14,40,66],j;
@@ -2457,19 +2384,19 @@ var SCENES={
     R(g,60,72,5,18,'#5a2c30'); R(g,60,72,5,1,'#6e3840');
     /* 天花板小灯串 */
     for(i=0;i<7;i++){R(g,10+i*16,2,2,1,(t>>3)%7===i?'#ffd489':'#5a5266');}
-    /* 银幕是大光源：冷光洒在座椅和过道上 */
+
     lg(g,60,74,34,7,'198,214,240',.22);
     lg(g,60,84,44,8,'198,214,240',.26);
-    /* 两侧吸音板・过道地脚灯・座椅扶手的小杯架 */
+
     for(var _s=0;_s<5;_s++)Rf(g,2,_s*13+4,4,10,'rgba(255,255,255,.030)');
     for(_s=0;_s<5;_s++)Rf(g,114,_s*13+4,4,10,'rgba(255,255,255,.030)');
     R(g,36,80,3,2,'#7a6a3a'); R(g,60,80,3,2,'#7a6a3a');
     R(g,34,64,2,2,'#2c2440'); R(g,60,64,2,2,'#2c2440'); R(g,86,64,2,2,'#2c2440');
-    /* 墙上钉着的纸条（inter 2,22） */
+
     R(g,2,22,7,12,'#8a7256'); R(g,3,23,5,10,'#cfc6b0');
     R(g,4,25,3,1,'#6b6154'); R(g,4,26.6,3,1,'#6b6154'); R(g,4,28.2,2,1,'#6b6154');
     R(g,3,23,5,1,'#e2dac6'); Rf(g,5,22.6,1,1,'#c2453d');
-    /* 椅子上的搪瓷杯（inter 50,64）与值班登记本（inter 60,64） */
+
     R(g,50,64,5,5,'#b9b0a0'); R(g,50,64,5,1,'#d4cdbb'); R(g,50,64,1,5,'#9a927f');
     R(g,54,65,1.6,2,'#b9b0a0');
     Rf(g,51.6,62.4,1.6,1.4,'rgba(235,242,250,.15)');
@@ -2481,17 +2408,17 @@ var SCENES={
   lights:[{x:26,y:52,r:12,a:.5},{x:60,y:82,r:18,a:.30},{x:96,y:62,r:10,a:.28}],
   draw:function(g,t,st){
     var i,x,y, night=st.night>0.4;
-    /* 顶上只有一线天：巷子很窄 */
+
     R(g,0,0,PW,6,night?'#0d1124':'#33415f');
     /* 两侧楼体 */
     R(g,0,0,30,PH,'#1b1a26'); R(g,90,0,30,PH,'#191823');
     /* 左墙：砖缝 */
     for(i=0;i<30;i+=4)Rf(g,i,6,0.22,PH-6,'rgba(0,0,0,.20)');
     for(i=8;i<PH;i+=5)Rf(g,0,i,30,0.2,'rgba(0,0,0,.24)');
-    /* 便利店的后窗：暖，是这条巷子里唯一的光 */
+
     R(g,20,44,12,14,'#2b2436'); R(g,21,45,10,12,'#ffd489'); R(g,21,45,10,2,'#fff2d0');
     R(g,25,45,1,14,'#2b2436'); R(g,21,50,10,1,'#2b2436');
-    /* 涂鸦：底下有一行被人涂掉了 */
+
     R(g,12,50,16,16,'#2a2438');
     Rf(g,14,53,12,1.4,'#c2453d'); Rf(g,14,56,9,1.2,'#5ba3a0'); Rf(g,14,59,11,1.2,'#ffd489');
     Rf(g,14,62,12,1.8,'#141320');
@@ -2506,21 +2433,21 @@ var SCENES={
     R(g,30,40,60,PH-40,'#0e0f18');
     for(x=30;x<90;x+=4.6)Rf(g,x,40,0.22,PH-40,'rgba(150,180,215,.05)');
     for(y=42;y<PH;y+=4)Rf(g,30,y,60,0.18,'rgba(150,180,215,.045)');
-    /* 铁皮垃圾桶（贴左墙） */
+
     R(g,30,58,13,10,'#2f3a34'); R(g,30,58,13,2,'#46544c');
     R(g,31,56,11,2,'#3a4640'); R(g,30,68,13,1,'#181c1a');
     Rf(g,35,61,2,4,'#5ba3a0');
-    /* 纸箱（里面有声音） */
+
     R(g,50,64,14,10,'#6b5a48'); R(g,50,64,14,1,'#8a7256'); R(g,50,66,14,1,'#4a3a28');
     Rf(g,53,68,2,1,'#e6dcc8'); Rf(g,58,69,2,1,'#e6dcc8');
-    /* 旧电话亭（贴右墙） */
+
     R(g,72,58,14,16,'#232033'); R(g,73,59,12,12,'#3a3550'); R(g,73,59,12,1,'#4a4266');
     R(g,78,74,2,3,'#2c2440'); Rf(g,75,61,8,6,'rgba(150,180,215,.16)');
     if((t>>5)%4!==0)Rf(g,76,62,2,1,'#ffd489');
-    /* 积水：映着那扇后窗 */
+
     Rf(g,62,74,16,5,'rgba(150,180,215,.18)');
     Rf(g,64,75,10,2,'rgba(255,214,150,.14)');
-    /* 光：后窗漏进来的暖光 · 消防梯那盏冷灯 */
+
     lg(g,40,72,22,7,'255,206,130',.30);
     lg(g,96,62,14,6,'150,182,232',.16);
     lg(g,60,84,26,7,'255,206,130',.20);
@@ -2580,20 +2507,20 @@ var SCENES={
     R(g,82,40,2,32,'#4a4a56'); R(g,84,44,2,4,'#3a3a44'); R(g,84,52,2,4,'#3a3a44'); R(g,84,60,2,4,'#3a3a44'); R(g,84,68,2,4,'#3a3a44');
     R(g,96,24,1,12,'#4a4a56'); R(g,92,28,9,1,'#4a4a56'); R(g,93,27,1,1,'#4a4a56'); R(g,98,26,1,1,'#4a4a56');
     var bl=(t>>4)%2; if(bl)R(g,95,22,2,2,'#c2453d'); else R(g,95,22,2,2,'#5a2420');
-    /* 通风口+晾衣绳+夹子 */
+
     R(g,8,56,22,18,'#45454f'); R(g,8,56,22,1,'#565660');
     for(var i7=0;i7<3;i7++)R(g,10,60+i7*4,18,2,'#26262e');
     R(g,34,46,44,1,'#6b6b78');
     R(g,40,47,10,14,'#8f6fb0'); R(g,56,47,8,11,'#5ba3a0'); R(g,68,47,7,12,'#c9c0ab');
     R(g,41,46,1,2,'#ffd489'); R(g,49,46,1,2,'#ffd489'); R(g,57,46,1,2,'#ffd489'); R(g,63,46,1,2,'#ffd489'); R(g,69,46,1,2,'#ffd489');
-    /* 月光：落在屋顶的一片冷白，杂物旁边的影子 */
+
     lg(g,98,82,22,7,'176,196,232',.20);
     Rf(g,10,72,14,9,'rgba(0,0,0,.22)'); Rf(g,86,74,26,10,'rgba(0,0,0,.18)');
-    /* 屋面的水渍・一只水桶・拖把・水盆 */
+
     Rf(g,30,78,10,2,'rgba(150,180,215,.10)'); Rf(g,50,82,16,2.4,'rgba(150,180,215,.08)');
     R(g,72,80,3,4,'#3a3a44'); R(g,72,80,3,1,'#4a4a56');
     R(g,44,80,6,1,'#3a3a44'); R(g,4,72,10,4,'#2f2f38');
-    /* 回去的那扇门（inter 112,66） */
+
     R(g,112,66,8,24,'#3a3f55'); R(g,112,66,8,2,'#4a5070'); R(g,112,66,8,1,'#5a6280');
     R(g,113,68,6,20,'#2f3448'); R(g,112,66,1,24,'#232838'); R(g,119,66,1,24,'#232838');
     R(g,117,78,1.6,1.6,'#c9c0ab');
@@ -2602,7 +2529,7 @@ var SCENES={
 };
 function warm(a){var v=Math.max(0,Math.min(1,a));var c=Math.round(120+v*135);
   return 'rgb('+c+','+Math.round(c*0.82)+','+Math.round(c*0.52)+')';}
-/* 地面光斑：让灯真的"照到地上"，而不是只在自己身上亮 */
+
 function lg(g,cx,cy,rx,ry,c,a){
   if(!(a>0))return;
   g.globalCompositeOperation='lighter';
@@ -2611,7 +2538,6 @@ function lg(g,cx,cy,rx,ry,c,a){
   g.globalCompositeOperation='source-over';
 }
 
-/* 旧接口保留（不再使用 SVG 线稿） */
 var SC={place:'flat',who:null,away:false,night:.2,weather:'rain',mood:null,t:0,fx:86};
 function renderScene(place,who,away){
   try{ enterRoom(place||'flat', who||null); }catch(e){}
@@ -2644,10 +2570,10 @@ function setMood(m){SC.mood=m;}
 /* ---- 主角像素面板 ---- */
 function faceCrop(im,who){
   if(who&&who!=='hero'){
-    if(who==='hemu')return[22,72,84,84];      /* 何木：头像略往下沉一点 */
-    if(who==='chideng')return[22,78,84,84];   /* 迟灯：脸偏下（肤色主区 90–151），往下沉才看得见脸 */
-    if(who==='aji')return[24,92,84,84];       /* 诺斯图：帽兜压得低，脸在更下面（肤色主区 120–150） */
-    return[24,58,80,80];                       /* 其他 NPC：脸部统一构图 */
+    if(who==='hemu')return[22,72,84,84];
+    if(who==='chideng')return[22,78,84,84];
+    if(who==='aji')return[24,92,84,84];
+    return[24,58,80,80];
   }
   var w=im.naturalWidth||1, sw=w*0.66, sy=Math.max(0,(im.naturalHeight||1)*0.32-sw/2);
   return[Math.round(w/2-sw/2),Math.round(sy),Math.round(sw),Math.round(sw)];
@@ -2684,8 +2610,6 @@ function paintHero(){
 }
 window.__yd30px={get SC(){return SC},setNight:setNight,setWeather:setWeather,setMood:setMood};
 
-/* 角色的线稿小人（站在场景里） */
-
 /* =========================================================================
    2. 人物（四人 · 每人一个主题 · 都有“没人看时的动作”）
    ========================================================================= */
@@ -2694,13 +2618,13 @@ hemu:{
   name:'何木', en:'HEMU', place:'store', open:4, kind:'m', fx:196, fy:250,
   theme:'被遗忘的人',
   cite:'街角的琴房，夜里经常有声音。我以为闹鬼，后来知道是有人——我连上去问一声都没问。',
-  /* 分层对话：按关系深浅 */
+
   greet:[
     {c:'0-1',lines:['（他在数零钱。一枚一枚，摆得很整齐。）','「欢迎光临。」','（看见是你，他把零钱推到一边。）','「……哦，是你。」']},
     {c:'2-3',lines:['（他抬头，笑了一下，又收回去了。）','「又来了。」','「我不困。真的。」']},
     {c:'4+',lines:['（他从收银台后面站起来一点，又坐回去。）','「你来了。」','（他没说别的。但他把抽屉推上了。）']}
   ],
-  /* 闲谈池：随机、不同时间来会不同 */
+
   idle:[
     '「下雨天生意差，正好。」',
     '（他抽屉里露出半盒糖。他把它推进去了。）',
@@ -2738,7 +2662,7 @@ hemu:{
   micro:'他把写过的纸折了两折，塞回抽屉。没有扔。',
   micro2:'他揉了揉右手腕。还是上次那个位置。',
   microNote:'（他不扔。也许不是忘了扔。）',
-  /* 关键节点：按关系门槛触发 */
+
   nodes:[
     {need:0,once:'hemu_n1',lines:[
       '（柜台后面摊着一张纸。他在写什么。）',
@@ -2785,7 +2709,7 @@ hemu:{
         {t:'【沉默】',c:'—',silent:true,key:true},
         {t:'「也许。」',c:'-5',d:{rel:1,sp:-5,f:'hemu_maybe'},r:['（他点点头。）','（就只是点点头。）']}
       ]},
-    /* —— 内疚：他替一个问不出口的人问了一句话 —— */
+
     {need:5,once:'hemu_n5',lines:[
       '（他今天一直在擦那个已经很干净的台面。）',
       '「我一直想替一个人问你一句。」',
@@ -2809,7 +2733,7 @@ hemu:{
         {t:'【沉默】陪他把抽屉关上',c:'—',silent:true}
       ]}
   ],
-  /* 沉默到 7 秒后他说的话（比准备说的更多） */
+
   deep:[
     '（他手上的活儿停了。抹布还攥在手里。）',
     '「那天晚上我给一个人发过消息。就是那天。」',
@@ -2827,7 +2751,7 @@ hemu:{
     '「——我说这个干嘛。」',
     '（他把那张写废的纸，重新铺平了。）'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈（loopPool 会按周目拼进 idle 池） */
+
   idle2:[
     '「你又来了。今天不买烟？」',
     '（他把那瓶水往你这边推了推。）「这瓶，给你留的。」',
@@ -2851,7 +2775,7 @@ hemu:{
     '「你别学我一个人待着。待久了，连笑都忘了怎么笑。」'
   ],
   greet2:['「你又来了。」','「今天不买烟？」','「我还以为你今天不来了。」','「来了就站着？坐那把凳子。」','「……来了。」'],
-  /* 沉默到头的更深层：deep 已说「发消息没回、那孩子没回」，这里往里再走一步 */
+
   deep2:[
     '（他手上的活儿停了。抹布攥得很紧。）',
     '「那孩子……其实不是不想来。」',
@@ -2957,7 +2881,7 @@ zi:{
         {t:'【沉默】不接，就这么听着',c:'—',silent:true,key:true},
         {t:'【移开视线】',c:'-1',look:true}
       ]},
-    /* —— 未完成：她把“弹完”当成了告别的条件 —— */
+
     {need:5,once:'zi_n5',lines:[
       '（她今天先弹了后面那一小段。）',
       '（再回头弹开头。）',
@@ -2978,7 +2902,7 @@ zi:{
         {t:'「你可以现在就填。」',c:'-4',d:{rel:1,sp:-4,f:'zi_fill'},r:['（她看了你很久。）','（她拿起笔，在空的那一小节，写了第二个音。）','（还是那几个音。可这一次，是两个了。）','「慢慢来。」','（她这句，是对你说的。）']},
         {t:'【沉默】坐在她旁边',c:'—',silent:true}
       ]},
-    /* —— 你在琴上弹完过那段旋律，她才敢接着往下说 —— */
+
     {need:6,once:'zi_n7',when:function(){return !!S.flags.zi_melody},lines:[
       '（她在弹那段旋律。）',
       '（mi、sol、la、sol、mi——来来回回，停不下来的那几个音。）',
@@ -3014,7 +2938,7 @@ zi:{
     '「……你别多想。」',
     '（她立刻把琴盖上了。）'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈 */
+
   idle2:[
     '「你又来了。今天想听哪段？」',
     '（她弹到那一小节，停了一下。）「这段，我留着等你来接。」',
@@ -3141,7 +3065,7 @@ baigao:{
         {t:'【沉默】',c:'—',silent:true,key:true},
         {t:'「那就跳着吧。」',c:'-5',sub:'接受它不是完整的，也是接受',d:{rel:2,sp:-5,f:'bg_accept'},r:['（放映机的光在他脸上晃了一下。）','（然后他点点头。）','（这是一年来，第一次有人这么说。）']}
       ]},
-    /* —— 道德伤害：他一个人把那天的事扛了一年 —— */
+
     {need:5,once:'bg_n5',lines:[
       '（他把铁盒拿出来，又放回去。）',
       '「如果那天我没剪。」',
@@ -3186,7 +3110,7 @@ baigao:{
     '（灯灭了。他只说了一句。）',
     '「——因为我也在等。」'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈 */
+
   idle2:[
     '「你又来了。今天放哪段？」',
     '（他调试机器。）「第十三分钟，我每晚都放一遍。就那一小段。」',
@@ -3285,7 +3209,7 @@ yat:{
         {t:'「她现在在哪。」',c:'-6',d:{rel:0,sp:-6},r:['（他没回答。）','（风把他的头发吹到脸上。他没拨开。）']},
         {t:'「她常来吗。」',c:'-4',d:{rel:1,sp:-4},r:['「以前。」','（他把「以前」说得有点重。）']}
       ]},
-    /* 三句话：他问三件事，按你的诚实程度认出你（全作唯一一次“答题”） */
+
     {need:2,once:'wx_quiz',quiz:[
       {lines:['（他转过身来，正式地看着你。）','「那天晚上，你在街边站过。」'],opts:[
         {t:'「站过。」',hon:1,r:['（他握栏杆的手紧了一下。）','（什么都没说。什么都说了。）']},
@@ -3300,7 +3224,7 @@ yat:{
         {t:'「应该有吧。」',hon:0,r:['（他看了你一会儿。）','「……应该有吧。」','（他把你的话，原样还给了你。）']}
       ]}
     ]},
-    /* 他自己那句卡了一年的话 */
+
     {need:3,once:'wx_strong',lines:[
       '「有件事，我想了一年。」',
       '「那天早上，我在电话里跟她说——」',
@@ -3339,7 +3263,7 @@ yat:{
         {t:'【沉默】',c:'—',silent:true,key:true},
         {t:'「她听到了。」',c:'-5',sub:'她需要相信这一句，你也需要',d:{rel:2,sp:-5,f:'wx_heard'},r:['（他没有点头，也没有摇头。）','（他只是又站了一会儿。）']}
       ]},
-    /* —— 接受：他把“接受”这两个字重新说了一遍 —— */
+
     {need:5,once:'wx_n5',lines:[
       '「我以为接受，就是不再想她。」',
       '（他扶着栏杆，没作声。）',
@@ -3405,7 +3329,7 @@ yat:{
     '「今天……带伞了。」',
     '（他把第二把伞，留在了栏杆上。）'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈 */
+
   idle2:[
     '「你又上来了。」',
     '（他往旁边挪。）「风大，靠里点。」',
@@ -3445,9 +3369,6 @@ yat:{
   halfGain:'这一夜 · 天台 · 他提到他妹妹可帕玲。他没说那天晚上发生了什么。'
 },
 
-/* —— 诺斯图：反谜。别人都藏着话，他直接把答案告诉你——而你反而不敢信。
-      他后巷墙根蹲着，啃关东煮，说这条街「戏太假」，可他一夜都没走。
-      因为他就是那个「什么都看见了，什么都没做」的人。 —— */
 aji:{
   name:'诺斯图', en:'NOSU', place:'alley', open:4, kind:'m',
   theme:'一直没有伸手的人',
@@ -3503,7 +3424,7 @@ aji:{
         {t:'「你说话能好听点吗。」',c:'-1',d:{rel:1,sp:-1},r:['「不能。」','「好听的话，街上听得还不够多吗。」']},
         {t:'【沉默】蹲着',c:'—',silent:true}
       ]},
-    /* —— 反谜：他什么都直说，你反而不敢信 —— */
+
     {need:2,once:'aji_n2',lines:[
       '「听哥一句：那便利店老哥，你直接走，别听他念叨。」',
       '「他那人，一件事能翻来覆去说一年。」',
@@ -3524,7 +3445,7 @@ aji:{
         {t:'「我写过一封信。」',c:'-3',sub:'你自己也不一定说得清',d:{rel:2,sp:-3},r:['「写给谁的。」','「……行了，别说了。」','「写了的，比没写的强。」','（他把刷子往桶里一扔。）']},
         {t:'（帮他把剩下的刷完）',c:'+2',d:{rel:3,sp:-1,f:'aji_paint'},r:['（你接过刷子，把剩下那半行刷完。）','（他站在旁边看。）','「……干净了。」','「干净了，才能写新的。」']}
       ]},
-    /* —— 那一晚：他就在三楼窗户后面 —— */
+
     {need:4,once:'aji_n4',lines:[
       '「我跟你讲个事。」',
       '「讲完你就当我没讲。」',
@@ -3563,7 +3484,7 @@ aji:{
         {t:'「我记下了。」',c:'-1',d:{rel:1,sp:-1},r:['「记吧。」','「手账这东西，写了就不是白写。」']}
       ]}
   ],
-  /* 沉默到 7 秒后他说的话 */
+
   deep:[
     '（他没说话。他就那么蹲着，陪你蹲着。）',
     '「你知道这条街上，最难的事是什么吗。」',
@@ -3578,7 +3499,7 @@ aji:{
     '「我没有。我就是一个，什么都知道，什么都没做的人。」',
     '「——你别学我。」'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈 */
+
   idle2:[
     '「你又来了。这条街到底有什么好的。」',
     '（他蹲下。）「坐。学我那样，蹲着才看得清这巷子。」',
@@ -3616,8 +3537,6 @@ aji:{
   halfGain:'这一夜 · 后巷 · 他说「最难的事是伸手」。没说下去。'
 },
 
-/* —— 迟灯：公交站等车的人。等的不是车，是一个迟到的人。
-      他跟主角是镜子：他也有过一句没送到的「我马上到」。 —— */
 chideng:{
   name:'迟灯', en:'CHI DENG', place:'street', open:6, kind:'m',
   theme:'等一个迟到的人',
@@ -3671,7 +3590,7 @@ chideng:{
         {t:'【沉默】陪他站着',c:'—',silent:true},
         {t:'【移开视线】',c:'-1',look:true}
       ]},
-    /* —— 那一句「我马上到」—— */
+
     {need:2,once:'cd_n2',lines:[
       '「我跟你讲个事。讲完你就当听了个岔。」',
       '「有人说了一句『我马上到』。」',
@@ -3729,7 +3648,7 @@ chideng:{
         {t:'「我记住了。十一点四十。」',c:'-1',d:{rel:1,sp:-1},r:['「记这个没用。」','（他顿了顿。）','「……记着也行。」']}
       ]}
   ],
-  /* 沉默到 7 秒后他说的话 */
+
   deep:[
     '（他没说话。末班车过去了一趟，他没动。）',
     '「我跟你说过她吗。」',
@@ -3744,7 +3663,7 @@ chideng:{
     '「两个人，都怕对方扑空。所以就都扑空了。」',
     '「——这话我头一回说。你别嫌长。」'
   ],
-  /* 第 2 周目起：更松弛、更私人的闲谈 */
+
   idle2:[
     '「你又碰上了。」',
     '（他递糖。）「甜的不嫌多。这颗给你。」',
@@ -3783,7 +3702,6 @@ chideng:{
 }
 };
 
-
 /* =========================================================================
    3. 事件卡（一晚最多一张，每张都一升一降，没有纯赚的选项）
 
@@ -3821,7 +3739,7 @@ var EVENTS=[
  {id:'E08',min:13,t:['（今天雨很大。）','（你出门前在门口站了一会儿。）'],
   o:[{t:'撑伞出去',c:{sp:-5},r:['（伞是新的。）','（走出去的时候，你想起了那张纸条。）']},
      {t:'不出门',c:{sp:+9,relAll:-1},sub:'这一天会整个空掉',r:['（你没出门。）','（那一天，谁都没见到你。）']}]},
- /* —— 支线：接上便利店那封信（只有你把话说到过那一步，它们才会来） —— */
+
  {id:'E10',min:8,cond:function(){return !!S.flags['hemu_letter']},
   t:['（何木今天没在柜台后面。）','（他在后门站着，手里拿着那封信。）','「你说要帮我寄。」','「我想了两天。……其实我是不敢寄。」'],
   o:[{t:'「寄吧。地址还在。」',c:{sp:-6,rel:2},sub:'替他把信送出去，不管有没有回音',r:['（他把信递给你，指尖在信封上停了一下。）','「那就寄。」','「寄了就寄了。别回头想。」','（他转身回去理货，背对着你。）','（你没看见他的脸。）']},
@@ -3831,7 +3749,7 @@ var EVENTS=[
   t:['（便利店没客人。）','（他从抽屉最底下拿出一张照片，推到你面前。）','（照片上是一个女人，站在一口锅前面。）'],
   o:[{t:'「你妈。」',c:{sp:-5,rel:2},r:['（他点头。）','「锅就是她那口。她走的时候留给我的。」','「她在老家。我一年回去一次。」','（说这些的时候，他没看着你。）']},
      {t:'（不问，把照片推回去）',c:{sp:0,rel:1},r:['（他把照片收好。）','（像是刚才什么都没发生。）','（但他给你续了一次热水。）']}]},
- /* —— 支线：只有你把某个人的话陪到了底，它们才会来 —— */
+
  {id:'E12',min:7,cond:function(){return !!S.flags['deep_zi']},
   t:['（今天琴房的门虚掩着。）','（她不在。谱架上放着一台旧录音机。）','（按下去，是一段弹到一半的曲子。）'],
   o:[{t:'（听完）',c:{sp:-4,rel:2},fx:function(){ playMelody(PIANO_MELODY,640,0.15); },r:['（那一小节，她这次没有空过去。）','（她填了一个音进去。）','（就一个。）','（你跟着哼了一遍——mi、sol、la、sol、mi。来来回回，就这几个音。）','（录音机是自己停的，不是她按了停。）']},
@@ -3868,7 +3786,7 @@ var EVENTS=[
  {id:'E20',min:1,t:['（你走在街上，忽然一切都隔远了。）','（路灯、雨、招牌，都在一层玻璃后面。）','（你听见自己说了一句话。你不记得自己说过。）'],
   o:[{t:'停下来，数眼前的东西',c:{sp:-3,know:1},sub:'五感着陆',r:['（你停下来。）','（一盏灯。一滩水。一棵树。一块招牌。一只猫。）','（数到第五个的时候，玻璃薄了一层。）','（你又能听见雨了。雨是真的。）']},
      {t:'继续走，走完这段',c:{sp:-7},sub:'你以前都是这么过去的',r:['（你继续走。）','（不知走了多久。回头，那段路是空白的。）','（你到了。可你不记得是怎么到的。）','（这样到过、却想不起怎么到的，有过很多次了。）']}]},
- /* —— 后加的一批：街上每天都有点小事，不必都和那件事有关 —— */
+
  {id:'E21',min:6,t:['（雨忽然大了。）','（便利店的屋檐很窄。）','（你到的时候，下面已经站了三个人。）','（谁也没跟谁说话。）'],
   o:[{t:'（挤进去站着）',c:{sp:-3,relAll:1},sub:'四个人，同一个屋檐',r:['（你挤了进去。）','（肩挨着肩。谁都没说话。）','（雨打在檐上，声音盖过了别的。）','（后来雨小了。他们各自走了，朝三个方向。）']},
      {t:'（站在雨里，不挤）',c:{sp:-6},r:['（你站在雨里。）','（他们看了你一眼，往里挪了挪。）','（你还是没进去。）','（衣服湿透了。你站了很久才走。）']},
@@ -3914,7 +3832,7 @@ var EVENTS=[
   o:[{t:'（记进手册）',c:{sp:-4,know:1},sub:'写下来，就不用一直记着',r:['（你把它写进了手册。）','（写完你看了一遍，合上了。）','（那一夜你没有再睡。）']},
      {t:'（起来出门）',c:{sp:-6,relAll:1},r:['（你出了门。）','（街上没有人。）','（便利店的灯亮着。）','（你在门口站了一会儿，进去了。）']},
      {t:'（躺着，等心跳慢下来）',c:{sp:+5},r:['（你躺着。）','（数呼吸。数到后来就乱了，又从头数。）','（天亮的时候，你又睡了一会儿。）']}]},
- /* —— 后巷那一批 —— */
+
  {id:'E32',min:3,t:['（后巷的纸箱里有声音。）','（一只猫，和四只小猫。）','（猫看见你，没有跑。）'],
   o:[{t:'（蹲下来看一会儿）',c:{sp:-2,know:1},sub:'活着的东西，在很脏的地方也活着',r:['（你蹲了很久。）','（小猫眼睛还没睁开。）','（你回去的时候，脚步比来时轻一点。）']},
      {t:'（找点吃的来）',c:{sp:-5,rel:'hemu'},r:['（你去便利店买了两根火腿肠。）','（他没问你买给谁。）','（你回去放在纸箱边。）','（第二天少了半根。）']},
@@ -3934,7 +3852,7 @@ var EVENTS=[
    4. 结局（有序阈值表，从上到下命中即止 —— 不按好坏排序）
    ========================================================================= */
 var ENDINGS=[
- /* 结局1 · 真结局（隐藏） */
+
  {id:'THIRTEEN',t:'十三分钟',en:'THE THIRTEEN MINUTES',
   hint:'走完这条街，把没人跟你说的事，自己都看一遍。',
   cond:function(s){return s.traces>=12&&s.deep&&s.frags>=3},
@@ -3947,7 +3865,7 @@ var ENDINGS=[
      '（——这不是谁欠谁的。这就是那十三分钟。）',
      '（天亮了。街上的灯一盏一盏灭掉。）',
      '（你还在这儿。）']},
- /* 结局2 ~ 结局5 · 四条线的「看见」 */
+
  {id:'SEE_HEMU',t:'看见 · 折起来的那张',en:'THE FOLDED NOTE',
   hint:'陪便利店那个人，坐到他没话可说。',
   cond:function(s){return s.maxRel>=5&&s.deep&&s.who==='hemu'},
@@ -4013,7 +3931,7 @@ var ENDINGS=[
      '（这不算失败。你只是先停下来了。）',
      '（街角便利店的灯还亮着。）',
      '（它每天都会亮。你随时可以再下去。）']},
- /* 结局6 ~ 结局15 · 其余结局 */
+
  {id:'REGULAR',t:'只去过便利店',en:'THE REGULAR',
   hint:'很多个夜里，只推开同一扇门。',
   cond:function(s){var t=s.times||{};return (t.hemu||0)>=4&&((t.zi||0)+(t.baigao||0)+(t.yat||0))===0},
@@ -4104,13 +4022,13 @@ var ENDINGS=[
 var S={
   day:1, night:1, seg:0, phase:0, spirit:72, loop:1,
   rel:{hemu:0,zi:0,baigao:0,yat:0},
-  insight:0, empath:0,                 /* 轻量养成：跨周目保留，缓慢增长 */
+  insight:0, empath:0,
   flags:{}, seen:{}, journal:[], known:{}, frags:{}, stage:{}, times:{},
   lowDays:0, route:null, eventDone:{}, over:false, finale:false,
   toolUsed:{}, lampUsed:0, burn:0, burnN:0, ttSeen:{},   /* 一夜一结的账 */
-  knows:{hemu:0,zi:0,baigao:0,yat:0}   /* 跨周目保留：你对每个人了解多少 */
+  knows:{hemu:0,zi:0,baigao:0,yat:0}
 };
-var KEEP={knows:1,journal:1,loop:1,clue:1};     /* 跨周目继承的字段：知道的事会留下 */
+var KEEP={knows:1,journal:1,loop:1,clue:1};
 
 /* ===== UNIFY 统一存档：一个游戏 = 一个档 ===== */
 var WHO='d30';
@@ -4118,9 +4036,9 @@ function uRead(){try{return JSON.parse(localStorage.getItem('xljk_save'))||{}}ca
 function uOut(){
   try{
     var a=uRead(),p={},i,k;
-    for(k in S){ if(S[k]!==undefined)p[k]=S[k]; }   /* 存全量：原来只存白名单，frags/traces/bag/stage/insight/empath 会丢 */
+    for(k in S){ if(S[k]!==undefined)p[k]=S[k]; }
     a[WHO]=p;
-    /* 写入权按相划分：天数/关系/手账只由昼相写，心力/光籽两边都可写 */
+
     if(WHO==='d30'){
       a.day=S.day;a.loop=S.loop;a.over=!!S.over;a.ending=S.ending;
       if(S.rel)a.rel=S.rel;
@@ -4148,7 +4066,7 @@ function uIn(){
   }catch(e){}
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-/* D30_ARCHIVE 跨篇档案 */
+
 function archive(){
   try{
     var a={};try{a=JSON.parse(localStorage.getItem('xljk_archive'))||{}}catch(e){a={}}
@@ -4197,7 +4115,7 @@ function tierData(){
   for(i=0;i<TIERS.length;i++)if(v>=TIERS[i].min)return TIERS[i];
   return TIERS[TIERS.length-1];
 }
-/* 累着的时候，同一件事更费人 */
+
 function cost(n){
   var m=1;
   if(n>0){ m=tierData().costM; if(m>1)n=Math.ceil(n*m); }
@@ -4205,7 +4123,7 @@ function cost(n){
   if(n>=3)pop('心力 −'+n+(m>1?'（累着，更费）':''));
 }
 function gain(n){S.spirit=clamp(S.spirit+n,0,100);paintSpirit();if(n>=6)pop('心力 +'+n,'up')}
-/* 方法打折：撑得住的时候，办法才管用 */
+
 function toolGain(k){ return Math.round((TOOLS[k]?TOOLS[k].gain:0)*tierData().toolM); }
 function paintSpirit(){
   var t=tier(), td=tierData(), ind=$('#spInd'), core=$('#spCore'), bd=$('#breathDot');
@@ -4214,26 +4132,25 @@ function paintSpirit(){
   if(bd){ bd.classList.remove('tired','crit','low','burn');
     if(t==='tired'||t==='low'||t==='crit'||t==='burn')bd.classList.add(t); }
   try{ ind.title='心力 · '+td.say; }catch(e){}
-  var r=7+(S.spirit-50)/50*4.2;             /* 心力越低，核心越小 */
+  var r=7+(S.spirit-50)/50*4.2;
   core.setAttribute('r',clamp(r,2.6,11).toFixed(2));
   core.setAttribute('opacity',(0.35+S.spirit/100*0.6).toFixed(2));
-  /* 呼吸周期：稳 3.4s → 烧着 1.1s */
+
   document.documentElement.style.setProperty('--breath',td.breath.toFixed(2)+'s');
-  /* 画面明度：不用颜色，用一层白罩表达“看不清” */
+
   var stg=$('#stage');
   if(stg){ stg.classList.remove('dim','dim2','dim3');
     if(t==='tired')stg.classList.add('dim');
     else if(t==='low')stg.classList.add('dim2');
     else if(t==='crit'||t==='burn')stg.classList.add('dim3'); }
   try{ SC.dim = td.dim; }catch(e){}
-  /* 底栏一句话（不精确，是感觉） */
+
   $('#hSpirit').textContent = td.say;
   try{paintHero()}catch(e){}
 }
-/* 台词截断：临界时只剩前半句 */
-/* 生成式氛围配乐：和弦垫 + 偶发钢琴音（多一张音乐网，适配不同天气/情绪） */
+
 var musicNodes=null, musicOn=false, musicTimer=null;
-/* 生成式配乐升级：一段固定的主题动机（A 小调），循环着走 —— 不再随机抽音 */
+
 var NOTE={A3:220,B3:246.94,C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440};
 var THEME=['A3','C4','E4','D4','C4','B3','A3','E4','D4','C4','B3','A3'];
 var musicStep=0;
@@ -4241,7 +4158,7 @@ function startMusic(){
   if(musicOn)return;
   var ac=audio(); if(!ac)return;
   if(ac.state==='suspended')ac.resume();
-  var freqs=[110,164.81,220,261.63,329.63];   /* A 小调 · 温柔和弦 */
+  var freqs=[110,164.81,220,261.63,329.63];
   var master=ac.createGain(); master.gain.value=0.0001; master.connect(MASTER);
   var filt=ac.createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=950; filt.connect(master);
   var oscs=[];
@@ -4257,11 +4174,9 @@ function startMusic(){
   musicTimer=setTimeout(musicNote, 1000);
   if(typeof updateMusicBtn==='function')updateMusicBtn();
 }
-/* UI 音效：短 · 轻 · 各处不同（不是加音量，是加"手感"）*/
+
 var sfxOn=true;
-/* UI 音效：统一用柔和三角波，音量收到同一档。
-   上一轮为了"统一"把它们压得太轻（hover 0.018、tap 0.03），实际听不见 ——
-   分级可以，但基准要抬起来：确认最响、悬停最轻，hover 也要有存在感。 */
+
 var SFX={ok:[660,0.14,0.085],open:[392,0.18,0.075],close:[294,0.15,0.068],tap:[880,0.05,0.058],page:[523,0.10,0.056],
   hover:[1200,0.03,0.034],enter:[294,0.24,0.075]};
 function sfx(kind){
@@ -4277,14 +4192,13 @@ function sfx(kind){
   g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   o.start(t); o.stop(t+dur+0.03);
 }
-/* 开场字幕换页：柔和、带一点暖意的上扬"落定"声（正弦+缓升），
-   不用 sfx('page') 那种尖硬的方波 beep，和电影的安静氛围更搭 */
+
 function cardBlip(){
   if(!sfxOn)return;
   var ac=audio(); if(!ac)return;
   if(ac.state==='suspended')try{ac.resume()}catch(e){}
   var t=ac.currentTime;
-  var f=196*(1+(Math.random()*2-1)*0.04);   /* G3 附近，轻 */
+  var f=196*(1+(Math.random()*2-1)*0.04);
   var o=ac.createOscillator(); o.type='sine';
   o.frequency.setValueAtTime(f,t); o.frequency.linearRampToValueAtTime(f*1.5,t+0.18);
   var g=ac.createGain(); o.connect(g); g.connect(MASTER);
@@ -4302,7 +4216,7 @@ function musicNote(){
   var t=ac.currentTime;
   g.gain.setTargetAtTime(0.032,t,0.02); g.gain.setTargetAtTime(0.0001,t+1.9,0.7);
   o.start(t); o.stop(t+2.6);
-  /* 心力越足，这句走得越轻快；越空，越慢 */
+
   var iv=(typeof tierData==='function')?tierData().music:4400;
   musicTimer=setTimeout(musicNote, iv);
 }
@@ -4315,12 +4229,12 @@ function stopMusic(){
   setTimeout(function(){ try{ m.oscs.forEach(function(o){o.stop()}); m.lfo.stop(); }catch(e){} }, 800);
   if(typeof updateMusicBtn==='function')updateMusicBtn();
 }
-/* 记住玩家偏好：手动关过就不再自动开；手动开过就恢复自动 */
+
 function toggleMusic(){
   if(musicOn){ try{ localStorage.setItem('yd30_music_off','1'); }catch(e){} stopMusic(); }
   else { try{ localStorage.removeItem('yd30_music_off'); }catch(e){} startMusic(); }
 }
-/* 顶栏按钮改字：只动「字」那层，别把图标结构冲掉 */
+
 function setTb(id,label,icon){
   var b=document.getElementById(id); if(!b)return;
   var l=b.querySelector('.lb'), c=b.querySelector('.ic');
@@ -4350,14 +4264,7 @@ function audio(){
   }catch(e){return null}
   return AC;
 }
-/* ---- 移动端音频解锁（手机没声音的主因） --------------------------------
-   iOS/Android 的自动播放策略：AudioContext 只能在「真实用户手势」的同步调用栈里
-   被创建或 resume；且切到后台、锁屏、接电话之后，系统会把 context 挂起，
-   回前台不会自动恢复。所以这里做三件事：
-     1) 任意手势（touch/pointer/click/key）都尝试 resume；
-     2) 首次解锁时播一帧静音 —— iOS 需要它来真正激活音频会话；
-     3) 回前台 / 重新聚焦 / pageshow 时再唤醒一次，并把该响的补上。
-   ---------------------------------------------------------------------- */
+/* ---- 移动端音频解锁（手机没声音的主因） -------------------------------- */
 var _audioUnlocked=false;
 function musicPrefOn(){ try{ return localStorage.getItem('yd30_music_off')!=='1'; }catch(e){ return true; } }
 function unlockAudio(){
@@ -4372,7 +4279,7 @@ function unlockAudio(){
     s.buffer=b; s.connect(ac.destination);
     if(s.start)s.start(0); else if(s.noteOn)s.noteOn(0);
   }catch(e){}
-  /* 解锁成功后再补：环境音常驻；音乐按玩家上次的偏好 */
+
   setTimeout(function(){
     try{ if(!rainOn)startRain(); }catch(e){}
     try{ if(!musicOn&&musicPrefOn())startMusic(); }catch(e){}
@@ -4389,17 +4296,16 @@ function unlockAudio(){
   addEventListener('pageshow',function(){ try{ unlockAudio(); }catch(e){} });
   addEventListener('focus',function(){ try{ unlockAudio(); }catch(e){} });
 })();
-/* 环境音：按天气不同（不是一种雨声走全场） */
+
 var ambKind=null, ambLfo=null;
-/* 背景床：必须能被听见但压在前景之下。上一轮压到 .04/.01 几乎消失，
-   玩家会以为"游戏没声音"。现在整体抬一档，雨听得见、晴仍有夜的底。 */
+
 var AMB={
-  rain   :{f:5200, g:.062, dec:.020, amp:3.2},   /* 大雨 · 密（背景床，低于前景） */
+  rain   :{f:5200, g:.062, dec:.020, amp:3.2},
   drizzle:{f:4200, g:.036, dec:.012, amp:2.2},   /* 毛毛雨 · 疏 */
-  clear  :{f:1500, g:.016, dec:.004, amp:1.1},   /* 晴 · 只剩夜里的底 */
+  clear  :{f:1500, g:.016, dec:.004, amp:1.1},
   cloud  :{f:1000, g:.024, dec:.008, amp:1.5},   /* 阴 · 沉 */
-  wind   :{f:760,  g:.038, dec:.004, amp:1.8},   /* 风 · 起伏（加 LFO） */
-  fog    :{f:620,  g:.016, dec:.002, amp:1.0}    /* 雾 · 几乎只剩呼吸 */
+  wind   :{f:760,  g:.038, dec:.004, amp:1.8},
+  fog    :{f:620,  g:.016, dec:.002, amp:1.0}
 };
 function ambStop(){
   try{ if(rainSrc){rainSrc.stop();rainSrc.disconnect();} }catch(e){}
@@ -4424,7 +4330,7 @@ function startRain(){
   rainGain.gain.setValueAtTime(0.0001,t0);
   rainGain.gain.linearRampToValueAtTime(c.g,t0+1.2);
   rainSrc.connect(rainFilter); rainFilter.connect(rainGain); rainGain.connect(MASTER);
-  /* 风：音量缓慢起伏，像一阵一阵 */
+
   if(wx==='wind'){
     ambLfo=ac.createOscillator(); ambLfo.type='sine'; ambLfo.frequency.value=0.11;
     var lg=ac.createGain(); lg.gain.value=c.g*0.65;
@@ -4432,22 +4338,22 @@ function startRain(){
   }
   rainSrc.start(); rainOn=true; ambKind=wx;
 }
-/* 环境音变闷：不是加音效，是撤掉高频 */
+
 function muffle(){
   if(!rainFilter)return;
   var t=tier();
   var f=(typeof tierData==='function')?tierData().muffle:1800;
-  if(OUTDOOR&&!OUTDOOR[curRoom])f=Math.min(f,900);   /* 在屋里：雨声隔着一层屋顶 */
+  if(OUTDOOR&&!OUTDOOR[curRoom])f=Math.min(f,900);
   rainFilter.frequency.setTargetAtTime(f,AC.currentTime,0.8);
 }
-/* 换房间：进屋雨声收小、变闷；出门重新开阔 */
+
 function ambRoom(id){
   if(!rainGain)return;
   var indoor=!(OUTDOOR&&OUTDOOR[id]);
   try{ rainGain.gain.setTargetAtTime(indoor?0.026:0.062,AC.currentTime,0.8); }catch(e){}
   try{ muffle(); }catch(e){}
 }
-/* 沉默时撤掉环境音，只剩干声 */
+
 function silenceAudio(on){
   if(!rainGain)return;
   var _st=tier();
@@ -4457,18 +4363,16 @@ function silenceAudio(on){
 /* =========================================================================
    7b. 人物语气音：谁在说话，声音就不一样（不念字，只是一个"说话的调子"）
    ========================================================================= */
-/* [基频Hz, 波形, 音长s, 随机起伏] —— 按性格定，不是按性别 */
-/* 每字一声的时长：太短会像"嘀嘀"的电子音，拉到 ~12ms 以上才有"敲键盘"的手感。
-   第三项是每个字的持续秒数，第四项是音高抖动幅度。 */
+
 var VOICE={
-  hemu  :[146, 'sine',     0.105, 0.05],   /* 沉默、压着：低、平、略闷 */
-  zi    :[392, 'sine',     0.090, 0.09],   /* 内向、轻：高、短、有点抖 */
-  baigao:[112, 'triangle', 0.125, 0.03],   /* 克制、低：很低、更闷、更慢 */
-  yat :[262, 'sine',     0.100, 0.04],   /* 平静、稳：中间、干净 */
-  aji   :[330, 'triangle', 0.075, 0.16],   /* 抬杠、跳：硬、短、不稳（三角波去刺耳） */
+  hemu  :[146, 'sine',     0.105, 0.05],
+  zi    :[392, 'sine',     0.090, 0.09],
+  baigao:[112, 'triangle', 0.125, 0.03],
+  yat :[262, 'sine',     0.100, 0.04],
+  aji   :[330, 'triangle', 0.075, 0.16],
   hero  :[196, 'sine',     0.085, 0.05]    /* 心声：最轻 */
 };
-/* 环境音在响时，人声要压得过它；沉默（按住Z）时人声反而更清楚 */
+
 function blip(who){
   if(!sfxOn)return;
   var ac=audio(); if(!ac)return;
@@ -4480,16 +4384,14 @@ function blip(who){
   o.frequency.value=f; o.connect(g); g.connect(MASTER);
   var t=ac.currentTime;
   var comp=Math.max(0.85,Math.min(1.9,1+(260-f)/900));
-  /* 打字声是这游戏里出现最频繁的声音，必须清楚可闻 —— 之前 0.042 偏轻，
-     在笔记本小喇叭上几乎听不到，所以"感觉声音没了"。 */
+
   var vol=(silActive?0.052:0.085)*comp;
   g.gain.setValueAtTime(0.0001,t);
   g.gain.exponentialRampToValueAtTime(vol,t+0.006);
   g.gain.exponentialRampToValueAtTime(0.0001,t+v[2]);
   o.start(t); o.stop(t+v[2]+0.03);
 }
-/* 逐字打字声：直接复用简洁的 blip（单一振荡器，无泛音/噪声），就是你要的"打字声"；
-   不再每句开头单独来一声奇怪的语气音 */
+
 var TALK_SKIP='「」『』（）〔〕…。，、！？—“”‘’ \t\n　';
 function voiceBlip(who, ch, lead){
   if(!sfxOn)return;
@@ -4500,15 +4402,17 @@ function sBlip(){ try{ sfx('tap'); }catch(e){} }
    8. 输出：逐句打字
    ========================================================================= */
 var typing=false, typeQ=[], typeCb=null;
-var talkLog=[];   /* 最近一段对话的原始行，供「查看对话记录」回看 */
+
+var _typeBusy=false, _waitClick=false;
+var talkLog=[];
 function clearTalk(){
   talkEl.innerHTML='';typeQ=[];
   talkEl.classList.remove('fade'); talkEl.classList.remove('hidden');
-  talkEl.classList.remove('on');     /* 清空即收框：不留空黑框 */
+  talkEl.classList.remove('on');
   talkEl.scrollTop=0;
 }
 var talkEpoch=0, fadeTo=null;
-/* 对话头像：在场 NPC 说了台词 → 他的脸；否则主角心声 */
+
 function faceFor(lines){
   var rm=ROOMS[curRoom],i;
   if(rm&&rm.npc&&!npcGone[rm.npc.id]){
@@ -4525,7 +4429,7 @@ function drawFace(cv,who){
     var c=faceCrop(im,who);
     g.drawImage(im,c[0],c[1],c[2],c[3],0,0,48,48);
   }else{
-    /* 立绘没就绪（或素材缺失）：画一个像素剪影，别留黑洞 */
+
     var COL={hemu:'#e8b45a',zi:'#7fc6c0',baigao:'#8f6fb0',yat:'#c2453d',aji:'#9a7fc0',chideng:'#7f95c0',hero:'#8fa0d6'};
     var cc=COL[who]||'#8fa0d6';
     g.fillStyle='#1b1730'; g.fillRect(0,0,48,48);
@@ -4538,11 +4442,11 @@ function drawFace(cv,who){
     setTimeout(function(){drawFace(cv,who)},900);
   }
 }
-/* 默认自动推进：每句打完停一拍自己往下走 —— 逐行点得太累。
-   玩家手动关过就记住（localStorage），下一夜还是手动 */
+
 var autoSay=(function(){ try{ return localStorage.getItem('yd30_auto_off')!=='1'; }catch(e){ return true; } })(), _sayGo=null;
 function sayLines(lines,cb){
   clearTalk(); typing=true; talkLog=lines.slice();
+  _typeBusy=false; _waitClick=false;
   talkEl.classList.add('on');        /* 有台词才显示 */
   var my=++talkEpoch;
   clearTimeout(fadeTo);
@@ -4556,7 +4460,7 @@ function sayLines(lines,cb){
     talkEl.appendChild(head);
   }catch(e){}
   var i=0, p=null, txt='', at=0, tm=null, phase=0, ended=false;
-  var who=(f&&f.who)||'';                         /* 本段对话的说话者：逐字音用它区分音色 */
+  var who=(f&&f.who)||'';
   var KEEP=3;                                    /* 屏幕上最多留几句 */
   function trim(){
     var ps=talkEl.querySelectorAll('p'), k;
@@ -4570,29 +4474,29 @@ function sayLines(lines,cb){
     if(my!==talkEpoch||ended)return;
     if(at>=txt.length){
       phase=2; p.classList.remove('caret');
-      if(autoSay){ /* 自动：按行长给读的时间 —— 短句不拖，长句不赶 */
+      _typeBusy=false;
+      if(autoSay){
         var d=Math.min(6500, 430+txt.length*118);
         tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); }, d); }
-      else { p.classList.add('waitc'); }          /* 等玩家点 */
+      else { p.classList.add('waitc'); _waitClick=true; }   /* 等玩家点 */
       return;
     }
     at++; p.textContent=txt.slice(0,at);
     if(at%3===0||at===txt.length)talkEl.scrollTop=talkEl.scrollHeight;
     var ch=txt.charAt(at-1);
-    /* 逐字说话声：标点/空白不出声，其余按说话者音色吐一字一音 */
+
     if(ch && TALK_SKIP.indexOf(ch)<0){ try{ voiceBlip(who, ch, false); }catch(e){} }
-    /* 累着的时候，话到嘴边也说得慢 */
+
     var _tm=(typeof tierData==='function')?tierData().type:1;
     tm=setTimeout(type, ('。，、…！？'.indexOf(ch)>=0)?105:Math.round(32*_tm));
   }
   function step(){
     if(my!==talkEpoch||ended)return;
-    /* 代纪守卫：又有新对话开始时，旧链立刻作废——不往新框里追加，也不回调 */
+
     if(i>=lines.length){
-      ended=true; typing=false; _skipFn=null;
+      ended=true; typing=false; _skipFn=null; _typeBusy=false; _waitClick=false;
       if(cb)cb();
-      /* 演完、没有待选项 → 先落一个「说完了」的结束提示，2.6s 后淡出。
-         以前是默默淡掉，玩家不知道话已经讲完、还是在等下一句 */
+
       if(!optsEl.innerHTML&&!silActive&&(!PUZ||!PUZ.on)){
         try{
           var ec=document.createElement('p'); ec.className='eend';
@@ -4614,29 +4518,31 @@ function sayLines(lines,cb){
     if(raw.charAt(0)==='（')p.className='i';
     else if(raw.indexOf('「')===0)p.className='q';
     if(raw.indexOf('水木和')===0)p.className+=' you';   /* 你自己开口：靠右 */
-    /* 不再在句首单独加语气音（那种"说话声"听着怪）；逐字打字声已在 type() 里按字触发 */
+
     talkEl.appendChild(p); trim();
     talkEl.scrollTop=talkEl.scrollHeight;
-    txt=show; at=0; phase=1;
-    if(txt.indexOf('<')>=0){                      /* 带标记的行：不逐字，直接给 */
+    txt=show; at=0; phase=1; _typeBusy=false; _waitClick=false;
+    if(txt.indexOf('<')>=0){
       p.innerHTML=txt; at=txt.length; phase=2;
       if(autoSay) tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); }, txt.length*22+520);
-      else p.classList.add('waitc');
+      else { p.classList.add('waitc'); _waitClick=true; }
     }else{
+      _typeBusy=true;
       p.classList.add('caret');
       tm=setTimeout(type, 130);
     }
   }
-  /* 点击/空格跳过：正在打字→立刻打完；已打完→下一句 */
+
   _skipFn=function(){
     if(my!==talkEpoch||ended)return;
     if(phase===1){ clearTimeout(tm); at=txt.length; p.textContent=txt; p.classList.remove('caret'); phase=2;
+      _typeBusy=false;
       if(autoSay) tm=setTimeout(function(){ if(my!==talkEpoch)return; i++; step(); },70);
-      else { p.classList.add('waitc'); return; } }
-    else if(phase===2){ clearTimeout(tm); if(p)p.classList.remove('waitc'); i++; step(); }
+      else { p.classList.add('waitc'); _waitClick=true; return; } }
+    else if(phase===2){ clearTimeout(tm); if(p)p.classList.remove('waitc'); _waitClick=false; i++; step(); }
   };
-  /* 自动按钮用：如果正停在等点击处，立刻往下走 */
-  _sayGo=function(){ if(my!==talkEpoch||ended)return; if(phase===2&&p){ clearTimeout(tm); p.classList.remove('waitc'); i++; step(); } };
+
+  _sayGo=function(){ if(my!==talkEpoch||ended)return; if(phase===2&&p){ clearTimeout(tm); p.classList.remove('waitc'); _waitClick=false; i++; step(); } };
   step();
 }
 function pop(t,cls){
@@ -4651,8 +4557,7 @@ function toast(t){
   clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('on')},2600);
 }
 /* 心力低的记忆闪回 */
-/* 心力见底的时候，世界开始不太对。
-   这不是装饰 —— 一个人耗到那个份上，感知真的会变成这样。 */
+
 var FLASH=[
   '（雨声……好像停了一下。）',
   '（这个时间，好像来过。）',
@@ -4677,11 +4582,11 @@ var FLASH=[
   '（他们四个都在看着你。谁都没有说话。）'
 ];
 function maybeFlash(){ var _ft=tier(); if((_ft==='crit'||_ft==='burn')&&rnd()<0.28)toast(pick(FLASH)); }
-/* 撑不住的时候，他会重复刚才那句话 —— 像卡住了 */
+
 /* =========================================================================
    9. 场景渲染
    ========================================================================= */
-/* renderScene 已由像素引擎接管 */
+
 function microNote(t){
   var d=$('#tip'); if(!d)return;
   d.innerHTML=t; d.classList.add('on');
@@ -4695,7 +4600,7 @@ function microNote(t){
 function jrAdd(who,text){
   S.journal.push({w:who,d:'这一夜',t:text}); save();
 }
-/* 每个角色的性格一句：不写"设定"，只写你看到的那个样子 */
+
 var CHARLINE={
   hemu  :'把没寄出去的信折两折、塞回抽屉的人。',
   zi    :'有一小节，她从来不弹完。',
@@ -4704,7 +4609,7 @@ var CHARLINE={
 };
 function renderBook(){
   var b=$('#bookBody'), h='';
-  /* 最上面一块“现在”：玩家一开手册就知道该干嘛 */
+
   var fr=Object.keys(S.frags||{}).length, cn=storyClueN();
   var line=S.journal.filter(function(x){return x.w==='hero'}).length;
   var _pz=0,kz; for(kz in PUZZLE_META) if(puzzleSolved(kz))_pz++;
@@ -4745,7 +4650,7 @@ function renderBook(){
     }
     h+='</div>';
   });
-  /* 你自己的事：主角手记（星图 / 响铃 / 寻物启事…） */
+
   var mine=S.journal.filter(function(x){return x.w==='hero'});
   var extra='';
   if(S.flags&&S.flags['item_umbrella'])extra+='<li><span class="d">—</span><span>你买了伞。你还是经常淋湿。</span></li>';
@@ -4761,7 +4666,7 @@ function renderBook(){
 /* =========================================================================
    11. 一天的流程
    ========================================================================= */
-/* 一条荧惑上的五处。走过上一处，下一处才亮灯。 */
+
 function openPlaces(){
   return PLACES;
 }
@@ -4770,18 +4675,17 @@ function curNPC(place){
   return null;
 }
 
-/* 阶段：0 白天 · 1 夜晚 · 2 深夜结算 */
 var WXPOOL=['rain','rain','rain','drizzle','clear','cloud','wind','drizzle','fog','cloud'];
 function rollWeather(day){
   var w, lp=S.loop||1;
-  /* 不是随机：这条街有自己的季节。周目不同，同一夜的天气也不同。 */
+
   if(day<=2)w='rain';                              /* 开头总是在下雨 */
-  else if(day%5===0)w='clear';                      /* 15 天制：每五夜放晴一次，能看见星星 */
-  else if(day>=12)w=(lp%2)?'fog':'drizzle';         /* 末尾起雾，或者细雨（15 天制：从第 12 夜起） */
-  else w=WXPOOL[(day*3+lp*5)%WXPOOL.length];        /* 中间按天推进；换周目会错开 */
+  else if(day%5===0)w='clear';
+  else if(day>=12)w=(lp%2)?'fog':'drizzle';
+  else w=WXPOOL[(day*3+lp*5)%WXPOOL.length];
   S.wx=w; S.wxDay=day;
 }
-/* 今晚该往哪走：没去过的先指；都去过就看碎片还缺不缺 */
+
 var NHORDER=[['store','便利店'],['piano','琴房'],['cinema','放映厅'],['roof','天台'],['alley','后巷']];
 function nextHint(){
   var seen=S.seen||{};
@@ -4817,10 +4721,10 @@ function startNight(){
   var pl=openPlaces();
   clearTalk(); optsEl.innerHTML=''; silEl.classList.remove('on');
   setCap('出租屋');
-  S.toolUsed={}; S.againN={}; save();   /* 每夜各能用一次；连着搭话会被看出来 */
-  S.lampUsed=0; S.ttSeen={}; S.burn=0; S.burnN=0; save();   /* 一夜一结：灯下歇过一次、硬撑过几次，天亮了都重算 */
-  rollHere();                            /* 今晚谁在、谁不在，一次定死 */
-  /* 不再有章节。每天就是一天，天亮了就又是一天。 */
+  S.toolUsed={}; S.againN={}; save();
+  S.lampUsed=0; S.ttSeen={}; S.burn=0; S.burnN=0; save();
+  rollHere();
+
   renderScene('flat','none',false);
 
   var lead=[];
@@ -4832,10 +4736,10 @@ function startNight(){
     '（便利店的灯，这会儿还亮着。）','（给过你话的人，在那一条街上。）');
   else lead.push('（'+PHASE_LEAD[S.phase]+'。）');
   if(S.day===1&&(S.loop||1)>=2)lead.push('（这已经是第 '+(S.loop||1)+' 遍了。这条街，你闭着眼也走得回去。）');
-  /* 今天的一件小事：每天换一条，不重复到明天 */
+
   if(S.miscDay!==S.day){ S.miscDay=S.day; S.miscTxt=drawDaily(); save(); }
   if(S.miscTxt&&S.day>1)lead.push(S.miscTxt);
-  /* 动机：每天说清“今晚往哪走”，不让玩家悬着 */
+
   var hint=nextHint();
   if(S.day>1)lead.push('（'+hint.replace('今晚：','')+'。你知道路。）');
   if(S.wx==='clear')lead.push('（今天没下雨。你甚至有点不习惯。）');
@@ -4851,14 +4755,12 @@ function startNight(){
   try{ fxGrain(false); }catch(e){}
   try{ fxLeak(false); }catch(e){}
   sayLines(lead,function(){
-    /* 今天若有一件小事：在“入夜”之后才发生，而不是天没黑就先摆一堆选项 */
+
     var ev=pickEvent();
     if(ev){ S.eventDone['D'+S.day]=1; save(); playEvent(ev); return; }
     freeRoam();
   });
 }
-
-
 
 /* ---- 序章：一个人在床上躺了很久，才决定起来 ---- */
 function prologue(){
@@ -4871,7 +4773,7 @@ function prologue(){
   cv.innerHTML='<div></div>';
   document.body.appendChild(cv);
   try{ startRain(); }catch(e){}
-  /* 开场：先交代"这是哪儿、你是谁、为什么会有这条街"，再进黑屏醒来 */
+
   var CARDS=[
     ['（一年前的雨夜。）','（一个人不在了。）','（就在那十三分钟里。）'],
     ['（没有人说得清那十三分钟。）','（包括你。）'],
@@ -4903,8 +4805,7 @@ function prologue(){
     }else{
       cv.innerHTML='<div class="pl"><div class="pl-c"><span class="pl-end">01:15</span><br>'
         +'<span class="pl-tip">轻触或按键，继续</span></div></div>';
-      /* 只有最后一张（与"轻触或按键，继续"文本一致）才允许跳过/进入；
-         前几张字幕期间点击/按键不会跳过，避免误触把整段开场跳掉 */
+
       addEventListener('keydown',up); addEventListener('pointerdown',up);
       tm=setTimeout(up,4200);
     }
@@ -4936,20 +4837,20 @@ function goStreet(from){
   enterRoom('street');
   if(from&&STREET_DROP[from]){ P.x=wv(STREET_DROP[from][0]); P.y=wv(STREET_DROP[from][1]); try{ updateCam(); paintWorld(); }catch(e){} }
   setCap('荧惑');
-  /* 街上的门面：去过的、和下一个该去的，才亮着 */
+
   SC.opened={flat:1};
   var seen=S.seen||{};
   var order=['flat','store','piano','cinema','roof','alley'], i;
   for(i=0;i<order.length;i++){
     if(seen[order[i]])SC.opened[order[i]]=1;
-    /* 前一个去过了，下一个就开门（不强制拿碎片也能往前走） */
+
     if(i>0&&seen[order[i-1]])SC.opened[order[i]]=1;
   }
   if(S.seg>=1)SC.opened.store=1;
   if(S.seg>=2)SC.opened.piano=1;
   if(S.seg>=3)SC.opened.cinema=1;
   if(S.seg>=4)SC.opened.roof=1;
-  /* 后巷不用等去过天台 —— 去过放映厅就能钻进去，它本来就是条近路 */
+
   if(seen.cinema)SC.opened.alley=1;
   var lead=[];
   if(S.wx==='rain')lead.push('（雨没小。）');
@@ -4959,7 +4860,7 @@ function goStreet(from){
   var _gt=tier();
   if(_gt==='crit'||_gt==='burn')lead.push('（你有点撑不住。路灯底下暖一点。）');
   else if(_gt==='low')lead.push('（脚下的路比平时长。）');
-  /* 上街的指引也只教一次：玩家已经会走了就别再反复念 */
+
   sayLines(lead,function(){
 if(hintedMove||movedEver)return;
   var nl=$('#noteLine');
@@ -5013,7 +4914,7 @@ function learnClue(k){ if(!k||(S.clue&&S.clue[k]))return; S.clue=S.clue||{}; S.c
   if(typeof showItem==='function'&&hasArt(k)) showItem(k);
   else toast('（你知道了：'+CLUE[k].n+'）'); }
 function hasClue(k){ return !!(S.clue&&S.clue[k]); }
-/* 主线只有四块拼图；zi_melody 是琴房的额外发现，不计入「x / 4 块」 */
+
 function storyClueN(){
   return Object.keys(S.clue||{}).filter(function(k){return k!=='zi_melody'}).length;
 }
@@ -5026,8 +4927,7 @@ function useTool(k){
   cost(0);
   sayLines(t.l.concat(['（—— '+t.real+'）']),function(){ gain(toolGain(k)); afterAction(); });
 }
-/* 站在灯下：回一点心力，但时间也在走。
-   一晚会话内只能歇一次 —— 灯不是充电桩。 */
+
 function lampRest(){
   if(S.lampUsed){
     sayLines(['（灯光还是暖的。）','（你又站了一会儿。）','（没什么变化了。）'],function(){ afterAction(); });
@@ -5042,17 +4942,17 @@ function lampRest(){
 }
 
 function goPlace(id){
-  if(!id||!ROOMS||!ROOMS[id]){ try{ afterAction(); }catch(e){} return; }   /* 护栏：去不了的地方就当没去 */
+  if(!id||!ROOMS||!ROOMS[id]){ try{ afterAction(); }catch(e){} return; }
   startRain();
   optsEl.innerHTML=''; clearTalk();
-  /* 出租屋不再强制休息：可自由走动，想睡时点床上「躺一会儿」再结算 */
+
   cost(S.wx==='rain'?4:(S.wx==='wind'?4:3)); maybeFlash();
   paintTop();
   var who=curNPC(id);
   enterRoom(id,who);
   setCap(SCENES[id].name);
   if(!who){ afterAction(); return; }
-  /* 进门就自动开聊的这条路径也得查在场：不然立绘没画出来，人却先开口了 */
+
   if(!hereTonight(who)){
     sayLines((ABSENT[who]||['（这里没有人。）']).concat(['（今晚他不在这儿。明晚再来。）']),
       function(){ afterAction(); });
@@ -5060,7 +4960,7 @@ function goPlace(id){
   }
   visitNPC(who);
 }
-/* 房间与房间之间的门：不走街上，直接过去，落点在对面那扇门旁边 */
+
 function goPass(it){
   if(!it||!ROOMS[it.to]){ try{ afterAction(); }catch(e){} return; }
   startRain(); optsEl.innerHTML=''; clearTalk();
@@ -5119,7 +5019,7 @@ var DAYACT={
 function recordTrace(k){
   S.traces=S.traces||{}; if(S.traces[k])return;
   S.traces[k]=1; save();
-  var tot=21, got=Object.keys(S.traces).length;   /* 后巷加了 3 处，总数跟着改 */
+  var tot=21, got=Object.keys(S.traces).length;
   try{ jrAdd('hero','（这一条，我自己看到的。'+got+' / '+tot+'）'); }catch(e){}
   if(got>=12&&!S.flags['tr_full']){ S.flags['tr_full']=1; save();
     try{ toast('（这条街上没人跟你说过的事，你看了大半。'); }catch(e){}
@@ -5130,8 +5030,7 @@ function recordTrace(k){
 }
 var _verbThing0=(typeof verbThing==='function')?verbThing:null;
 if(_verbThing0){ verbThing=function(k){ try{ if(k&&String(k).indexOf('tr_')===0) recordTrace(k); }catch(e){} return _verbThing0(k); }; }
-/* 低心力时，人会先被看出来 —— 六个 NPC 各一句，每夜每人只触发一次。
-   不是惩罚，是这条街对你的回应：你撑不住的时候，有人让你坐。 */
+
 var TIRED_SAY={
   hemu   :{low:'（他抬头看了你一眼。「……坐。不说也行。」）', crit:'（他把热水推到你面前。「今晚别说话。坐着。」）'},
   zi     :{low:'（她看了你一会儿，把琴声放轻了。）', crit:'（她没弹了。「累了就坐着。我这儿不赶人。」）'},
@@ -5160,7 +5059,7 @@ function visitNPC(who){
     if(x.c==='2-3')return rel>=2&&rel<=3;
     return rel>=4;
   })[0]||n.greet[0];
-  /* 第 2 周目起，开场先垫一句「我们又见面了」式的话，让重逢有新鲜感 */
+
   if((S.loop||1)>=2 && n.greet2 && n.greet2.length){ g={lines:[pick(n.greet2)].concat(g.lines)}; }
   var _ds=dailyState(who);
   var _tl=tiredLine(who);
@@ -5175,10 +5074,10 @@ function visitNPC(who){
   var st=S.stage[who]||0, node=null;
   if(st<n.nodes.length){
     var nd=n.nodes[st];
-    if(rel>=nd.need&&(!nd.when||nd.when()))node=nd;   /* when：条件没到的节点整段跳过 */
+    if(rel>=nd.need&&(!nd.when||nd.when()))node=nd;
   }
   setMood(node?'sad':null);
-  /* 何木：贴着柜台，他声音就小下去。坐去靠窗，他才说得下去。 */
+
   if(who==='hemu'&&!S.flags['hemu_seat']){
     talkEl.classList.add('near');
     sayLines((_ds?[_ds]:[]).concat(_tl?[_tl]:[]).concat(['（你贴着柜台站。）','（他声音小下去，像怕谁听见。）']).concat(g.lines),
@@ -5189,9 +5088,6 @@ function visitNPC(who){
   sayLines((_ds?[_ds]:[]).concat(_tl?[_tl]:[]).concat(g.lines),function(){ if(node){ playNode(who,node); } else { idleTalk(who); } });
 }
 
-/* 闲谈里的场景感：同一句话，在不同时间、不同天气说，味道不一样。
-   这里不重写每个人的 idle 池，而是在闲谈开头按当前「夜里到了哪一段」「什么天气」
-   插一句应景的话 —— 你越往这条街深处走（S.phase 越往后），场景越沉，话也越轻。 */
 var SCENE_SAY={
  hemu:{
   early:['（这个点儿店里没什么人。他靠在柜台后头，难得有空。）',
@@ -5270,7 +5166,7 @@ var SCENE_SAY={
   fog:['（雾里站牌的灯成了一团。他说这样也好，看不清空着的路。）']
  }
 };
-/* 第 2 周目起的场景垫场白：你已经来过这条街，台词带「重逢 / 你已认得这里」的意味 */
+
 var SCENE_SAY2={
  hemu:{
   early:['（这个点儿你又来了。他抬眼，把那瓶水往你这边推了推。）'],
@@ -5327,13 +5223,13 @@ var SCENE_SAY2={
   clear:['（没雨的夜，站台格外空。他说：你来了，他也不用自己跟自己说话。）']
  }
 };
-/* 当前是夜里哪一段 + 什么天气 */
+
 function sceneMood(){
   var ni=(SC&&SC.night)||0, w=(SC&&SC.weather)||'rain';
   var t = ni<0.34?'early' : ni<0.62?'dusk' : ni<0.86?'night' : 'deep';
   return {t:t, w:w, ni:ni};
 }
-/* 从 SCENE_SAY 里挑一句应景的；时间阶段优先，天气兜底；第 2 周目起混入 SCENE_SAY2 */
+
 function sceneIntro(who){
   var tb=SCENE_SAY[who]; if(!tb)return null;
   var m=sceneMood(), cand=[];
@@ -5347,7 +5243,7 @@ function sceneIntro(who){
   if(!cand.length)return null;
   return pick(cand);
 }
-/* 第 2 周目起，闲谈里漏出的往事（比 GOSSIP 更深一层，且不与基础池重复） */
+
 var GOSSIP2={
  hemu:['（他一边理货一边说：）','「那条街的人，我都认得脸。就一个人，我记了三年也没敢问名字。」',
        '（他擦柜台。）','「那孩子后来来了一次。站在门口，没进。我追出去，人已经拐进巷子了。」',
@@ -5374,7 +5270,7 @@ var GOSSIP2={
          '（他低声：）','「她说『我马上到』那天，我等了七趟。第七趟我笑了——笑自己傻。」',
          '（他望你：）','「你来了，我好像不用一个人替她守着了。」']
 };
-/* 同一个周目里，你听过他最深的秘密之后，闲谈偶尔会接上那句 —— 像他记得你们之间发生过什么 */
+
 var RECALL={
  hemu:'（你还记得那个没回消息的晚上。他看了你一眼，没再提，但你知道他记得你听过。）',
  zi:'（你还记得她那首弹不完的曲子。她弹到那一小节，停了一下，像在等你接——和那晚一样。）',
@@ -5383,21 +5279,19 @@ var RECALL={
  aji:'（你还记得他帽兜里那张折四折的纸。他蹲着，没说话，但你知道他记得你见过。）',
  chideng:'（你还记得她说「我马上到」的那个晚上。他握着保温杯，看了你一眼，像确认你还记着。）'
 };
-/* 闲谈：从池子里随机，且不同条件不同 */
+
 function idleTalk(who){
   if(!who||!NPCS[who]){ try{afterAction();}catch(e){} return; }   /* 护栏 */
   var n=NPCS[who];
   var lines=[];
   lines.push(pickSaid(who+':i', loopPool(n,'idle')));
   if(rnd()<0.45)lines.push(pickSaid(who+':i', loopPool(n,'idle')));
-  /* 闲谈开头先按当前场景（夜里到了哪一段 / 什么天气）垫一句话，
-     让对话跟着时间走，而不是每次都从同一句开始 */
+
   var _sl=sceneIntro(who); if(_sl)lines.unshift(_sl);
-  /* 这周目里，你已经听过他最深的那个秘密；之后闲谈偶尔会接上那句，
-     像他记得你们之间发生过什么 —— 但只在同一个周目里：跨周目他会忘（手册留下，人不会记得你） */
+
   if(S.flags['deep_'+who] && rnd()<0.5 && typeof RECALL!=='undefined' && RECALL[who]) lines.push(RECALL[who]);
   if(rnd()<0.25)lines.push('（他提到过别人：）','「'+n.cite+'」');
-  /* 闲谈里也会漏出关于别人的一件小事 —— 有些线索不用把人陪到底也能捡到 */
+
   var GOSSIP={
     hemu:['（他一边理货一边说：）','「这条街上的人，我都认得。有一个，只来过一次。」','（他把那瓶水摆正了。）','（他笑了一下。）','「我妈总怕我饿着。寄来的腊肉我吃不完，分给隔壁摊位的老李。」'],
     zi:['（她弹到一半停下来。）','「窗外以前有个人听。每天这个点。」','「后来就不来了。」','（她继续弹。）','（她顿了顿。）','「我中学后面那同学，总踢我椅子。后来他不踢了，我反而弹不下去。」'],
@@ -5409,7 +5303,7 @@ function idleTalk(who){
   var _gossip=(((S.loop||1)>=2 && typeof GOSSIP2!=='undefined' && GOSSIP2[who])?GOSSIP2[who]:GOSSIP[who]);
   if(rnd()<0.30&&_gossip){
     lines=lines.concat(_gossip);
-    /* 闲谈里漏出来的，也算线索 —— 不必把人陪到底，也能捡到钥匙 */
+
     var GCLUE={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', yat:'wx_mute'};
     if(GCLUE[who])setTimeout(function(){ try{learnClue(GCLUE[who])}catch(e){} },2400);
   }
@@ -5419,7 +5313,7 @@ function idleTalk(who){
     h+=optHTML(2,'【按住 Z】沉默',null,'—','不接话，看着他');
     h+=optHTML(3,'【按住 X】移开视线',null,'-1','不看他，看看他在做什么');
     h+=optHTML(4,'看着他（猜他在想什么）',null,'-1','你猜的，不一定对');
-    /* —— 他的专属行动：每个角色不一样，这才是“和这个人待着” —— */
+
     var acts=ACTS[who]||[], base=5;
     acts.forEach(function(a,i){
       h+=optHTML(base+i, a.t, null, a.sp<0?('-'+(-a.sp)):('+'+a.sp), a.sub);
@@ -5433,7 +5327,7 @@ function idleTalk(who){
     var fns=[
       function(){ cost(4); bump(who,1);
         sayLines(['（你们说了几句。）','（都是不太重要的话。）'],function(){
-          /* 走的时候：他那句送你的话，看你这一晚是怎么陪的 */
+
           var bye='「路上小心。」';
           if(who==='hemu'){
             if((S.knows[who]||0)>0||S.flags['deep_hemu'])bye='「明天……还来吗。」';
@@ -5446,7 +5340,7 @@ function idleTalk(who){
       function(){ startLook(who); },
       function(){ cost(1); watchHim(who); }
     ];
-    /* 专属行动的处理函数（与上面渲染顺序一一对应） */
+
     acts.forEach(function(a,i){
       fns.push(function(){
         if(a.sp<0)cost(-a.sp); else if(a.sp>0)gain(a.sp);
@@ -5469,7 +5363,6 @@ function idleTalk(who){
   });
 }
 
-/* 每个角色自己的“行动”——不是任务，是你真的陪他做了一件具体的事 */
 var ACTS={
  hemu:[
   {t:'帮他理货',sub:'不用说话',sp:-4,rel:1,
@@ -5521,7 +5414,7 @@ var ACTS={
  ]
 };
 function optHTML(k,t,d,c,sub){
-  /* 不显示数字列（心力/关系不写数字）；解释性副文本收敛为低调一行 */
+
   return '<button class="opt" type="button"><span class="k">'+k+'</span>'
     +'<span class="t">'+t+(sub?'<i class="sub">'+sub+'</i>':'')+'</span></button>';
 }
@@ -5529,9 +5422,12 @@ function bindOpts(fns){
   var bs=[].slice.call(optsEl.querySelectorAll('.opt'));
   bs.forEach(function(b,i){
     b.addEventListener('mouseenter',function(){ try{sfx('hover')}catch(e){} });
-    b.addEventListener('click',function(){ if(typing)return; try{sfx('ok')}catch(e){} optsEl.innerHTML=''; (fns[i]||function(){})(); });
+    b.addEventListener('click',function(){
+
+      if(_typeBusy){ try{ if(_skipFn)_skipFn(); }catch(e){} }
+      try{sfx('ok')}catch(e){} optsEl.innerHTML=''; (fns[i]||function(){})(); });
   });
-  /* 选项出现：对话文本框先收起（记录仍在，可回看） */
+
   talkEl.classList.add('hidden');
   if(talkLog.length){
     var hb=document.createElement('button');
@@ -5560,7 +5456,7 @@ function playNode(who,nd){
   sayLines(nd.lines,function(){
     var h='<div class="opts">', fns=[], kn=0;
     nd.opts.forEach(function(o,i){
-      if(o.when&&!o.when())return;          /* 条件没到的选项，不出现 */
+      if(o.when&&!o.when())return;
       kn++;
       var cls = o.look?'':(o.silent?'silent':'');
       h+='<button class="opt '+cls+'" type="button"><span class="k">'+kn+'</span>'
@@ -5575,7 +5471,7 @@ function playNode(who,nd){
         if(d.rel)bump(who,d.rel);
         if(d.f)S.flags[d.f]=true;
         if(o.speak){ S.flags['spoken_'+o.speak]=true; try{toast('（他说出来了。）')}catch(e){} }
-        /* 坐远了，字就该亮回来 */
+
         if(d.f==='hemu_seat')talkEl.classList.remove('near');
         if(d.relAll){['hemu','zi','baigao','yat','aji'].forEach(function(x){bump(x,d.relAll)})}
         sayLines(o.r||['（……）'],function(){
@@ -5610,14 +5506,14 @@ function startSilence(who,nd){
   silenceAudio(true);
   sayLines(['（你没说话。）','（'+(nd?'他':n.name)+'也没说话。）'],function(){});
   silTip.textContent='按住 Z。松手就打断。';
-  /* 触觉：触屏可长按屏幕 */
+
   if(silTimer)clearInterval(silTimer);
   var last=Date.now(), silHeld=false;
   function tick(){
     if(!silActive)return;
     var now=Date.now(), dt=(now-last)/1000; last=now;
     if(dt>0.5)dt=0.5;
-    /* 按住才累积；一旦松手就真的打断——提示写的就是这个，不能再软锁在界面上 */
+
     if(keys['z']||touchHold){ silHeld=true; silT+=dt; cost(1.2*dt); }
     else if(silHeld){ endSilence(false); return; }
     silFill.style.width=(clamp(silT/10,0,1)*100)+'%';
@@ -5642,7 +5538,7 @@ function endSilence(reached){
   if(t>=4&&t<6&&rnd()<0.28){
     bump(who,-1);
     sayLines(['（他垂下眼，往后靠了一点。）','「……没事。当我没说。」','（这个话题，今晚关上了。）'],function(){
-      /* 给一次挽回机会，别让机制像惩罚 */
+
       var h='<div class="opts">'+optHTML(1,'「你说吧，我听着。」',null,'—','只有一次')
         +optHTML(2,'点点头',null,'—','')+'</div>';
       optsEl.innerHTML=h;
@@ -5657,19 +5553,19 @@ function endSilence(reached){
     sayLines(deepLines(who),function(){ grantDeep(who,nd,false); afterAction(); });
     return;
   }
-  /* 中段松手：只拿到一半 */
+
   sayLines(['（你没等到他开口。）','（他说了句别的，把话带过去了。）'],function(){
     grantHalf(who,nd); afterAction();
   });
 }
-/* 沉默界面的统一逃生口：E / ESC 也能撤，绝不把玩家关在界面里 */
+
 function breakSilence(){
   if(!silActive)return false;
   if(silCtx&&silCtx.WAIT){ if(WAIT_ABORT)WAIT_ABORT(); return true; }
   if(silCtx&&silCtx.SIT){ sitWithBreak(); return true; }
   endSilence(false); return true;
 }
-/* 全屏谜题/机制遮罩开着时，世界层快捷键让位（遮罩挡鼠标不挡键盘） */
+
 function modalOn(){ return !!(FILM.on||BEAT.on||PUZ.on||PIANO.on); }
 function grantDeep(who,nd,partial){
   var n=NPCS[who];
@@ -5684,15 +5580,15 @@ function grantDeep(who,nd,partial){
   S.flags['deep_'+who]=true; save();
   try{ if(typeof takeItem==='function'&&ITEMS['relic_'+who]) takeItem('relic_'+who);
        else if(typeof showItem==='function') showItem('relic_'+who); }catch(e){}
-  /* 陪到底之后，他会把自己也在用的办法教给你 —— 这条在现实里也一样管用 */
+
   var TEACH={hemu:['write','rest'], zi:['breath','pmr'], baigao:['cold','ground'], yat:['walk','name']};
   (TEACH[who]||[]).forEach(function(k){ if(!hasTool(k))getTool(k); });
-  /* 他会在深谈里漏出一件事 —— 那件事，可能是解开别人的钥匙 */
+
   var CLUEOF={hemu:'hemu_msg', zi:'zi_parts', baigao:'bg_tape', yat:'wx_mute'};
   if(CLUEOF[who]&&!hasClue(CLUEOF[who])){
     setTimeout(function(){ learnClue(CLUEOF[who]); },2600);
   }
-  S.empath=Math.min(99,(S.empath||0)+1); save();   /* 陪他沉默到头：共情 +1 */
+  S.empath=Math.min(99,(S.empath||0)+1); save();
   if((S.empath||0)>=6&&!S.flags['emp_deep']){ S.flags['emp_deep']=1; save();
     jrAdd('hero','你越来越听得懂，他没说出口的那半句。'); }
   toast(gotSeed?('（你拿到了一个字：'+(SEEDNAME[nd.seed]||nd.seed)+'）'):'（你听到了他说不出口的那一段）');
@@ -5710,18 +5606,18 @@ function grantHalf(who,nd){
    ========================================================================= */
 function startLook(who,nd){
   var n=NPCS[who];
-  renderScene(n.place,who,true);            /* 变淡 = 你不看着他 */
+  renderScene(n.place,who,true);
   setCap('移开视线');
   optsEl.innerHTML='';
   sayLines(['（你看向别处。）','（他以为你没在看。）'],function(){
     var lines=['（'+n.micro+'）'];
-    if((S.knows[who]||0)>=1||(S.insight||0)>=3)lines.push('（'+n.micro2+'）');   /* 见识够，也能看穿 */
+    if((S.knows[who]||0)>=1||(S.insight||0)>=3)lines.push('（'+n.micro2+'）');
     lines.push(n.microNote);
     sayLines(lines,function(){
       var txt='这一夜 · '+SCENES[n.place].name+' · 【移开视线】'+n.micro;
       if(!S.journal.some(function(x){return x.t===txt}))jrAdd(who,txt);
       bump(who,1);
-      S.insight=Math.min(99,(S.insight||0)+1); save();   /* 移开视线：你看见了他没让你看见的事 */
+      S.insight=Math.min(99,(S.insight||0)+1); save();
       toast('（记进手册了）');
       var h='<div class="opts">'
         +optHTML(1,'转回来，当作没看见',null,'—','')
@@ -5740,12 +5636,12 @@ function startLook(who,nd){
    14. 结算
    ========================================================================= */
 function restAtHome(){
-  if(rnd()<0.55)try{ heroThink(); }catch(e){}     /* 一个人的时候，他才想这些 */
-  if(S.day>=3&&!hasTool('scan'))getTool('scan');   /* 一个人待久了，他会开始注意自己的身体 */
-  if(S.day>=5&&!hasTool('reach'))getTool('reach');   /* 15 天制：提前到第 5 夜 */
+  if(rnd()<0.55)try{ heroThink(); }catch(e){}
+  if(S.day>=3&&!hasTool('scan'))getTool('scan');
+  if(S.day>=5&&!hasTool('reach'))getTool('reach');
   renderScene('flat','none',false);
   setCap('出租屋');
-  /* 回家本身不补心力：只有“真的睡下”才恢复，否则可反复回家补满再出门，一夜刷完所有事 */
+
   sayLines(['（你回到屋里。）','（雨声在外面。）','（桌上的手机亮着。上面写着：01:15。）',
     '（你坐在床边，没脱鞋。）'],
     function(){
@@ -5758,7 +5654,6 @@ function restAtHome(){
     });
 }
 
-/* 场景名：只在新场景时短暂出现，然后淡出 —— 常驻一行飘字看着像故障 */
 var capTo=null;
 function setCap(t){
   var el=$('#cap'); if(!el)return;
@@ -5766,8 +5661,7 @@ function setCap(t){
   el.textContent=t; el.classList.add('on');
   clearTimeout(capTo); capTo=setTimeout(function(){ el.classList.remove('on'); },3400);
 }
-/* —— 他心里的声音。只在独处时出现，不说给任何人听。——
-   他不爱说话。可他不是没有话。 */
+
 var HERO_THINK=[
   '（你把手机拿出来，又放回去。今晚第七次了。）',
   '（这句话你想过很多遍。没有一遍是说出来过的。）',
@@ -5792,57 +5686,44 @@ function heroThink(){
   var t=pick(HERO_THINK);
   try{ toast(t); }catch(e){}
 }
-/* 一行提示：出现几秒后淡出（afterAction / goStreet 共用） */
+
 var hintedMove=0;                 /* 操作教学只教一次 */
-var movedEver=0;                  /* 玩家动过一次 → 移动教学永久作废 */
+var movedEver=0;
 function noteFade(){
   var nl=$('#noteLine'); if(!nl)return;nl.classList.add('on');
   clearTimeout(noteFade._to);
   noteFade._to=setTimeout(function(){ nl.classList.remove('on'); },5200);
 }
-/* 玩家一动手就把"怎么走"的提示收掉 —— 会走就不用再看。
-   注意：只在提示**已经显示过**之后才生效，否则开场那一次会被提前吃掉。 */
+
 function dropMoveHint(){
   var n=$('#noteLine');
-  /* 玩家已经动过了 → 无论之前教没教过，移动教学永久作废。
-     这才是根治：不是"教一次"，是"会走了就别再提"。 */
+
   movedEver=1; hintedMove=1;
   try{
     if(n&&n.classList.contains('on'))n.classList.remove('on');
     var h=$('#uHint'); if(h)h.classList.remove('on');
   }catch(e){}
 }
-/* 一夜是连续的：做完一件事，就回到这条路上继续走 */
+
 function afterAction(){
   optsEl.innerHTML='';
-  /* 时间在走：这一夜，待得越久越晚 */
+
   S.beats=(S.beats||0)+1;
   var _np=(S.beats<6)?0:(S.beats<14)?1:(S.beats<22)?2:3;
   if(_np!==(S.phase||0)){ S.phase=_np; save(); try{ setNight([0.10,0.34,0.62,0.86][_np]); }catch(e){} }
-  if(rnd()<0.18)try{ heroThink(); }catch(e){}   /* 偶尔，他会漏出一句心里话 */
+  if(rnd()<0.18)try{ heroThink(); }catch(e){}
   try{ paintTop(); }catch(e){}
   try{ if(SCENES[curRoom]) setCap(SCENES[curRoom].name); }catch(e){}
-  /* 心力耗尽不是失败，只是你陪不动了 */
+
   if(S.spirit<=0){ tooTired(); return; }
-  /* 以前这里会自动收尾：只要在天台做了两件事（聊两句、看一眼栏杆），
-     roof_been 一置位，下一次 afterAction 就 startFinale()。
-     结果"上天台说说话"这件事本身就会把结局顶出来 —— 玩家什么都没决定，故事就结束了。
-     现在收尾只由玩家自己开口触发（见 askFinale / 天台栏杆那一头），
-     或者天数真的走完（finish）。站在天台上聊天，就只是聊天。 */
-  /* 同一块"怎么走"的教学，由 freeRoam() 在开场给一次；这里只是兜底，
-     两边共用 hintedMove，所以永远不会出现第二次。 */
+
   var nl=$('#noteLine');
   if(nl&&curRoom!=='street'&&!hintedMove&&!movedEver&&!nl.textContent){
     hintedMove=1;
     nl.textContent='走到门口按 E 上街 · 方向键 / WASD 走动'; noteFade();
   }
 }
-/* ===== 收尾：只在你自己开口的时候发生 =====
-   三条能收尾的路，全都要玩家明确选一次：
-     ① 天数走完（finish）—— 自然结束
-     ② 天台栏杆那一头，按 E 说「我准备好了」（askFinale）—— 提前收
-     ③ 撑不住了之后选「回去躺下」（tooTired）
-   单纯上天台、跟燕安滕说话、站着看天，都不会再触发结局。 */
+/* ===== 收尾：只在你自己开口的时候发生 ===== */
 function finaleReady(){
   var d=S.day||1, fr=Object.keys(S.frags||{}).length;
   var deepN=0, mx=0, k;
@@ -5850,8 +5731,7 @@ function finaleReady(){
     if(S.flags['deep_'+x])deepN++;
     if((S.rel[x]||0)>mx)mx=S.rel[x];
   });
-  /* 得真的走过一段才算：天数过三分之二，或者已经拿到三个字，
-     或者跟谁深谈过一次 —— 三者满足其一，才让你开口。 */
+
   return (d>=10) || fr>=3 || (deepN>=1 && mx>=4);
 }
 function finaleWhy(){
@@ -5879,12 +5759,6 @@ function askFinale(){
   });
 }
 
-/* 撑不住了：也是一条走法（不判失败） */
-/* 心力见底：不是失败，是你陪不动了。
-   两条路：回去躺下（这一夜就收在这里），或者硬撑。
-   硬撑不是免费按钮 —— 一晚会话内最多两次，越撑回得越少；
-   而且撑过之后，那一夜剩下的时候都是将就（burn：脚步更沉、办法打折、消耗照旧）。
-   第三次见底，只剩「回去躺下」—— 人不是这么用的。 */
 function tooTired(){
   clearTalk();
   var bn=S.burnN||0;
@@ -5910,7 +5784,7 @@ function tooTired(){
       optsEl.innerHTML=h; bindOpts(fns);
     });
 }
-/* 收尾：那条路 · 全彩 */
+
 /* =========================================================================
    拼图 —— 四块碎片，散在四个人手里。
    你到底知道多少，就拼出多少。什么都不知道，也是一种真实。
@@ -5963,7 +5837,7 @@ function startFinale(){
             : (_mw==='yat'&&S.flags.wx_kind&&S.flags.wx_heard&&S.flags.wx_letgo) ? 'RELAY'
             : ('SEE_'+_mw.toUpperCase()) )
           : (fr>=3&&deepN>=2)?'看见' : (fr>=2?'门口' : '路过');
-  try{ fxLB(true); }catch(e){}                 /* 演出：黑条拉入（收尾的黑场感） */
+  try{ fxLB(true); }catch(e){}
   try{ fxCard('那条路','天快亮了',2200); }catch(e){}
   try{ setNight(0); }catch(e){}
   setTimeout(function(){
@@ -6000,7 +5874,7 @@ function startFinale(){
       '（——那你呢。）',
       '（屋檐下，你摸出手机。屏幕亮着：01:15。）'
     ]),function(){
-      /* 收尾的那个动作：把静音改成响铃。不做任何说明 */
+
       var h='<div class="opts">';
       h+=optHTML(1,'把手机调成响铃',null,'—','');
       h+=optHTML(2,'算了，回去',null,'—','');
@@ -6017,7 +5891,7 @@ function startFinale(){
     });
   },2400);
 }
-/* 四个结局 · 都不是失败 */
+
 function endingBy(kind){
   var E={
     '看见':{t:'看见',en:'I SAW YOU',b:[
@@ -6087,12 +5961,7 @@ function endingBy(kind){
   var _ent={id:IDMAP[kind]||kind, t:e.t, en:e.en, b:e.b};
   try{ fxRollIn(function(){ presentEnding(_ent); }); }catch(e5){ presentEnding(_ent); }
 }
-/* 旧接口保留（有些地方还在调），但不再跳去早期版 */
-/* 早期接口已清理：offerNight / 旧 nextDay 空壳（它们会把游戏卡在"永远第一天"） */
 
-/* 每晚抽一张：从「没发生过 + 条件已满足 + 天数够了」的卡里随机。
-   不再按天号对号入座 —— 那样第二周目开头完全是复读。
-   留 12% 的夜什么都不发生，节奏才有松有紧。 */
 function pickEvent(){
   var d=S.day||1, used=S.eventDone||{}, pool=[], i;
   if(rnd()<0.12)return null;
@@ -6126,7 +5995,7 @@ function playEvent(ev){
         if(c.know)S.known['k'+ev.id]=true;
         if(o.fx){try{o.fx()}catch(e){}}
         save();
-        sayLines(o.r,function(){ freeRoam(); });   /* 过完这件小事 -> 回到夜里自由走动 */
+        sayLines(o.r,function(){ freeRoam(); });
       });
     });
     h+='</div>';
@@ -6134,9 +6003,6 @@ function playEvent(ev){
   });
 }
 
-/* 开场自由行动：教学只给一次。
-   这行原本每次行动结束都会被重写一遍，玩家每走一步就被提醒一次；
-   现在开场给一次，玩家一动（dropMoveHint）就再也不出现。 */
 function freeRoam(){
   optsEl.innerHTML='';
   var nl=$('#noteLine');
@@ -6159,8 +6025,8 @@ var NIGHT_LINES=[
   '你没有伞。雨不大。'
 ];
 function nextDay(){
-  if(S.over)return;              /* 已经结局了：不再推进天数 */
-  /* 连着几晚一步没出门，也是一条路（lowDays 供“没出过门”的结局判定） */
+  if(S.over)return;
+
   if(!S.outToday)S.lowDays=(S.lowDays||0)+1; else S.lowDays=0;
   S.outToday=0;
   S.day++; S.phase=0; S.beats=0; save();
@@ -6175,12 +6041,12 @@ function nextDay(){
 /* =========================================================================
    15. 结局：有序阈值表
    ========================================================================= */
-/* 结局展示的唯一出口：finish() 与 endingBy() 都走这里，避免两套各写一份 */
+
 function presentEnding(e, who){
   if(!e)return;
   S.over=true; S.ending=e.id; save();
   try{ markEnd(e.id); }catch(e2){}
-  try{ fxGrain(true); }catch(e7){}   /* 结局像一卷放完的胶片 */
+  try{ fxGrain(true); }catch(e7){}
   try{ fxLeak(true); }catch(e8){}
   try{ var ec=$('#eCredits'); if(ec)ec.innerHTML=
     '<div class="ch">— 演职员表 —</div>'
@@ -6222,16 +6088,16 @@ function finish(){
   var e=null;
   for(var i=0;i<ENDINGS.length;i++){ if(ENDINGS[i].cond(st)){e=ENDINGS[i];break} }
   if(!e)e=ENDINGS[ENDINGS.length-1];
-  /* 天亮：天台那道线亮起来 */
+
   try{ renderScene('roof','none',false); }catch(e2){}
   var dl=document.getElementById('dawnLine'); if(dl)dl.setAttribute('opacity','1');
   try{ fxRollIn(function(){ presentEnding(e, who); }); }catch(e5){ presentEnding(e, who); }
-  /* 周目计数只在 newLoop() 里 +1，这里不再加，否则会跳号（第 2 周目显示成第 3 遍） */
+
 }
 
 function newLoop(){
   var j=S.journal||[], kn=S.knows||{}, lp=(S.loop||1)+1;
-  var ins=S.insight||0, emp=S.empath||0;   /* 跨周目保留：你的见识与共情会留下 */
+  var ins=S.insight||0, emp=S.empath||0;
   S={day:1,night:lp,seg:0,phase:0,spirit:72,loop:lp,
      rel:{hemu:0,zi:0,baigao:0,yat:0},
      insight:ins, empath:emp,
@@ -6263,7 +6129,7 @@ addEventListener('keydown',function(e){
   }
 });
 addEventListener('keyup',function(e){ keys[e.key.toLowerCase()]=false; });
-/* 触屏：长按屏幕 = 沉默 */
+
 sceneEl.addEventListener('touchstart',function(){ touchHold=true; },{passive:true});
 sceneEl.addEventListener('touchend',function(){ touchHold=false; },{passive:true});
 
@@ -6271,9 +6137,9 @@ function toggleBook(){ var b=$('#book'); b.classList.toggle('on'); if(b.classLis
 function toggleMenu(){
   var on=$('#menu').classList.contains('on');
   renderMenuAttr(); $('#menu').classList.toggle('on');
-  var b=$('#outfitBox'); if(b&&b.classList.contains('on'))renderOutfits();   /* 每次开菜单都刷新可选项 */
-  var tb=$('#toolBox'); if(tb&&tb.classList.contains('on'))renderTools();    /* 同上：用过一次的按钮要显示成用过 */
-  try{ sfx(on?'close':'page'); }catch(e){}   /* 开/收菜单都给一声反馈 */
+  var b=$('#outfitBox'); if(b&&b.classList.contains('on'))renderOutfits();
+  var tb=$('#toolBox'); if(tb&&tb.classList.contains('on'))renderTools();
+  try{ sfx(on?'close':'page'); }catch(e){}
 }
 function renderMenuAttr(){
   var el=$('#menuAttr'); if(!el)return;
@@ -6281,7 +6147,7 @@ function renderMenuAttr(){
   el.innerHTML='<div class="ar"><b>见识</b><span class="bar"><i style="width:'+pct(S.insight)+'%"></i></span></div>'
     +'<div class="ar"><b>共情</b><span class="bar"><i style="width:'+pct(S.empath)+'%"></i></span></div>';
 }
-/* 心力工具箱：已学会的才列出来；每夜各能用一次 */
+
 function renderTools(){
   var box=$('#toolBox'); if(!box)return;
   var used=S.toolUsed||{};
@@ -6303,7 +6169,7 @@ function renderTools(){
       if((S.toolUsed||{})[k])return;
       S.toolUsed=S.toolUsed||{}; S.toolUsed[k]=1; save();
       $('#menu').classList.remove('on');
-      box.classList.remove('on');   /* 工具箱也收：下次开菜单是新渲染的，不留一张“还能点”的旧脸 */
+      box.classList.remove('on');
       useTool(k);
     });
   });
@@ -6331,11 +6197,11 @@ function openAbout(){ $('#about').classList.add('on'); }
 /* =========================================================================
    16.4 全屏房间：真实像素素材 · 能走 · 能碰 · 能互动
    ========================================================================= */
-var K=3;                              /* 世界放大倍数（格子像素密度） */
-var KC=2.3;                           /* 角色显示倍率：调大让人物更突出（原 1.5 人显太小、街显空） */
-var GRID=5*K, WW=600*K, WH=450*K;     /* 世界 = 120x90 网格 x15 = 1800x1350 */
+var K=3;
+var KC=2.3;
+var GRID=5*K, WW=600*K, WH=450*K;
 var SPR={};
-/* 四套衣服：不是调色，是四套完整的行走帧（assets/outfits/<名字>/ 下同命名） */
+
 var OUTFITS={
   base :{dir:'assets/hero/',           n:'旧外套', d:'一开始穿的那件。雨天，洗不太干。',
          cond:function(){return true}},
@@ -6354,8 +6220,7 @@ function wearOutfit(id){
   dirs.forEach(function(d){ fr.forEach(function(f){
     var im=SPR[d+'_'+f]; if(im)im.src=o.dir+d+'_'+f+'.png';
   });});
-  /* 顶栏头像用各套自带的 portrait.png（半身构图，faceCrop 按它调的）——
-     早先这里取 down_stand.png（全身立绘），换成任何一套都会把头像裁错位 */
+
   var pd=new Image(); pd.src=o.dir+'portrait.png'; SPR.portrait=pd;
   if(pd.complete){ try{paintHeroFace()}catch(e){} } else pd.onload=function(){ try{paintHeroFace()}catch(e){} };
   return true;
@@ -6373,7 +6238,7 @@ function loadSpr(){
     var im=new Image(); im.src='assets/npc/'+nm+'.png'; SPR[nm]=im;
   });
   var p=new Image(); p.src='assets/hero/portrait.png'; SPR.portrait=p;
-  /* 恢复上次穿的那套（等帧加载完再换，避免被覆盖） */
+
   if(S.outfit&&S.outfit!=='base'&&OUTFITS[S.outfit])setTimeout(function(){ try{wearOutfit(S.outfit)}catch(e){} },700);
 }
 var ROOMS={
@@ -6392,9 +6257,7 @@ var ROOMS={
     {r:[74,20,3,38],   lab:'路灯',         act:'lamp'},
     {r:[16,62,14,6],   lab:'一滩水',       act:'look', k:'puddle'},
     {r:[66,64,10,8],   lab:'一只猫',       act:'look', k:'cat'},
-    /* 诺斯图（引子）：放在 cinem/roof 两门之间的街角地面上。
-       原来在 y30-40（墙上），玩家在地面 y52 起根本够不到 —— 街角这个人从来没被触发过。
-       新位置不与任何门 zone 重叠：玩家贴上去提示就是他，不会被门抢走。 */
+
     {r:[84,76,14,12],  lab:function(){ return (S.times&&S.times.aji>0)?'街角（人不在）':'街角蹲着个人' }, act:'look', k:'aji'},
     {r:[20,64,10,10],  lab:'贴着的寻物启事', act:'look', k:'notice'},
     {r:[100,60,16,14], lab:'一棵树',       act:'look', k:'tree'},
@@ -6491,8 +6354,7 @@ var ROOMS={
     {r:[34,46,44,18], lab:'晾着的衣服', act:'look', k:'line'},
     {r:[0,64,120,10], lab:'栏杆',       act:'look', k:'rail'},
     {r:[62,66,18,24], lab:'燕安滕',       act:'npc', who:'yat'},
-    /* 收尾点：只有玩家自己走过来按 E 才会进入结局。
-       没到时候这里不显示提示（lab 返回空串），避免"莫名其妙出现一个选项"。 */
+
     {r:[36,74,16,14], lab:function(){ try{ return finaleReady()?'（开口收尾 · 进入结局）':'' }catch(e){ return '' } }, act:'finale'},
     {r:[112,66,8,24], lab:'回去',       act:'door'},
     {r:[88,74,12,12], lab:'下楼的梯子', act:'pass', to:'cinema', x:102, y:80},
@@ -6502,7 +6364,7 @@ var ROOMS={
 (ROOMS.street.inter).push(
   {r:[6,66,10,10],   lab:'墙根有字',    act:'look', k:'tr_wall'},
   {r:[40,66,12,10],  lab:'压着的旧海报',act:'look', k:'tr_poster'},
-  {r:[4,78,10,10],   lab:'站牌背面',    act:'look', k:'tr_bus'});   /* 原来在 x112，现在那里是后巷的门 */
+  {r:[4,78,10,10],   lab:'站牌背面',    act:'look', k:'tr_bus'});
 (ROOMS.flat.inter).push(
   {r:[100,60,14,10], lab:'抽屉最里面',  act:'look', k:'tr_drawer'},
   {r:[30,72,12,10],  lab:'窗台',        act:'look', k:'tr_plant2'},
@@ -6550,20 +6412,22 @@ var P={x:80,y:400,dir:'down',mov:0};
 var cam={x:0,y:0}, wcv=null, wg=null, wtick=0, wTimer=null, npcGone={};
 var curRoom='flat', tipOn=null, GOAL=null;
 function wv(g){return g*GRID;}
-var VIEW=1.5;   /* 视野倍率：越小看到的越多、家具越不显大（原 2.0 太近，家具显巨大） */
-/* 顶栏/底栏/摇杆区的实测高度写进 CSS 变量 —— 手机换行后不再遮挡画面 */
+var VIEW=1.5;
+
 function syncBars(){
   var R=document.documentElement, e, h;
   e=document.querySelector('.top'); if(e){h=e.offsetHeight; if(h>0)R.style.setProperty('--topH',h+'px');}
   e=document.querySelector('.hintbar'); if(e){h=e.offsetHeight; if(h>0)R.style.setProperty('--barH',h+'px');}
-  e=document.getElementById('pad'); if(e){h=e.offsetHeight; if(h>0&&getComputedStyle(e).display!=='none')R.style.setProperty('--padH',h+'px');}
-  else R.style.setProperty('--padH','0px');
+
+  e=document.getElementById('pad');
+  h=(e&&getComputedStyle(e).display!=='none')?e.offsetHeight:0;
+  R.style.setProperty('--padH',h+'px');
 }
 function fitStage(){
   try{ syncBars(); }catch(e){}
   var st=$('#stage'); if(!st||!wcv)return;
   var vw=st.clientWidth||640, vh=st.clientHeight||360;
-  /* sc 越大 → 画布越小 → 屏幕上看到的世界越少。乘 VIEW 才有"大世界"的感觉 */
+
   var sc=Math.min(vw/WW, vh/WH)*1.06*VIEW;
   if(!sc||!isFinite(sc)||sc<0.35)sc=0.35;
   wcv.width=Math.max(200,Math.ceil(vw/sc)); wcv.height=Math.max(140,Math.ceil(vh/sc));
@@ -6582,11 +6446,7 @@ function blocked(x,y){
   return false;
 }
 var stepT=0;
-/* 脚步：走路这件事得听得见。
-   三种地面三种音色 —— 街上是湿的（闷），屋里是木/水泥（干脆），
-   天台是铁皮（亮一点）；后巷有碎石，收尾带一点点沙。
-   左右脚交替时音高差半档，走起来才不是"嘀嘀嘀"。
-   沉默机制下不停脚步，只压低 —— 人还在走，脚步不会跟着消失。 */
+
 var stepFoot=0;
 function footstep(){
   if(!sfxOn)return;
@@ -6622,15 +6482,10 @@ function tryMove(dx,dy){
 function updateCam(){
   var vw=wcv.width, vh=wcv.height;
   cam.x = WW>vw ? clamp(P.x-vw/2, 0, WW-vw) : -(vw-WW)/2;
-  /* 人放在画面 72% 高处：上方留出店门、路灯、天台——荧惑看的是这些 */
+
   cam.y = WH>vh ? clamp(P.y-vh*0.72, 0, WH-vh) : -(vh-WH)/2;
 }
-/* —— NPC 待机动作：站着的人，每一秒都不一样。
-   呼吸（慢起伏）+ 重心摇摆（左右微移）+ 每隔几秒的一下小动作：
-   何木是手上的活停一下、籽是绷住、白诰是顿一顿、燕安滕是随风、
-   诺斯图是不规律地晃、迟灯是换个重心。
-   每人一组参数（IDLE）—— 疲惫的慢、紧绷的轻、懒散的不规律。
-   只用位移，不旋转不缩放：像素立绘一插值就糊，立刻露馅。 */
+
 var IDLE={
   hemu:  {sw:1.0, swSpd:0.014, br:0.9, brSpd:0.050, act:1100},
   zi:    {sw:0.6, swSpd:0.030, br:0.7, brSpd:0.062, act:900},
@@ -6641,11 +6496,11 @@ var IDLE={
 };
 function idleOffset(id,t){
   var p=IDLE[id]; if(!p)return{dx:0,dy:0};
-  var ph=(id.charCodeAt(0)*7+id.length*53)%628/100;      /* 相位：每个人错开，不会齐刷刷一起晃 */
+  var ph=(id.charCodeAt(0)*7+id.length*53)%628/100;
   var dx=Math.sin(t*p.swSpd+ph)*p.sw;
-  if(id==='aji')dx+=Math.sin(t*0.061+ph*2.1)*0.55;       /* 诺斯图：再加一档不规律的 */
+  if(id==='aji')dx+=Math.sin(t*0.061+ph*2.1)*0.55;
   var dy=Math.sin(t*p.brSpd+ph*1.7)*p.br*0.5;
-  var tt=t*33, cyc=(tt+ph*97)%p.act;                     /* t 是帧（约 33ms/帧），换算成毫秒 */
+  var tt=t*33, cyc=(tt+ph*97)%p.act;
   if(cyc<p.act*0.10) dy-=Math.sin(cyc/(p.act*0.10)*Math.PI)*1.6;   /* 小动作：一顿 */
   return{dx:dx,dy:dy};
 }
@@ -6668,13 +6523,13 @@ function drawChar(g,id,x,y,dir,moving,t){
     R(g,x-10,y-84+bob,20,24,'#e8b98f');
   }
 }
-var OUTDOOR={street:1,roof:1,alley:1};   /* 街上、天台、后巷都淋得到天气（后巷有雨丝）；室内不该下雨、也不该有星空 */
+var OUTDOOR={street:1,roof:1,alley:1};
 function worldWeather(g,t,w,x0,y0,vw,vh){
   var i,x,y;
-  if(w==='none')return;            /* 室内：不铺天色、不落雨丝 */
-  /* 手机上粒子降一档：雨丝/星点少一点，帧才稳（画面观感不变，只是不铺满） */
+  if(w==='none')return;
+
   var _lo=(document.body&&document.body.classList.contains('touch'))?1:0;
-  /* 天空基调（不同天气、不同的呼吸感） */
+
   if(w==='clear'){
     var grd=g.createLinearGradient(0,0,0,vh);
     grd.addColorStop(0,'rgba(20,28,56,.40)'); grd.addColorStop(1,'rgba(8,10,24,0)');
@@ -6738,13 +6593,13 @@ function paintWorld(){
     worldWeather(g,wtick,OUTDOOR[curRoom]?SC.weather:'none',cam.x,cam.y,vw,vh);
     var ni=(SC.night||0)+(SC.dim||0);
     if(ni>0){
-      /* 夜色：整体柔和压暗，再叠一层冷蓝，别把暗部压死 */
+
       g.fillStyle='rgba(7,9,22,'+Math.min(0.60,ni*0.34).toFixed(3)+')';
       g.fillRect(cam.x,cam.y,vw,vh);
       g.fillStyle='rgba(20,30,64,'+(ni*0.10).toFixed(3)+')';
       g.fillRect(cam.x,cam.y,vw,vh);
     }
-    /* 情绪色温：心力越足画面越暖，越空越冷 —— 画面跟着你走 */
+
     try{
       var _mo=(typeof tier==='function')?tier():'tired';
       if(_mo==='steady'||_mo==='stable'){ g.fillStyle='rgba(255,196,132,'+(0.045+0.055*(SC.night||0)).toFixed(3)+')'; g.fillRect(cam.x,cam.y,vw,vh); }
@@ -6767,8 +6622,7 @@ function nearestInter(){
     cy=clamp(P.y, wv(r[1]), wv(r[1]+r[3]));
     d=Math.sqrt((P.x-cx)*(P.x-cx)+(P.y-cy)*(P.y-cy));
     if(d<46 && d<bd){ bd=d; best=it[i]; }
-    /* 平局（或几乎平局）时优先 NPC：贴着角色按 E 应当和他说话，
-       而不是触发旁边的栏杆/家具 —— 天台「栏杆」zone 与燕安滕 zone 重叠时会抢走互动 */
+
     else if(d<46 && best && best!==it[i] && it[i].act==='npc' && Math.abs(d-bd)<=0.6){ bd=d; best=it[i]; }
   }
   return best;
@@ -6781,7 +6635,7 @@ function updateTip(){
     tip.innerHTML='<kbd>E</kbd>'+lb; tip.classList.add('on'); tipOn=it;
   }
   else if(!it&&tipOn){ tip.classList.remove('on'); tipOn=null; }
-  try{ curNear(!!it); }catch(e){}      /* 自定义光标：靠近可互动物时光环张开 */
+  try{ curNear(!!it); }catch(e){}
 }
 function doInter(it){
   if(!it)return;
@@ -6835,7 +6689,7 @@ var LOOKS={
  rail:['（栏杆是凉的。你把手放上去，又收回来。）','（从这儿看下去，街很小。）','（栏杆上有一道旧的划痕，像是被谁抓过。）','（划痕很浅。像是有人在那儿数过什么。）','（栏杆上有个用手抹出来的亮印。是有人天天扶着，磨出来的。）'],
  locker:['（铁皮柜，漆掉了一块。）','（挂锁锈着。）','（柜门上有人用指甲划过一道。）','（锁眼里塞着半截火柴。谁想捅开它，又没捅。）'],
  puddle:['（一滩水。路灯在里面碎成一片。）','（雨点落进去，一圈一圈，又平了。）','（水面上有你自己的影子。你看了它一会儿。）','（水里你的倒影，被路灯染成橙色。你看了好一会儿。）'],
- /* —— 后巷（「看」的说法；「碰一下」另见 TOUCH）—— */
+
  al_graf:['（整面墙都是涂鸦。底下有一行被人涂掉了。）','（隔着手，能摸出笔画：起笔很轻，收笔很重。）','（你没有去抠它。）','（涂鸦最上面，有人新喷了一行小字：「还在这」。不知道指什么。）'],
  al_win:['（便利店的后窗。毛玻璃。）','（里头有人影在走动，一趟一趟。）','（这巷子里唯一的光，是从这儿漏出来的。）','（后窗玻璃上贴着一张儿童画的贴纸。早该掉了，还粘着。）'],
  al_phone:['（旧电话亭。听筒挂着，线垂到地上。）','（玻璃上有雾。有人用手指写过一串数字，又擦了。）','（号码盘磨得发亮。被人拨过很多次，每次都没拨完。）'],
@@ -6843,8 +6697,7 @@ var LOOKS={
  al_box:['（纸箱靠着墙。）','（里面有声音。）','（你蹲下来看：一只猫，和四只还没睁眼的小猫。）','（纸箱里那窝猫，今天好像多了一只。又好像没有。）'],
  al_puddle:['（一滩积水，映着那扇后窗。）','（光在水里晃，碎成一片一片。）','（积水里映着后窗的光。光晃一下，像有人在那头动了动。）']
 };
-/* 一个东西（一间屋、一件物）其实有好几句话。
-   抽取时先给还没看过的，全看完再从头来——否则随机抽到重复的，会让人以为“这里没什么可看”。 */
+
 function freshPick(key,pool){
   if(!pool||!pool.length)return '（你看了一会儿。）';
   var seen=S.lookSeen=S.lookSeen||{};
@@ -6857,7 +6710,7 @@ function freshPick(key,pool){
   if(s0.indexOf(idx)<0)s0.push(idx);
   return pool[idx];
 }
-/* 跨周目 + 不重复：同一周目内不抽到同一句；第 2/3 周目优先给专属新台词 */
+
 function pickSaid(key,pool){
   if(!pool||!pool.length)return '（你看了一会儿。）';
   var sd=S.said=S.said||{}; var s0=sd[key]=sd[key]||[];
@@ -6869,14 +6722,14 @@ function pickSaid(key,pool){
   if(s0.indexOf(idx)<0)s0.push(idx);
   return pool[idx];
 }
-/* 第几周目，给哪一套台词：1→基础；2→基础+新；3+→基础+新+更新 */
+
 function loopPool(n,name){
   var base=n[name]||[];
   if((S.loop||1)>=3 && n[name+'3']) return base.concat(n[name+'2']||[]).concat(n[name+'3']);
   if((S.loop||1)>=2 && n[name+'2']) return base.concat(n[name+'2']);
   return base;
 }
-/* 沉默到头时说的那段：第 2 周目起换成更深的一层 */
+
 function deepLines(who){ var n=NPCS[who]; return ((S.loop||1)>=2 && n.deep2)? n.deep2 : n.deep; }
 function lookAt(k){
   var pool=LOOKS[k]||['（你看了一会儿。）'];
@@ -6888,7 +6741,7 @@ function lookAt(k){
 }
 function renderPanel(){
   var pl=openPlaces(), h='<div class="places">';
-  /* 与街上亮灯同一套规则：没亮的门，这里也不列 */
+
   var seen=S.seen||{}, order=['flat','store','piano','cinema','roof','alley'], open={flat:1}, oi;
   for(oi=0;oi<order.length;oi++){
     if(seen[order[oi]])open[order[oi]]=1;
@@ -6929,17 +6782,16 @@ function enterRoom(id,who){
   var rm=ROOMS[id];
   P.x=wv(rm.spawn[0]); P.y=wv(rm.spawn[1]); P.dir='down'; P.mov=0;
   if(rm.npc){
-    /* 不再在这里掷骰：renderScene() 是 enterRoom 的别名，对话中一调用就会重掷，
-       人会当着玩家的面消失。缺席由 rollHere() 每晚决定一次。 */
+
     npcGone[rm.npc.id] = !hereTonight(rm.npc.id);
     SC.who=rm.npc.id;
   }else SC.who=null;
   var e=$('#uPlace'); if(e&&SCENES[id])e.textContent=SCENES[id].name;
   var tp=$('#tPlace'); if(tp&&SCENES[id])tp.textContent=SCENES[id].name;
-  if(id!=='flat'){ S.outToday=1; }          /* 只要离开过出租屋，就算出了门 */
+  if(id!=='flat'){ S.outToday=1; }
   if(id!=='street'){
     S.seen=S.seen||{}; S.seen[id]=1;
-    /* 夜的段落：0 序章 · 1 便利店 · 2 琴房 · 3 放映厅 · 4 天台 */
+
     var ORD=['flat','store','piano','cinema','roof'];
     if(S.seg===undefined)S.seg=0;
     var k=ORD.indexOf(id);
@@ -6948,10 +6800,10 @@ function enterRoom(id,who){
   }
   try{ setNight([0.10,0.34,0.62,0.86][S.phase]); }catch(err){}
   try{ ambRoom(id); }catch(err){}
-  try{ sfx('enter'); }catch(err){}            /* 进入场景：一个柔和的"落位"音，区分不同空间 */
+  try{ sfx('enter'); }catch(err){}
   try{ paintHero(); }catch(err){}
   updateCam(); try{ paintWorld(); }catch(err){}
-  /* 入场落定：给舞台加一次 .enter，让场景"活"着浮进来（只动 transform/opacity） */
+
   try{ var _st=$('#stage'); if(_st){ _st.classList.remove('enter'); void _st.offsetWidth; _st.classList.add('enter'); } }catch(e){}
   if(!wTimer)wTimer=setInterval(worldLoop,33);
 }
@@ -6970,17 +6822,17 @@ function worldLoop(){
   dx+=jvec.x; dy+=jvec.y;
   if(dx||dy){
     var len=Math.sqrt(dx*dx+dy*dy)||1;
-    var _sp=(typeof tierData==='function')?tierData().spd:1;   /* 心力越低，脚步越沉 */
+    var _sp=(typeof tierData==='function')?tierData().spd:1;
     tryMove(dx/len*5*K*_sp, dy/len*5*K*_sp);
     try{ dropMoveHint(); }catch(e){}
   }else tryMove(0,0);
-  /* 脚步：每 15 帧一步，停下来就没有 —— 走路这件事得听得见 */
+
   if(P.mov){ stepT++; if(stepT>=15){ stepT=0; try{ footstep(); }catch(e){} } } else stepT=0;
   updateCam();
   try{ paintWorld(); }catch(e){}
   updateTip();
 }
-/* 触屏没有键盘：按钮文案里的快捷键字母去掉，省宽度（幂等，可反复调用） */
+
 function touchifyButtons(){
   try{
         var _tb={'btnMenu':'歇一下','btnBook':'手册','btnHerPhone':'记录'};
@@ -6988,14 +6840,11 @@ function touchifyButtons(){
           var _b=document.getElementById(_id); if(!_b)continue;
           var _l=_b.querySelector('.lb'); if(_l)_l.textContent=_tb[_id];
         }
-        /* 手机上没有键盘：底部那句"方向键 / WASD"要换成摇杆的说法 */
+
         var _uh=$('#uHint'); if(_uh)_uh.textContent='摇杆走动 · E 互动 · ☰ 菜单';
   }catch(e){}
 }
-/* ===== 自定义光标：夜里的一粒暖光 =====
-   只替换"看得见的那一点"，命中判定与可点性完全交给浏览器（没有 pointer-events:none 的坑）。
-   光标住在 .stage 内，用 stage 的坐标算，所以跟着画布走、对得上人物。
-   触屏 / 减少动效 / 强制色彩 → 不启用，系统光标照旧。 */
+/* ===== 自定义光标：夜里的一粒暖光 ===== */
 var curEl=null,curTx=-200,curTy=-200,curX=-200,curY=-200,curNearOn=false;
 function curNear(on){
   if(!curEl)return;
@@ -7012,21 +6861,19 @@ function initCursor(){
     if(!stage||!curEl)return;
     document.body.classList.add('pcur');
     function at(e){
-      /* #cur 已是 fixed 挂在 body 上，直接用视口坐标 */
+
       curTx=e.clientX; curTy=e.clientY;
-      /* 悬停反馈走 near（收紧描边，由 setCurNear 控制），这里只管跟手 */
+
     }
     function tick(){
       curX+=(curTx-curX)*.3; curY+=(curTy-curY)*.3;
       curEl.style.transform='translate('+curX.toFixed(1)+'px,'+curY.toFixed(1)+'px)';
       requestAnimationFrame(tick)}
-    /* 绑在 window 上，不能只绑 stage：开场标题层是盖在 stage 上的全屏 div，
-       指针那会儿根本不在 stage 里 —— 光标会一直停在初始的 -200,-200（屏幕外），
-       而系统光标又被 pcur 的 cursor:none 藏了，于是标题页上鼠标是彻底看不见的。 */
+
     addEventListener('pointermove',at,{passive:true});
     addEventListener('pointerdown',function(){curEl.classList.add('down')},{passive:true});
     addEventListener('pointerup',function(){curEl.classList.remove('down')},{passive:true});
-    /* 打开任何浮层时把"靠近"提示收掉，避免光环隔着遮罩亮 */
+
     addEventListener('keydown',function(e){
       if(e.key==='Escape'||e.key==='e'||e.key==='Enter')setTimeout(function(){curNear(false)},60);
     });
@@ -7054,7 +6901,7 @@ function initWorld(){
     if(k==='e'&&!typing){ if(!breakSilence()&&!modalOn())doInter(nearestInter()); }
   });
   addEventListener('keyup',function(e){ kb[e.key.toLowerCase()]=false; });
-  /* 一切互动都靠「走过去 + 按 E」，不再支持点击画面直接互动（避免误触，也贴合荧惑探索的节奏） */
+
   [].slice.call(document.querySelectorAll('#pad .pb[data-k]')).forEach(function(b){
     var k=b.getAttribute('data-k'), on=function(e){ e.preventDefault(); tdir=k; };
     var off=function(e){ e.preventDefault(); if(tdir===k)tdir=null; };
@@ -7066,7 +6913,7 @@ function initWorld(){
     if(silActive){ breakSilence(); return; }
     if(!typing&&!modalOn())doInter(nearestInter());
   });
-  /* 移动端：Z 沉默（按住）/ X 别过脸（点按当前对话里的对应选项） */
+
   var pz=$('#padZ');
   if(pz){
     var pzOn=function(e){ e.preventDefault(); keys['z']=true; },
@@ -7082,13 +6929,13 @@ function initWorld(){
   if(px)px.addEventListener('click',function(e){
     e.preventDefault();
     if(silActive){ breakSilence(); return; }
-    /* 触发当前对话里的「移开视线 / 别过脸 / 看向别处」选项 */
+
     var b=[].slice.call(optsEl.querySelectorAll('.opt,.place')).filter(function(o){
       return /移开视线|别过脸|看向别处/.test(o.textContent);
     })[0];
     if(b&&!typing)b.click();
   });
-  /* 触屏摇杆：拖拽决定方向，松手归零（鼠标也能拖，便于桌面调试） */
+
   var stk=$('#stick'), nub=$('#nub');
   if(stk&&nub){
     var sid=false;
@@ -7108,13 +6955,13 @@ function initWorld(){
     window.addEventListener('mouseup',function(){if(sid)end();});
   }
   var pc=$('#panelClose'); if(pc)pc.addEventListener('click',closePanel);
-  /* 全屏：顶栏按钮在「舞台全屏 / 退出」间切换；尺寸变化后重算画布与相机 */
+
   var fsBtn=$('#btnFs');
-  /* iPhone 上的 Safari / 微信内置浏览器不支持整页全屏：钮留着也按不动，直接收掉 */
+
   var fsOK=!!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen);
   if(fsBtn&&!fsOK)fsBtn.style.display='none';
   if(fsBtn)fsBtn.addEventListener('click',function(){
-    /* 必须整页全屏：对话、选项、顶栏都在 #stage 之外，只放 #stage 会把这些一起排除掉 */
+
     var el=document.documentElement;
     var fsEl=document.fullscreenElement||document.webkitFullscreenElement;
     if(!fsEl){ if(el.requestFullscreen)el.requestFullscreen({navigationUI:'hide'}); else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen(); }
@@ -7123,7 +6970,7 @@ function initWorld(){
   function onFs(){
     fitStage(); updateCam(); try{paintWorld()}catch(e){}
     var on=!!(document.fullscreenElement||document.webkitFullscreenElement);
-    setTb('btnFs', on?'退出':'全屏', '⛶');   /* 走 setTb，别用 textContent —— 会把图标层冲掉 */
+    setTb('btnFs', on?'退出':'全屏', '⛶');
     setTimeout(function(){ try{fitStage();paintWorld()}catch(e){} },320);
   }
   document.addEventListener('fullscreenchange',onFs);
@@ -7183,7 +7030,6 @@ var MISC=[
   '（你数了数，这条街还剩四个亮着的招牌。）'
 ];
 
-/* 群像：他们的今天。没走到那一层，就看不见 */
 var CROWD=[
   {id:'hemu',  lock:4, tx:[
     '白班。把临期的便当一个个挑出来，放在柜台边上',
@@ -7245,8 +7091,7 @@ function renderCrowd(){
   var h='',i,j,c,seen4=0;
   for(i=0;i<CROWD.length;i++){
     c=CROWD[i];
-    /* 解锁看「见过这个人」（S.times），不是房间（S.seen）——
-       以前错用房间名当人名，四个人永远显示「你还没去过那里」 */
+
     if(!S.times||!(S.times[c.id]>0)){
       h+='<div class="cr lock"><canvas class="av" width="12" height="12" data-f="none"></canvas>'
         +'<span class="nm">？？？</span><span class="tx">你还没见过他。</span></div>';
@@ -7280,7 +7125,7 @@ function paintAvatars(){
     if(im&&im.complete&&im.naturalWidth){ var c=faceCrop(im,true); g.drawImage(im,c[0],c[1],c[2],c[3],0,0,12,12); continue; }
     if(id==='none'){ g.fillStyle='#1a1726'; g.fillRect(2,2,8,8); g.fillStyle='#4b4560'; g.fillRect(4,4,4,4); }
     else if(id==='yibu'){
-      /* 依芽：直接铺 12×12 冬季吉祥物图纸（和街上蹲着的是同一只） */
+
       for(var r2=0;r2<12;r2++)for(var c2=0;c2<12;c2++){
         var ch2=YIBU_WINTER[r2].charAt(c2), col2=YIBU_WINTER_C[ch2];
         if(col2){ g.fillStyle=col2; g.fillRect(c2,r2,1,1); }
@@ -7300,7 +7145,6 @@ function toggleCrowd(){
   c.style.display=(c.style.display==='none')?'':'none';
 }
 
-/* 看着他：你只能猜他在想什么，猜的不一定对 */
 var GUESS={
   hemu:[
     '（你猜：他知道她每天几点经过。脚步声他应该听得出来。）',
@@ -7363,7 +7207,7 @@ var GUESS={
     '（你猜：他早就知道等不到了。他只是在等自己甘心。）',
     '（你猜：他每天来，是怕她哪天真的来了，在站台找不着他。）']
 };
-/* 第 2 周目起：你的「猜测」更深一层，且不与基础池重复 */
+
 var GUESS2={
  hemu:['（你猜：他那瓶水，是从头来就给那孩子留的，不是后来才加的。）',
        '（你猜：他每天多摆的那瓶，其实是给自己留的——怕哪天那孩子来了，他不在。）',
@@ -7397,7 +7241,6 @@ var GUESS2={
          '（你猜：他每天来站台，是怕她哪天真来了，扑空，像他当年那样。）']
 };
 
-/* 你永远是你：只是看着他，猜他在想什么。猜的不一定对。 */
 function watchHim(who){
   var pool=(((S.loop||1)>=2 && typeof GUESS2!=='undefined' && GUESS2[who])?GUESS2[who].concat(GUESS[who]):GUESS[who]); if(!pool){ afterAction(); return; }
   var t=$('#talk'); if(t)t.classList.add('view');
@@ -7444,12 +7287,12 @@ function closeHelp(){ $('#help').classList.remove('on'); }
     ========================================================================= */
 $('#btnStart').addEventListener('click',function(){
   startRain();
-  startMusic(); updateMusicBtn();   /* 用户手势内启动氛围配乐 */
+  startMusic(); updateMusicBtn();
   $('#title').classList.remove('on');
   if(!S.journal)S.journal=[];
   load();
   paintTop(); muffle();
-  /* 第一夜才演黑屏开场（二十秒雨声，可跳过）；之后的周目直接开始 */
+
   if(!S.seenPrologue){ S.seenPrologue=1; save(); prologue(); }
   else chooseAction();
 });
@@ -7461,7 +7304,7 @@ $('#btnAuto').addEventListener('click',function(){
   try{ sfx('tap'); }catch(e){}
   if(autoSay&&_sayGo)_sayGo();
 });
-/* 顶栏「自动」初始状态对齐默认值（默认开；玩家关过就是关） */
+
 try{ setTb('btnAuto','自动',autoSay?'开':'关'); $('#btnAuto').classList.toggle('on',autoSay); }catch(e){}
 $('#btnBook2').addEventListener('click',function(){ load(); renderBook(); toggleBook(); });
 $('#btnBook3').addEventListener('click',function(){ renderBook(); toggleBook(); });
@@ -7494,7 +7337,7 @@ $('#btnWipe').addEventListener('click',function(){
      flags:{},seen:{},journal:[],known:{},lowDays:0,route:null,eventDone:{},over:false,
      knows:{hemu:0,zi:0,baigao:0,yat:0}};
   save();
-  try{ paintLoopMarks(); }catch(e){}        /* 清空后立刻刷新周目标记，不然残留一排旧框 */
+  try{ paintLoopMarks(); }catch(e){}
   toast('已清空');
 });
 $('#btnSite').addEventListener('click',function(){ location.href='index.html'; });
@@ -7518,7 +7361,7 @@ $('#btnHelpQuit').addEventListener('click',function(){ closeHelp(); try{paintLoo
 function paintLoopMarks(){
   var box=$('#loopMarks'); if(!box)return;
   var names=['hemu','zi','baigao','yat'], h='', any=false;
-  /* 只列"你真的了解过"的人。一个都没有，就整块不出现 —— 全 0/4 的框没有信息，只是碍眼 */
+
   names.forEach(function(id){
     var k=(S.knows&&S.knows[id])||0;
     if(k<=0)return;
@@ -7555,8 +7398,7 @@ function fxZoomOut(ms,cb){
     if(cb)cb();
   });
 }
-/* 黑边开关的唯一出口：DOM 的 on 类和 body 的 lb-on 必须同步 ——
-   CSS 靠 lb-on 把底部 UI 顶上去，漏一个就会黑条盖对话框 */
+
 function setLB(on){
   try{ document.body.classList.toggle('lb-on',!!on); }catch(e){}
   var a=$('#lbT'), b=$('#lbB');
@@ -7571,11 +7413,11 @@ function fxFocus(who){
   fxZoom(tx,ty,2.1,600);
 }
 function fxLB(on){ setLB(on); }
-/* 胶片颗粒开关：开场与结局轻轻盖一层，像一段被拍下来的影像 */
+
 function fxGrain(on){ var g=document.getElementById('grain'); if(!g)return; g.classList.toggle('on',!!on); }
-/* 漏光开关：结局那一段，让画面暖一点，像带子受了光 */
+
 function fxLeak(on){ var l=document.getElementById('leak'); if(!l)return; l.classList.toggle('on',!!on); }
-/* 结局前先放三格：不解释、不停留太久，像一卷带子过到头 */
+
 function fxRollIn(cb){
   var fr=['（这一晚，后来你想过很多遍。）','（有几格清楚，有几格已经糊了。）','（但你来过。这个错不了。）'];
   var i=0;
@@ -7599,7 +7441,7 @@ function fxCard(a,b,ms,cb){
     setTimeout(function(){ if(cb)cb(); },520);
   },ms||1500);
 }
-/* 雨停：环境音 + 粒子暂停 */
+
 var rainStopT=null;
 function fxStopRain(ms,cb){
   var old=SC.weather;
@@ -7618,7 +7460,7 @@ function fxStopRain(ms,cb){
    ========================================================================= */
 var PUZ={on:false,done:{},hint:{}};
 function puzOpen(cfg){
-  /* cfg:{id,title,sub,rows:[{t,note}],hint,ok:function(sel){},act:'cut'|'pick'} */
+
   PUZ.on=true;
   var box=$('#puzIn'), i;
   var h='<div class="pzt">'+cfg.title+'</div><div class="pzs">'+cfg.sub+'</div>';
@@ -7679,7 +7521,7 @@ function puzClose(){
 /* =========================================================================
    16.9 线索（天 → 谁 → 哪一个字）
    ========================================================================= */
-/* 章节设定已整体移除：这个游戏没有章，只有一天又一天。 */
+
 function chapterOf(d){
   var n=(d===undefined||d===null)?(S.day||1):d;
   return {n:'第 '+n+' 天', s:''};
@@ -7715,7 +7557,7 @@ var PICK={
  vent:{id:'chalk',t:'（通风口边上有一截粉笔。你捡了起来。）'},
  tr_drawer:{id:'key',t:'（你把那把旧钥匙收进了口袋。）'}
 };
-/* 赠送：给对了人，他会说出别的场合不会说的话 */
+
 var GIVE={
  hemu:{ oden:{rel:2,t:['（你把关东煮放在柜台上。）','「……给我的？」','（他先吹了吹，才喝。）','「谢谢。」','（他说谢谢的时候没有看你。）'],jr:'他说谢谢的时候没有看你。'},
         draft:{rel:2,t:['（你把那句话给他看。）','（他看了很久，久到你以为他没看完。）','「我草稿箱里也有一条。」','「也没发。」'],jr:'他的草稿箱里也有一条没发出去的消息。',seed:1},
@@ -7761,7 +7603,6 @@ function giveItem(who,id){
   save();
 }
 
-
 /* =========================================================================
    像素物品：收取时在屏幕中央展示 + 配文
    图是 16x16 矩阵，键名见 PIX；要换图只改 PIX 即可
@@ -7783,14 +7624,14 @@ letter:['................','................','................','.kkkkkkkkkkkkk
   candy:['................','................','................','................','................','................','......kkkkk.....','...r.rkrrrkr.r..','....r.krrrk.r...','...r.rkrrrkr.r..','......kkkkk.....','................','................','................','................','................'],
   key:['................','....kkkkkk......','...kooooook.....','..ko......ok....','..ko......ok....','...kooooook.....','....kkkkkk......','......koo.......','......koo.......','......koo.......','......koookk....','......koo.......','......koo.kk....','......koo.......','......kkk.......','................']
 };
-/* 物品 id → 用哪张图 */
+
 var ART={
   umbrella:'umbrella', draft:'phone', oden:'oden', page:'sheet', film:'film', chalk:'chalk', candy:'candy', key:'key', note:'letter',
   hemu_msg:'letter', wx_mute:'phone', zi_parts:'sheet', bg_tape:'film',
   relic_hemu:'onigiri', relic_zi:'cassette', relic_baigao:'mug', relic_yat:'umbrella'
 };
 function hasArt(id){ return !!(ART[id]&&PIX[ART[id]]); }
-/* 一张卡上要显示的东西从哪来：线索 / 行囊 / 心力工具箱 */
+
 function cardMeta(id){
   if(typeof CLUE!=='undefined'&&CLUE[id])
     return {n:CLUE[id].n, cat:'线索 · '+(NPCS[CLUE[id].from]?NPCS[CLUE[id].from].name:''), txt:CLUE[id].txt};
@@ -7839,7 +7680,6 @@ function _iqNext(){
   var b=$('#igB'); if(b)b.addEventListener('click',close);
 }
 
-
 /* =========================================================================
    结局收集表 —— 跨周目、跨存档保留的达成率
    ========================================================================= */
@@ -7867,7 +7707,6 @@ function openEnds(){
   $('#endList').classList.add('on');
 }
 function closeEnds(){ $('#endList').classList.remove('on'); }
-
 
 /* =========================================================================
    她的手机 · 聊天记录
@@ -8006,7 +7845,7 @@ var TOUCH={
  tr_alley2:['（地上有一圈粉笔印，画得很方。）','（是跳房子的格子。画到第七格就停了。）','（粉笔是白的，被雨泡过，边上糊了。）','（这条巷子里的孩子，很久没来画过了。）','（你没有擦掉它。）'],
  tr_alley3:['（电话亭玻璃上，那串数字。）','（前三位是这一片的区号。后八位你没看完。）','（有人在这儿打过一通很长的电话。）','（那通电话，大概没有打通。）','（你把手指按在那串数字上，按了一会儿，收了回来。）']
 };
-/* 靠窗的座位：离他远一点，他才说得下去 */
+
 function seatThing(){
   if(S.flags['hemu_seat']){
     sayLines(['（你坐回靠窗的位置。）','（这个角度刚好：他在灯下，你在暗处。）'],function(){ afterAction(); });
@@ -8029,7 +7868,7 @@ function seatThing(){
     function(){ lookAt('seat'); }
   ]);
 }
-/* 星图：这一夜捡回来一颗，图上亮一颗。三颗齐了，连成他命名的那颗 */
+
 function starThing(){
   var fr=Object.keys(S.frags||{}).length;
   var lines;
@@ -8046,7 +7885,7 @@ function starThing(){
     afterAction();
   });
 }
-/* 储物柜：后门边那个，锁着。钥匙在你抽屉里躺了一年 */
+
 function lockerThing(){
   var opened=!!S.flags['locker_open'];
   if(opened){
@@ -8084,7 +7923,7 @@ function lockerThing(){
     function(){ sayLines(['（你把钥匙又收了回去。）','（有些门，不急着开。）'],function(){ afterAction(); }); }
   ]);
 }
-/* 值班登记本：一年前那一页，他摸了一年 */
+
 function bookThing(){
   var seen=!!S.flags['bg_book'];
   S.flags['bg_book']=1; save();
@@ -8100,7 +7939,7 @@ function bookThing(){
     afterAction();
   });
 }
-/* 值班室墙上的纸条：磨白了又重新钉好（全篇只在这一处） */
+
 function helpThing(){
   var seen=!!S.flags['bg_help'];
   S.flags['bg_help']=1; save();
@@ -8111,7 +7950,7 @@ function helpThing(){
     afterAction();
   });
 }
-/* 手机：收尾可以做那一个动作——把静音改成响铃。不做任何说明 */
+
 function phoneThing(){
   if(S.finale&&!S.flags['ring']){
     sayLines(['（你按亮屏幕。01:15。）','（一年来，它一直是静的。）'],function(){
@@ -8141,7 +7980,7 @@ function verbThing(k){
   if(k==='aji'){ ajiThing(); return; }
   if(k==='seat'){ seatThing(); return; }
   if(k==='star'){ starThing(); return; }
-  if(k==='board'){ openAbout(); return; }   /* 协会布告栏 → 关于心协 */
+  if(k==='board'){ openAbout(); return; }
   if(k==='book'){ bookThing(); return; }
   if(k==='help'){ helpThing(); return; }
   if(k==='phone'){ phoneThing(); return; }
@@ -8177,9 +8016,7 @@ function verbThing(k){
 }
 
 /* ---------- 依芽（白猫彩蛋）/ 诺斯图（街角反谜） ---------- */
-/* 依芽：心协的白猫，也是心协的冬季吉祥物。它见过这条街上的所有人，
-   所以它会在你卡住的时候，往某个方向看一眼。你不一定马上懂。
-   围巾上挂的牌子是彩蛋：写得很大意，要静下心才看得清。 */
+
 function catThing(){
   S.flags.met_yibu=true; save();
   if(S.spirit<=18){
@@ -8216,11 +8053,10 @@ function catThing(){
     ],function(){ afterAction(); });
   }
 }
-/* 街角的诺斯图：引子。正式相识在后巷 —— 后巷才是他的地方。
-   三楼窗户那一晚，挪进了 NPCS.aji 的节点（aji_n4），由后巷的正式对话触发。 */
+
 function ajiThing(){
   S.flags.met_aji=true; save();
-  /* 已经在后巷混熟了 —— 街角这里只剩一句指路 */
+
   if(S.times&&S.times.aji>0){
     sayLines([
       '（街角空着。他人不在这儿。）',
@@ -8228,7 +8064,7 @@ function ajiThing(){
     ],function(){ afterAction() });
     return;
   }
-  /* 第一次：引子。他不说自己在哪儿，只让你去后巷 */
+
   sayLines([
     '（街角蹲着个人，帽兜拉得很低。）',
     '（他抬眼皮看了你一下，又低下。）',
@@ -8242,9 +8078,9 @@ function ajiThing(){
 
 /* ---------- 交互动词：人 ---------- */
 function verbNPC(who){
-  /* 人不在就别给对话选项了 —— 以前立绘消失了还能聊，就是因为这里没查。 */
+
   if(!hereTonight(who)){
-    optsEl.innerHTML='';                       /* 上轮留下的选项一并收掉，别让缺席的人还能被"点"到 */
+    optsEl.innerHTML='';
     sayLines((ABSENT[who]||['（这里没有人。）']).concat(['（今晚他不在这儿。明晚再来。）']),
       function(){ afterAction(); });
     return;
@@ -8257,7 +8093,7 @@ function verbNPC(who){
   fns.push(function(){ cost(2); sitWith(who); });
   h+=optHTML(++i,'看他（移开视线）',null,'—','你不看他的时候，他在做什么');
   fns.push(function(){ cost(0); lookAway(who); });
-  /* 今天他在做什么 —— 只有今天才有的那件事 */
+
   var _ti=(S.dailyNpc&&S.dailyNpc[who]&&S.dailyNpc[who].i!=null)?S.dailyNpc[who].i:0;
   var _act=(DAYACT[who]||[])[_ti];
   if(_act){
@@ -8289,7 +8125,7 @@ function openGive(who){
   fns.push(function(){ verbNPC(who); });
   optsEl.innerHTML=h; bindOpts(fns);
 }
-/* 一起待一会儿：短沉默窗口 */
+
 function sitWith(who){
   var n=NPCS[who];
   setCap('一起待着');
@@ -8317,7 +8153,7 @@ function sitWith(who){
     }
   },60);
 }
-/* 一起待一会儿 · 中途松手：也算陪过，只是短 */
+
 function sitWithBreak(){
   if(!silActive)return;
   var who=silCtx.who, n=NPCS[who];
@@ -8325,7 +8161,7 @@ function sitWithBreak(){
   silenceAudio(false); silEl.classList.remove('on');
   sayLines(['（你先起来了。）','（'+n.name+'也站起身，拍了拍裤子上的灰。）'],function(){ afterAction(); });
 }
-/* 移开视线：看到他不让你看的动作 */
+
 function lookAway(who){
   var n=NPCS[who];
   setCap('你没在看他');
@@ -8366,8 +8202,7 @@ var PUZZLES={
     {t:'「今年过年，我可能不回去了。」'}
   ],
   hint:'他不扔。写过的纸他都折两折塞回抽屉——所以「不回去」那句他不会寄，「钱」那句他也不想让家里操心。只会留一句让人放心的。',
-  /* 三行里划掉两行，只留一行 */
-  /* sel = 被划掉的行；留下来的那句才是寄出去的 */
+
   right:function(sel){
     var keep=[0,1,2].filter(function(i){return sel.indexOf(i)<0;});
     return keep.length===1&&keep[0]===0;
@@ -8379,7 +8214,7 @@ var PUZZLES={
     fxCard('锅里一直开着','雪',1700);
     sayLines(['（你把信推回去。他看了很久。）','（然后他笑了一下，是那种没有声音的笑。）',
       '「这锅一直开着。」','「冒热气，屋里就不像没人的样子。」'],function(){
-      /* 必须沉默：你一接话，他就收回去 */
+
       setCap('别说出来');
       silentWindow({
         who:'hemu', need:8,
@@ -8413,7 +8248,7 @@ var PUZZLES={
   }
  }
 };
-/* 四个谜题 · 统一登记：交互各异（切字/接拍/胶片/答题），但同一套——就绪、触发、登记、给字 */
+
 var PUZZLE_META={
   hemu:  {word:'雪', title:'锅里一直开着',   kind:'切字'},
   zi:    {word:'露', title:'空着的那一小节', kind:'接拍'},
@@ -8498,9 +8333,9 @@ function startQuiz(who,nd){
    听见过，就得在这八个白键上接上去。
    去月球式的音乐叙事：不用一句台词，把「没弹完」变成「弹完了」。
    ========================================================================= */
-var PIANO_KEYS=[0,2,4,5,7,9,11,12];       /* do re mi fa sol la si do′ —— 八个白键 */
+var PIANO_KEYS=[0,2,4,5,7,9,11,12];
 var PIANO_NAME=['do','re','mi','fa','sol','la','si','do′'];
-var PIANO_MELODY=[4,7,9,7,4];             /* mi sol la sol mi —— 停在倒数第二下的那段 */
+var PIANO_MELODY=[4,7,9,7,4];
 var PIANO={on:false,solved:false,step:0,key:null};
 function pianoNote(semi,dur,vol,when){
   if(!sfxOn)return;
@@ -8512,7 +8347,7 @@ function pianoNote(semi,dur,vol,when){
   lp.type='lowpass'; lp.frequency.value=2100;
   var o1=ac.createOscillator(), o2=ac.createOscillator();
   o1.type='triangle'; o2.type='sine';
-  o1.frequency.value=f; o2.frequency.value=f*2.004;   /* 轻微失谐的泛音，像真琴弦 */
+  o1.frequency.value=f; o2.frequency.value=f*2.004;
   var v=Math.max(0.0002,(vol||0.16)*(silActive?0.4:1));
   var d=dur||1.15;
   g.gain.setValueAtTime(0.0001,t);
@@ -8522,7 +8357,7 @@ function pianoNote(semi,dur,vol,when){
   o1.start(t); o2.start(t);
   o1.stop(t+d+0.05); o2.stop(t+d+0.05);
 }
-function pianoThud(){   /* 按错了：闷一声，像琴里吞了一下 */
+function pianoThud(){
   if(!sfxOn)return;
   var ac=audio(); if(!ac)return;
   var t=ac.currentTime;
@@ -8537,7 +8372,7 @@ function pianoThud(){   /* 按错了：闷一声，像琴里吞了一下 */
   o.connect(lp); lp.connect(g); g.connect(MASTER);
   o.start(t); o.stop(t+0.24);
 }
-/* 播一段旋律：seq 是半音数组；onNote(i) 用来同步按键高亮 */
+
 function playMelody(seq,gap,vol,onNote){
   var ac=audio(); if(!ac)return;
   var gp=gap||600, t0=ac.currentTime+0.06;
@@ -8565,7 +8400,7 @@ function pnoSyncPips(){
 }
 function openPiano(){
   if(PIANO.on)return;
-  if(!PIANO.solved&&S.flags&&S.flags.zi_melody)PIANO.solved=true;   /* 刷新后从存档恢复「已接上」 */
+  if(!PIANO.solved&&S.flags&&S.flags.zi_melody)PIANO.solved=true;
   PIANO.on=true; PIANO.step=0;
   var box=$('#pianoIn');
   var hasMel=(typeof hasClue==='function')&&hasClue('zi_melody');
@@ -8590,11 +8425,10 @@ function openPiano(){
   $('#pnoClose').onclick=function(){ closePiano(); };
   PIANO.key=function(e){
     var k=e.key.toLowerCase();
-    /* 钢琴是全模态的：游戏自己的热键（m手册/q菜单/v众人/t手机/ Escape全局关闭）
-       一个都不放下去，否则 z-index 更高的面板会盖到琴上面 */
+
     if(k==='escape'){ e.preventDefault(); e.stopPropagation(); closePiano(); return; }
     if(k>='1'&&k<='8'){
-      e.preventDefault(); e.stopPropagation();   /* 这排数字是琴键，别让全局热键听见 */
+      e.preventDefault(); e.stopPropagation();
       pianoPress(parseInt(k,10)-1);
       return;
     }
@@ -8602,7 +8436,7 @@ function openPiano(){
       e.preventDefault(); e.stopPropagation();
     }
   };
-  addEventListener('keydown',PIANO.key,true);   /* capture：抢在全局键之前 */
+  addEventListener('keydown',PIANO.key,true);
   pnoSyncPips();
 }
 function closePiano(){
@@ -8624,7 +8458,7 @@ function pianoPress(i){
   if(!PIANO.on||i<0||i>=PIANO_KEYS.length)return;
   var semi=PIANO_KEYS[i];
   pianoHit(i);
-  if(PIANO.solved){ pianoNote(semi,1.15,0.15); return; }   /* 已经接上了：随你弹 */
+  if(PIANO.solved){ pianoNote(semi,1.15,0.15); return; }
   var want=PIANO_MELODY[PIANO.step];
   if(semi===want){
     pianoNote(semi,1.15,0.17);
@@ -8634,7 +8468,7 @@ function pianoPress(i){
     pnoTip('（第 '+PIANO.step+' 下。还对。）');
   }else{
     pianoThud();
-    /* 错了就重来；按下的这一下若正好是开头那个音，算新的第一下 */
+
     PIANO.step=(semi===PIANO_MELODY[0])?1:0;
     pnoSyncPips();
     pnoTip(PIANO.step?'（第 1 下。）':'（……不对。重来。）');
@@ -8646,7 +8480,7 @@ function pianoSolved(){
   try{ learnClue('zi_melody'); }catch(e){}
   try{ jrAdd('zi','这一夜 · 琴房里那段旋律，我弹完了。mi、sol、la、sol、mi。'); }catch(e){}
   try{ toast('（琴里那段曲子，接上了。）'); }catch(e){}
-  /* 完整重弹一遍，键自己亮 —— 这一遍是给玩家的 */
+
   setTimeout(function(){
     playMelody(PIANO_MELODY,620,0.18,function(i){ pianoHit(PIANO_KEYS.indexOf(PIANO_MELODY[i])); });
   },420);
@@ -8729,7 +8563,7 @@ function startBeatPuzzle(who,nd){
         sayLines(why,function(){ round(); });
         return;
       }
-      /* 第三次还是没接上：她自己接上了。这一夜不罚任何人 */
+
       bump(who,1);
       sayLines(['（四拍过去了。）','（她自己接了一个很轻的和弦，弹完了。）','（她把手放在膝盖上。）'],function(){
         jrAdd(who,'这一夜 · 那一小节，她到底自己接上了。她说：是它自己接上的。');
@@ -8858,7 +8692,6 @@ function filmAfter(who,nd){
   });
 }
 
-/* 通用沉默窗口：谜题之后那句必须等出来的话 */
 var WAIT_ABORT=null;
 function silentWindow(o){
   silEl.classList.add('on'); silActive=true; silT=0;
@@ -8899,20 +8732,15 @@ if(S.seg===undefined)S.seg=0;
 if(S.frags===undefined)S.frags={};
 paintTop(); paintSpirit(); paintLoopMarks(); renderCrowd();
 try{initWorld();enterRoom('flat');paintHero()}catch(e){}
-/* 操作提示不要一直挂着：给新人看几秒就收，后面按 E 靠近时自然会再现 */
+
 try{setTimeout(function(){var h=$('#uHint');if(h)h.classList.remove('on');},9000)}catch(e){}
 try{updateMusicBtn()}catch(e){}
-/* 序章名场面改由「开始这一夜」触发（先看到标题，再进黑屏） */
-/* ---- 全局界面音效：给所有按钮/选项兜底 ----
-   原来只有 10 处手动调 sfx()，52 个按钮里绝大多数是哑的。
-   这里用事件委托统一补上，并且**跳过已经自己调过的**（用标记去重），
-   免得同一个按钮响两次。
-   分工：普通点击 = tap（最轻），确认/继续 = ok，开/关类 = open/close。 */
+
+/* ---- 全局界面音效：给所有按钮/选项兜底 ---- */
 (function(){
-  /* 注意 .tb 是顶栏按钮（手册/歇一下/记录…），它们不是 <button> 的默认类，
-     漏掉的话这几个键就一直是哑的。 */
+
   var SEL='button,.tb,.opt,.pixbtn,.hb-ach,.dock,.stage [role="button"]';
-  /* sfx 已存在时用它；这个 IIFE 放在 sfx 定义之后，所以直接引用 */
+
   if(typeof sfx!=='function')return;
   function kindOf(el){
     var id=el.id||'', txt=(el.textContent||'').trim();
@@ -8930,9 +8758,7 @@ try{updateMusicBtn()}catch(e){}
   document.addEventListener('click',function(e){
     var t=e.target; if(!t||!t.closest)return;
     var el=t.closest(SEL); if(!el)return;
-    /* 委托跑在冒泡阶段（手写绑定也是冒泡，按注册顺序）。
-       这里先看看手写逻辑有没有处理过：sfx() 内部会打 el.__sfxDone。
-       顺序不可靠时不猜 —— 直接在 sfx() 里记录最近一次被谁调用。 */
+
     var before=window.__sfxSeq||0;
     var n=Date.now(); if(n-lastTap<45)return; lastTap=n;
     try{ sfx(kindOf(el)); }catch(err){}
@@ -8943,7 +8769,7 @@ try{updateMusicBtn()}catch(e){}
 window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){goStreet()},AFTER:afterAction,NEXT:nextDay,
   go:function(p){goPlace(p)},next:function(){nextDay()},
   finish:finish,newLoop:newLoop,
-  bump:function(who,n){bump(who,n)},                 /* 关系 +n（原名 give，与「给东西」重名被覆盖，改回 bump） */
+  bump:function(who,n){bump(who,n)},
   journal:function(){return S.journal},book:function(){return renderBook()},silT:function(){return silT},silUp:function(){endSilence(true)},
   bag:function(){return S.bag||[]},take:function(id){return takeItem(id)},verb:function(k){verbThing(k)},
   verbNPC:function(w){verbNPC(w)},give:function(i){openGive(i)},FX:FX,puz:function(w){puzStart(w)},
@@ -8953,7 +8779,7 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   end:function(k){endingBy(k)},finale:function(){startFinale()},
   fold:function(){try{foldOpts()}catch(e){}},
   lamp:function(){lampRest()},to:function(x,y){P.x=x;P.y=y},wv:function(v){return wv(v)},
-  /* 15 天制 / 后巷 / 今晚在不在 / 收尾 —— 自检与调试用（和上面同一套出口） */
+
   DAYS:function(){return DAYS},
   ROOMS:function(){return ROOMS},SCENES:function(){return SCENES},PLACES:function(){return PLACES},
   FRAMES:function(){return FRAMES},STREET_DROP:function(){return STREET_DROP},
@@ -8972,14 +8798,14 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   quiz:function(w,nd){startQuiz(w,nd)},
   beatUI:openBeat,filmUI:openFilm,
   beatEnd:beatEnd,filmEnd:filmEnd,beatPress:beatPress,
-  star:starThing,phone:phoneThing,seat:seatThing,help:helpThing,   /* book 别名已删：与手册 renderBook 重名，走 verb('book') */
+  star:starThing,phone:phoneThing,seat:seatThing,help:helpThing,
   aji:ajiThing,cat:catThing,
   grantDeep:grantDeep,silent:function(w,nd){startSilence(w,nd||null)},
   blip:blip,footstep:footstep,
   rollWeather:rollWeather, CLUE:CLUE, hasClue:hasClue, learnClue:learnClue, PIECES:PIECES,
   openPiano:openPiano, closePiano:closePiano, pianoPress:pianoPress, playMelody:playMelody,
   PIANO_KEYS:PIANO_KEYS, PIANO_MELODY:PIANO_MELODY,
-  /* 心力六阶段：自检与调试（tier/tierData/TIERS/TIRED_SAY/硬撑/路灯） */
+
   tier:tier, tierData:tierData, TIERS:TIERS, BURN:BURN, TIRED_SAY:TIRED_SAY,
   tiredLine:tiredLine, toolGain:toolGain, tooTired:tooTired, lampRest:lampRest,
   cost:cost, gain:gain,
@@ -8987,15 +8813,7 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   useTool:useTool, hasTool:hasTool, TOOLS:TOOLS};
 })();
 
-/* ===== 手机：自动横屏 =====
-   手机上这个游戏是横着玩的。竖屏进来时自动把画面转过来 ——
-   不是"给个按钮让你自己转"，而是进来就是横的；真想竖着玩可以点「竖着玩」关掉。
-
-   两种宿主，两套做法：
-     ① 独立打开（不是 iframe）→ 自己转：html.rot90 把整页旋转 90°。
-     ② 嵌在官网 iframe 里  → 不能自转（会溢出到 iframe 外面被裁掉），
-        改成 postMessage 请父页把「容器 + 全屏」转过去。
-   另外能锁系统方向就锁（Android Chrome 全屏下可用；iOS 不支持，忽略即可）。 */
+/* ===== 手机：自动横屏 ===== */
 (function(){
   var H=document.documentElement, B=document.body, KEY='yd30_port', hintDone=false;
   var inFrame=false;
@@ -9003,24 +8821,17 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
 
   function isPhone(){ try{ var m=Math.min(screen.width||9999,screen.height||9999);
     return m<600 || (matchMedia('(pointer:coarse)').matches && m<900); }catch(e){ return false; } }
-  /* 没选过就默认横屏 —— 这是"手机端开始游戏自动横屏"的关键 */
+
   function pref(){ try{ var v=sessionStorage.getItem(KEY); return (v===null||v==='')?'1':v; }catch(e){ return '1'; } }
   var hint=document.getElementById('rothint');
 
-  /* why='auto' 是"我根据屏幕比例算出来的"，'user' 是"玩家自己按了按钮"。
-     必须区分：父页把容器转成横屏之后，iframe 就变成横的了，
-     我下一轮又会算出"已经是横屏，不用转"并发 auto:'0' 回去 —— 父页若照做就会抖个不停。
-     所以父页只在 user 时才真的取消旋转。 */
   function askParent(kind,why){
     if(!inFrame)return;
     try{ parent.postMessage({__yd30:'landscape', want:kind, why:why||'auto'}, '*'); }catch(e){}
   }
   var lockTried=false;
   function lockLand(){
-    /* 尽力而为：绝大多数手机浏览器（尤其 iOS）会拒绝，拒绝就靠网页自己转。
-       两个坑：① 只调一次 —— 重复调用第二次会被 AbortError 取消；
-               ② Promise 的 reject 不会被 try/catch 抓住，必须 .catch，
-                  否则控制台会被一排未处理的 AbortError 刷屏。 */
+
     if(lockTried)return false; lockTried=true;
     var r=null;
     try{ var o=screen.orientation||screen.mozOrientation||screen.msOrientation;
@@ -9035,7 +8846,7 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
     var touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
     if(touch){ B.classList.add('touch'); try{ touchifyButtons(); }catch(e){} }
     var want = (ph && !rl && pref()==='1');
-    var rot  = want && !inFrame;      /* iframe 里自转会被裁，交给父页 */
+    var rot  = want && !inFrame;
     var was=H.className+'|'+B.className;
     H.classList.toggle('rot90', rot);
     B.classList.toggle('touch', touch);
@@ -9058,7 +8869,6 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   setTimeout(function(){ if(hint) hint.classList.remove('on'); }, 7000);
 })();
 
-/* 触屏操作说明：手机上第一次进游戏才弹，点过「知道了」就永久不再出现 */
 (function(){
   var KEY='yd30_thelp', el=document.getElementById('thelp'), go=document.getElementById('thelpGo');
   function isTouch(){ return ('ontouchstart' in window)||navigator.maxTouchPoints>0; }
@@ -9072,12 +8882,11 @@ window.__yd30={get S(){return S},NPCS:NPCS,SAVE:save,LOAD:load,OFFER:function(){
   if(seen()){ el.parentNode.removeChild(el); return; }
   var s=document.getElementById('btnStart');
   if(s) s.addEventListener('click', function(){ setTimeout(show, 2600); });   /* 等开场演出走一段 */
-  setTimeout(show, 9000);                                                     /* 兜底：直接进了世界也补一次 */
+  setTimeout(show, 9000);
   if(go) go.addEventListener('click', close);
   el.addEventListener('click', function(e){ if(e.target===el) close(); });
 })();
 
-/* 兜底：任何未预料的状况，先别让玩家白屏 */
 window.addEventListener('error',function(ev){
   try{ if(window.console&&console.warn)console.warn('[yd30]',ev.message,ev.filename+':'+ev.lineno); }catch(e){}
   try{ var o=$('#itemGet'); if(o)o.classList.remove('on'); }catch(e){}
@@ -9112,7 +8921,7 @@ window.addEventListener('error',function(ev){
   function wire(){ try{ [].slice.call(document.querySelectorAll(SEL)).forEach(add); }catch(e){} }
   window.__rfxWire=wire;
   wire();
-  /* 动态生成的选项/出门地点：DOM 变动时 rAF 节流补接，不漏接也不反复扫 */
+
   try{
     var pend=false;
     function schedule(){ if(pend)return; pend=true; requestAnimationFrame(function(){ pend=false; wire(); }); }

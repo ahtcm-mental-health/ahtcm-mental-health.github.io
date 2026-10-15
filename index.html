@@ -6,8 +6,7 @@
 <meta name="theme-color" content="#1a2036">
 <title>大学生心理健康协会</title>
 <meta name="description" content="这里有几件小事，也许今晚就能用上。不用一次看完。">
-<!-- 字体走异步加载：Google Fonts 是外网资源，官网不能因为它连不上就打不开。
-     <noscript> 里留一份同步引用，禁 JS 时也能用上。 -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all';this.onload=null"
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap">
@@ -65,8 +64,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 ::selection{background:var(--hl);color:var(--ink)}
 :focus-visible{outline:2px solid var(--c1);outline-offset:3px;border-radius:4px}
 .wrap{width:var(--wrap);margin-inline:auto;position:relative;z-index:2}
-/* 噪点原来是 body::before + 全屏 mix-blend-mode:multiply —— 多一层全屏合成，
-   滚动时白白拖慢。改成直接贴在 body 背景上（background-blend-mode 在层内做，不额外分层）。 */
+
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
   background-blend-mode:overlay}
 body>*{position:relative;z-index:1}
@@ -76,9 +74,7 @@ body>*{position:relative;z-index:1}
 /* ---------- 顶栏 ---------- */
 .helpbar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;
   justify-content:space-between;gap:12px;padding:calc(11px + env(safe-area-inset-top)) clamp(14px,3.4vw,30px) 11px;
-  /* 这里原来用 backdrop-filter:blur(9px)，但顶栏是 position:fixed，
-     滚动时浏览器要每帧重新采样它背后的内容 —— 是滚动卡顿的最大元凶。
-     换成不透明一点的纯色：视觉几乎一样，滚动省一大截。 */
+
   background:var(--paper-2);border-bottom:1px solid transparent;
   transition:border-color .3s,transform .45s cubic-bezier(.22,.61,.36,1)}
 .helpbar.scrolled{border-bottom-color:var(--line)}
@@ -143,7 +139,7 @@ body>*{position:relative;z-index:1}
 .sm i{width:7px;height:7px;border-radius:50%;display:block}
 .sm .sp{background:#6f9ab5} .sm .su{background:#c9a24e} .sm .sa{background:#c07856} .sm .sw{background:#6b6f9c}
 .hero-foot .tiny{font-size:11.5px;color:var(--muted);margin:0;flex:1;min-width:210px}
-/* 常驻角色 · 水木和（右下角） */
+
 .dock{position:fixed;right:clamp(12px,2.4vw,26px);bottom:clamp(12px,2.4vw,20px);z-index:80;
   display:flex;align-items:flex-end;gap:1px;filter:drop-shadow(0 10px 22px rgba(90,74,44,.24));
   transform:rotate(var(--dtilt,0deg));transform-origin:50% 100%;will-change:transform;
@@ -179,7 +175,6 @@ body>*{position:relative;z-index:1}
 @media(max-width:620px){.dock{right:8px;bottom:10px}.dock .tip{display:none}
   .dock-h,.dock-d{height:clamp(112px,31vw,146px)}}
 
-
 /* ---------- 通用区块 ---------- */
 .sec{padding:var(--sec-y) 0;position:relative;overflow:hidden;scroll-margin-top:calc(var(--hbH,64px) + 14px)}
 
@@ -187,8 +182,7 @@ body>*{position:relative;z-index:1}
 .tbar{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;color:var(--muted);
   border:1px solid #39415f;padding:4px 10px;white-space:nowrap;align-self:center;background:rgba(255,255,255,.02)}
 .tbar i{width:7px;height:7px;border-radius:50%;display:block;flex:0 0 auto}
-/* 一天的时段色：未醒透 → 天亮 → 上午 → 正午 → 午后 → 黄昏 → 入夜 → 深夜
-   （沿用「一天的心情变化」那张卡的时间语言，往两头补齐成完整一天） */
+
 .tbar[data-t="first"] i{background:#7c8fa8}
 .tbar[data-t="dawn"]  i{background:#6f9ab5}
 .tbar[data-t="morn"]  i{background:#8fb3c4}
@@ -213,7 +207,6 @@ body>*{position:relative;z-index:1}
 .bgsym.b1{width:min(38vw,340px);height:min(38vw,340px);right:-4%;top:6%}
 .bgsym.b2{width:min(26vw,220px);height:min(26vw,220px);left:-3%;bottom:8%}
 
-/* 01 认识：细点阵 */
 .s-know{background:color-mix(in srgb,var(--c1) 20%,var(--paper));--accent:var(--c1)}
 .s-know::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.5;
   background-image:radial-gradient(color-mix(in srgb,var(--c1) 42%,transparent) 1px,transparent 1.4px);
@@ -269,7 +262,6 @@ body>*{position:relative;z-index:1}
 .sq.q-d3{background:color-mix(in srgb,#c98f72 22%,var(--paper));--qc:#c07856}
 .sq.q-d4{background:color-mix(in srgb,#7b7fa8 24%,var(--paper));--qc:#969ad0}
 
-/* 03 自助：方格稿纸 */
 .s-self{background:color-mix(in srgb,var(--c2) 20%,var(--paper));--accent:var(--c2)}
 .s-self::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.55;
   background-image:linear-gradient(color-mix(in srgb,var(--c2) 34%,transparent) 1px,transparent 1px),
@@ -278,14 +270,12 @@ body>*{position:relative;z-index:1}
 .s-self .cell{background:color-mix(in srgb,var(--card) 80%,transparent)}
 .s-self .cell::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c2);opacity:.5}
 
-/* 04 陪伴：暖块 + 两个圆 */
 .s-with{background:color-mix(in srgb,var(--c3) 22%,var(--paper));--accent:var(--c3)}
 .s-with .cell.say{border-left:3px solid var(--c2)}
 .s-with .cell.avoid{border-left:3px solid var(--sign)}
 .s-with .cell.keep{border-left:3px solid var(--c3)}
 .s-with .cell.avoid .tag{color:var(--sign)}
 
-/* 05 树洞：便签墙 */
 .s-tree{background:color-mix(in srgb,var(--c4) 20%,var(--paper));--accent:var(--c4)}
 .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
 .note{padding:15px 15px 17px;border-radius:12px;font-size:13px;line-height:1.75;color:var(--ink);
@@ -297,7 +287,6 @@ body>*{position:relative;z-index:1}
   border-color:color-mix(in srgb,var(--c3) 28%,transparent);transform:rotate(.5deg)}
 .note b{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
 
-/* 06 手册：复古窗口 */
 .s-manual{background:var(--paper-2);--accent:var(--c1)}
 .retro{border:1px solid var(--win-line);background:var(--win-bg);border-radius:10px;overflow:hidden;
   box-shadow:0 6px 20px rgba(90,80,100,.08)}
@@ -327,7 +316,6 @@ body>*{position:relative;z-index:1}
 [data-fill]{display:inline-block;min-width:5em;padding:0 5px;border-bottom:1.5px dashed var(--muted);
   color:var(--ink-2);font-style:normal}
 
-/* 07 游戏：像素夜 */
 .s-game{background:linear-gradient(180deg,var(--night),var(--night-2));color:#e8e6f0;overflow:hidden}
 .s-game .sec-top .idx{color:var(--px1)}
 .s-game h2{color:#fff}
@@ -430,7 +418,6 @@ body>*{position:relative;z-index:1}
   color:var(--muted);font-size:11.5px;text-align:center;padding:10px;line-height:1.6;
   background:color-mix(in srgb,var(--card) 62%,transparent)}
 
-/* 09 部门 / 活动块 */
 .db-head{margin:44px 0 18px}
 .db-head h3{font-size:clamp(18px,2.4vw,22px);margin-bottom:6px}
 .db-head p{margin:0;font-size:13px;color:var(--ink-2);max-width:56ch;line-height:1.8}
@@ -469,7 +456,7 @@ body>*{position:relative;z-index:1}
 .foot .filllist{margin-top:18px;padding:15px 17px;border:1.5px dashed var(--line-2);border-radius:12px;
   font-size:12px;line-height:1.95;max-width:64ch;background:var(--card)}
 .foot .filllist b{color:var(--ink);font-family:var(--sans)}
-/* 清空痕迹：低调到不打扰，但不藏起来 */
+
 .wipe{margin-top:14px;margin-bottom:34px}
 .wipe-b{padding:7px 13px;border:1px solid var(--line-2);border-radius:9px;
   background:transparent;color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer;
@@ -499,11 +486,10 @@ body>*{position:relative;z-index:1}
   .srow{grid-template-columns:64px 1fr 30px}
 }
 
-
 /* ===== 像素风覆盖层 ===== */
 *,*::before,*::after{border-radius:0!important}
 html{background:#151a2c}
-/* 像素风覆盖层下不再叠 body::before（噪点已并入 body 背景） */
+
 .btn-a,.btn-b,.hb-help,.pgo,.hb-logo,.dot,.mascot img,.drawing,.retro,.pixelwin,.statpanel,.cell,.note,
 .helpcard,.hcard,.four,.sq,.pw,.filllist,.theme-card,.bgsym svg{border-radius:0!important}
 .btn-a{box-shadow:4px 4px 0 rgba(0,0,0,.6)}
@@ -521,8 +507,7 @@ html{background:#151a2c}
 .sec-top h2::before{content:"▸ ";color:var(--accent,var(--c1));font-size:.7em;vertical-align:.12em}
 .hero h1::before{content:"▸ ";color:var(--c1);font-size:.42em;vertical-align:.5em;letter-spacing:0}
 .hero{background:linear-gradient(180deg,color-mix(in srgb,var(--c3) 16%,var(--paper)),var(--paper));
-  /* 换天气时背景要跟着渐变走，不能瞬间跳色 —— 之前这里没有 transition，
-     canvas 粒子在淡入淡出、背景却"啪"一下换掉，看着就是不顺滑。 */
+
   transition:background 2.6s cubic-bezier(.4,0,.2,1)}
 .hero-glow,.hero-beam{transition:opacity 2.6s cubic-bezier(.4,0,.2,1)}
 .hero[data-weather="clear"]{background:linear-gradient(180deg,color-mix(in srgb,#ffce8a 30%,var(--paper)),var(--paper))}
@@ -538,16 +523,16 @@ html{background:#151a2c}
 .bgsym{opacity:.13}
 #wx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 /* ===== 高级像素质感 ===== */
-/* 面板：内亮边 + 内暗边 + 硬投影（立体像素面板） */
+
 .cell,.note,.drawing,.retro,.pixelwin,.statpanel,.theme-card,.pw,.helpcard,.hcard,.filllist{
   border:1px solid #46507a!important;
   box-shadow:inset 1px 1px 0 rgba(198,212,255,.09),inset -1px -1px 0 rgba(0,0,0,.45),
     5px 5px 0 rgba(0,0,0,.4)!important}
 .cell{border-width:0 0 2px 0!important;box-shadow:none!important}
-/* 卡片内渐变：上亮下暗 */
+
 .cell,.note,.pw,.hcard,.helpcard,.theme-card,.drawing{
   background-image:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 44%,rgba(0,0,0,.16))!important}
-/* 标题：细腻层次（不用像素描边） */
+
 .sec-top .idx{font-family:var(--mono)!important;font-weight:600}
 .sec-top h2,.game h2,h1{text-shadow:0 2px 14px rgba(0,0,0,.5)}
 /* 点阵分隔线 */
@@ -555,10 +540,9 @@ html{background:#151a2c}
 .cell{border-bottom:1px solid #343d5e!important}
 .duo{border-top:1px solid #3f4869!important}
 
-/* 一天的光：随时刻变化的光源方向与颜色 */
 #amb{position:fixed;inset:0;pointer-events:none;z-index:54;background:transparent;
   transition:background 2.6s cubic-bezier(.4,0,.2,1);will-change:background}
-/* 一天的天光：色温与明度随时段走，从清晨的冷灰蓝一路压到深夜 */
+
 body[data-sky="first"] #amb{background:rgba(104,122,158,.16)}
 body[data-sky="dawn"]  #amb{background:rgba(158,196,228,.11)}
 body[data-sky="morn"]  #amb{background:rgba(255,228,176,.11)}
@@ -568,7 +552,7 @@ body[data-sky="dusk"]  #amb{background:rgba(212,120,58,.20)}
 body[data-sky="night"] #amb{background:rgba(44,64,120,.19)}
 body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 #light{position:fixed;inset:0;pointer-events:none;z-index:55;will-change:background;
-  /* 原来 .85s，比天光（2.6s）快太多：光斑先到位、底色还在慢慢变，两下对不上。 */
+
   transition:background 2.4s cubic-bezier(.22,.61,.36,1);
   background:radial-gradient(var(--ls,132% 112%) at var(--lx,28%) var(--ly,16%),var(--lc,rgba(122,142,206,.09)),transparent 70%)}
 /* ===== 区块柔和过渡（两端回到纸色，相邻区块自然衔接） ===== */
@@ -615,7 +599,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
   letter-spacing:.04em;transition:color .2s,border-color .2s,background-color .2s}
 .hb-nav a:hover{color:var(--ink);background:rgba(255,255,255,.045)}
 .hb-nav a.on{color:var(--c1);border-color:var(--c1);background:color-mix(in srgb,var(--c1) 13%,transparent)}
-/* 手机端区块快捷导航：默认隐藏，仅 ≤820px 且滚动后出现（见下方媒体查询） */
+
 .hb-mnav{display:none}
 /* ===== 成就系统 ===== */
 /* 情绪打卡 */
@@ -681,7 +665,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
   box-shadow:inset 2px 2px 0 rgba(255,255,255,.35),inset -2px -2px 0 rgba(0,0,0,.28),4px 4px 0 rgba(0,0,0,.45);
   transition:transform .1s steps(2)}
 .bbtn:active{transform:translate(3px,3px);box-shadow:inset 2px 2px 0 rgba(255,255,255,.3),inset -2px -2px 0 rgba(0,0,0,.3),1px 1px 0 rgba(0,0,0,.45)}
-/* 天气自选（左下角） */
+
 .wxctl{position:fixed;left:clamp(12px,2.4vw,26px);bottom:clamp(12px,2.4vw,20px);z-index:80;display:flex;gap:8px;align-items:flex-end}
 .wxbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-size:12.5px;color:var(--ink-2);
   background:#1c2340;border:1px solid #46507a;
@@ -693,7 +677,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 .wxbtn svg{width:14px;height:14px}
 .wxbtn em{font-style:normal;font-size:11px;color:var(--muted);letter-spacing:.04em;margin-left:2px;padding-left:8px;border-left:1px solid #39415f}
 .wxmenu{position:absolute;left:0;bottom:calc(100% + 10px);display:none;flex-direction:column;gap:3px;padding:8px;
-  line-height:1.5;   /* 别被 body 的行高撑开，之前按钮显得很散 */
+  line-height:1.5;
   background:#1c2340;border:1px solid #46507a;min-width:132px;
   box-shadow:inset 1px 1px 0 rgba(198,212,255,.1),6px 6px 0 rgba(0,0,0,.45)}
 .wxmenu.on{display:flex}
@@ -703,17 +687,16 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 .wxmenu button.on{color:var(--c1);border-color:var(--c1);background:color-mix(in srgb,var(--c1) 12%,transparent)}
 .wxmenu small{opacity:.55;font-size:11px;margin-left:8px;letter-spacing:.04em}
 .wxmenu .sep{height:1px;background:#39415f;margin:3px 0}
-/* 天气按钮：单行「天气名」，5 个排两列，最后一个占满 */
+
 .wx-day{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:min(62vh,460px);
   overflow-y:auto;min-width:238px;overscroll-behavior:contain}
 .wx-day.on{display:grid}
 .wx-day .wx-cap{grid-column:1/-1;font-size:10.5px;letter-spacing:.18em;color:var(--muted);padding:2px 4px 6px}
 .wx-day .sep{grid-column:1/-1}
-/* 注意：这里不能再用 flex-direction:column —— 天气按钮现在是单行文字，
-   用纵向布局会让文字挤成一条竖线（之前 8 条时段版才有 <small> 才需要 column）。 */
+
 .wx-day button{padding:6px 11px;font-size:12.5px;line-height:1.5}
 .wx-day button:nth-of-type(5){grid-column:1/-1}
-/* 「一天里」的对照表：只作说明，不可点 */
+
 .wx-day-list{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px 5px;padding:2px 3px 4px;
   font-size:10.5px;color:var(--muted);line-height:1.5}
 .wx-day-list>span{width:100%;letter-spacing:.04em;margin-bottom:2px}
@@ -774,7 +757,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 .pw.photo figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px 10px 7px;
   font-size:10.5px;letter-spacing:.05em;color:#e8e6f2;text-align:center;
   background:linear-gradient(180deg,transparent,rgba(10,12,24,.8))}
-/* 海报 / 长图横滑条 */
+
 .strip{display:flex;gap:12px;margin-top:14px;overflow-x:auto;padding:2px 2px 10px;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .strip a{flex:none}
@@ -790,7 +773,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 .crew b{display:block;font-size:12px;margin-top:7px;color:#fff;font-weight:600}
 .crew em{display:block;font-style:normal;font-size:10.5px;color:#9e9bb6;line-height:1.5;margin-top:2px}
 .crew .you{border-color:var(--px3)}
-/* 07 真机截图 + 点按开玩 */
+
 .playwrap{display:block;position:relative;width:100%;cursor:pointer;padding:0}
 .playwrap img.shot{width:100%;display:block}
 .playtag{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:inline-flex;
@@ -799,12 +782,11 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
   transition:background-color .2s,color .2s}
 .playtag i{font-style:normal;font-size:11px}
 .playwrap:hover .playtag,.playwrap:focus-visible .playtag{background:var(--px3);color:#141a2c}
-/* 全屏游玩浮层（隐藏即 display:none，不挡点击） */
+
 #gp{position:fixed;inset:0;z-index:120;background:#0a0d18}
 #gp[hidden]{display:none}
 #gp iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-/* 手机上把「装游戏的盒子」转 90° —— 里面的 iframe 随之变成横屏尺寸。
-   注意是转容器，不是转里面的页面：iframe 内自转会被裁掉。 */
+
 #gp.rot90{width:100vh;width:100dvh;height:100vw;height:100dvw;
   left:0;top:0;right:auto;bottom:auto;
   transform:translateX(100vw) translateX(100dvw) rotate(90deg);transform-origin:0 0}
@@ -815,9 +797,9 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
   z-index:122;padding:9px 18px;font-size:13.5px}
 #gpClose{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:121;
   padding:8px 16px;border:1.5px solid #4a5478;background:rgba(10,14,26,.92);color:#cfd6ee;font-size:13px}
-/* 手机上手指没那么准，关闭按钮抬到 44px 高 */
+
 @media(pointer:coarse){#gpClose{min-height:42px;padding:9px 18px}}
-/* 加载中：盖在 iframe 之上，等 iframe load 完自动收 */
+
 #gpLoad{position:absolute;inset:0;z-index:120;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:12px;background:#0a0d18;color:#cfd6ee;
   font-size:13px;letter-spacing:.16em}
@@ -831,7 +813,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 /* 08 实拍图 */
 .drawing.photo img{max-width:min(280px,100%);max-height:340px;width:auto;margin:0 auto;display:block}
 .drawing.photo a:hover img{opacity:.85}
-/* 09 会徽 / 主角立绘 */
+
 .emblem{width:88px;background:#fff;padding:8px;border:1px solid var(--line);display:block;margin-bottom:16px}
 
 /* ===== 新增设计元素：阅读进度 / 回顶 / 首屏微光与下滑提示 / 图片灯箱 / 错峰入场 ===== */
@@ -839,7 +821,7 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 #prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:95;pointer-events:none;
   background:linear-gradient(90deg,var(--px1),var(--px3) 55%,var(--lamp));
   box-shadow:0 0 8px rgba(127,157,212,.45);transition:width .12s linear}
-/* 回到顶部（置于右下角角色上方，避开底部居中的成就提示） */
+
 #toTop{position:fixed;right:clamp(12px,2.4vw,26px);bottom:clamp(178px,21vw,208px);z-index:82;
   display:inline-flex;align-items:center;gap:7px;padding:8px 15px;font-size:12.5px;color:var(--ink-2);
   background:#1c2340;border:1px solid #46507a;opacity:0;transform:translateY(16px);pointer-events:none;
@@ -857,25 +839,25 @@ body[data-sky="deep"]  #amb{background:rgba(20,30,72,.27)}
 .hero-cue svg{width:16px;height:16px;animation:cue 1.9s ease-in-out infinite}
 @keyframes cue{0%,100%{transform:translateY(0);opacity:.55}50%{transform:translateY(5px);opacity:1}}
 @media(max-width:620px){.hero-cue{display:none}}
-/* 首屏：缓缓上升的像素微光（留一盏灯） */
+
 .hero-motes{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .hero-motes i{position:absolute;display:block;width:4px;height:4px;background:var(--warm);opacity:0;
   animation:mote linear infinite}
 @keyframes mote{0%{transform:translateY(0);opacity:0}12%{opacity:.5}78%{opacity:.32}100%{transform:translateY(-150px);opacity:0}}
-/* 首屏：暖光呼吸 —— 让白天那一面更亮、更暖一点（只动 opacity/scale，不重绘） */
+
 .hero-glow{position:absolute;left:-6%;right:-6%;top:-12%;height:86%;pointer-events:none;z-index:0;
   background:radial-gradient(50% 56% at 74% 8%,rgba(255,226,150,.46),transparent 72%);
   opacity:.5;animation:glowbreathe 9.5s ease-in-out infinite}
 @keyframes glowbreathe{0%,100%{opacity:.36;transform:scale(1)}50%{opacity:.7;transform:scale(1.04)}}
-/* 首屏：一道很淡的光带，横向缓慢掠过（纯 transform，走合成层，不触发重绘） */
+
 .hero-beam{position:absolute;left:-40%;top:-25%;width:52%;height:150%;pointer-events:none;z-index:0;
   background:linear-gradient(100deg,transparent,rgba(255,238,196,.11) 48%,transparent);
   animation:beamdrift 30s linear infinite}
 @keyframes beamdrift{0%{transform:translateX(-30%) rotate(9deg)}100%{transform:translateX(230%) rotate(9deg)}}
-/* 天光整体偏暖一点：白天更亮，夜里也没那么沉 */
+
 body[data-sky="night"] .hero-glow,body[data-sky="deep"] .hero-glow{opacity:.16;animation:none}
 body[data-sky="night"] .hero-beam,body[data-sky="deep"] .hero-beam{opacity:.3}
-/* 白天：太阳那一团给个极缓的呼吸 */
+
 .hero[data-weather="clear"] .sky .sun{animation:sunbreathe 11s ease-in-out infinite}
 @keyframes sunbreathe{0%,100%{opacity:.82}50%{opacity:1}}
 /* 图片灯箱 */
@@ -891,7 +873,7 @@ body[data-sky="night"] .hero-beam,body[data-sky="deep"] .hero-beam{opacity:.3}
 .pw.photo,.strip figure{cursor:zoom-in}
 .pw.photo{transition:transform .18s cubic-bezier(.22,.61,.36,1),border-color .2s}
 .pw.photo:hover{transform:translateY(-3px);border-color:var(--c1)}
-/* 网格内容错峰淡入（仅动画 opacity，避免与既有 transform/hover 冲突） */
+
 .reveal.in :is(.grid .cell,.four .sq,.wall .note,.ex-grid .ex,.crew figure,.helpcard .hcard,.duo figure,.photowall .pw,.strip a){
   animation:rise .55s cubic-bezier(.22,.61,.36,1) both}
 @keyframes rise{from{opacity:0}to{opacity:1}}
@@ -908,7 +890,7 @@ body[data-sky="night"] .hero-beam,body[data-sky="deep"] .hero-beam{opacity:.3}
   .hero-cue svg,.hero-motes i{animation:none}
   .hero-glow,.hero-beam,.hero[data-weather="clear"] .sky .sun{animation:none}
 }
-/* 心理问答 · 折叠问答 */
+
 .qalist{border-top:1px solid var(--line)}
 .qa{border-bottom:1px solid var(--line)}
 .qa .q{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:none;border:0;
@@ -946,10 +928,7 @@ body[data-sky="night"] .hero-beam,body[data-sky="deep"] .hero-beam{opacity:.3}
 .grid.g3{grid-template-columns:repeat(3,1fr)}
 @media(max-width:820px){.grid.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.grid.g3{grid-template-columns:1fr}.qa .a p{padding:0 6px 16px}}
-/* ===== 自定义光标 =====
-   之前那版是三层径向渐变 + 一个会张开的光环，太花也太重（大面积 mix-blend-mode 合成）。
-   现在做小一点、细一点：一个小实心点 + 一圈很淡的描边，靠近可点元素时描边收紧。
-   视觉干净，也不用 mix-blend-mode。 */
+/* ===== 自定义光标 ===== */
 #cur{position:fixed;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:999;
   pointer-events:none;opacity:0;transition:opacity .22s ease;will-change:transform}
 #cur.on{opacity:1}
@@ -972,12 +951,12 @@ html.cur-on,html.cur-on *{cursor:none!important}
   opacity:.5;transform:scale(0);animation:rp .5s cubic-bezier(.2,.7,.3,1) forwards;will-change:transform,opacity}
 @keyframes rp{to{transform:scale(1);opacity:0}}
 @media(prefers-reduced-motion:reduce){.rfx>.rp{display:none}}
-/* 按压回弹：在现有位移基础上加一点点缩放，手感更"实" */
+
 .btn-a:active,.btn-b:active,.hb-help:active,.pgo:active{transform:translate(4px,4px) scale(.97)}
 .sq:active{transform:translateY(-4px) scale(.97)}
 .mo:active{transform:translateY(-3px) scale(.97)}
 .cell:active{transform:scale(.985)}
-/* 卡片 hover 暖光：用 opacity 过渡的伪元素，合成层不卡 */
+
 .cell,.sq,.mo{position:relative}
 .cell::after,.sq::after,.mo::after{content:'';position:absolute;inset:0;border-radius:14px;
   box-shadow:inset 0 0 0 1px rgba(150,180,255,.32),0 14px 34px -18px rgba(70,110,200,.55);
@@ -1551,7 +1530,6 @@ html.cur-on,html.cur-on *{cursor:none!important}
         </div>
         <p class="pcap">上面是真机画面截图 —— 雨夜 01:15 的出租屋。点一下画面，不用下载，直接就能玩。</p>
 
-        <!-- 那一夜的人（游戏内立绘） -->
         <div class="crew" aria-label="那一夜会遇到的人">
           <figure class="you"><img src="assets/hero/portrait.png" alt="水木和立绘" loading="lazy"><b>水木和</b><em>你</em></figure>
           <figure><img src="assets/npc/hemu.png" alt="何木立绘" loading="lazy"><b>何木</b><em>便利店 · 被遗忘的人</em></figure>
@@ -1664,7 +1642,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
 <div id="gp" hidden>
   <button id="gpClose" type="button" aria-label="关闭游戏">✕ 关闭</button>
   <iframe id="gpFrame" title="《异端星》· 荧惑" src="about:blank" allow="fullscreen"></iframe>
-  <!-- 手机上加载要好几秒，没反馈会以为没点上；iframe 自己 onload 之后收掉 -->
+
   <div id="gpLoad"><i></i><span>正在推开门…</span><em>第一次会慢一点</em></div>
 </div>
 
@@ -1674,7 +1652,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
 </div>
 
 <script>
-/* 自定义光标：进入网站后系统箭头换成一点停在檐下的暖光。 */
+
 (function(){
   var cur=document.getElementById('cur');
   if(!cur)return;
@@ -1701,7 +1679,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
   window.addEventListener('pointerup',function(){cur.classList.remove('down')},{passive:true});
   document.addEventListener('pointerleave',function(){cur.classList.remove('on');on=false});
   document.addEventListener('pointerenter',function(e){ if(e.pointerType==='mouse')move(e) });
-  /* 键盘 Tab 焦点也该有个光标反馈 */
+
   document.addEventListener('focusin',function(e){
     var r=e.target&&e.target.getBoundingClientRect&&e.target.getBoundingClientRect();
     if(!r)return;
@@ -1720,10 +1698,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
   if(!gp)return;
   window.__gpOpen=function(){ return !gp.hidden; };
 
-  /* ---------- 手机上：把整个浮层转成横屏 ----------
-     游戏是横着玩的。iframe 里的页面没法自己转（转了会溢出被裁），
-     所以由官网把「装它的这个盒子」转 90°，里面的 iframe 自然就是横屏尺寸。
-     转完再进全屏，把浏览器地址栏那一条也吃掉。 */
+  /* ---------- 手机上：把整个浮层转成横屏 ---------- */
   function isPhone(){
     try{ var m=Math.min(screen.width||9999,screen.height||9999);
       return m<600 || (matchMedia('(pointer:coarse)').matches && m<900); }catch(e){ return false; }
@@ -1733,8 +1708,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     if(innerWidth>innerHeight)return false;      /* 已经是横的了 */
     try{ return (sessionStorage.getItem('yd30_port')||'1')==='1'; }catch(e){ return true; }
   }
-  /* 只调一次 + 必须 .catch：重复调用会被 AbortError 取消，
-     而 Promise 的 reject 不会被外层 try/catch 抓到 —— 不 catch 就刷一屏报错。 */
+
   var lockTried=false;
   function lockLand(){
     if(lockTried)return; lockTried=true;
@@ -1755,18 +1729,18 @@ html.cur-on,html.cur-on *{cursor:none!important}
     if(!wantLandscape())return;
     gp.classList.add('rot90');
     lockLand();
-    /* 全屏必须在转完之后再要，否则拿到的还是竖屏尺寸 */
+
     setTimeout(function(){
       var el=gp, r=null;
       try{ if(el.requestFullscreen)r=el.requestFullscreen({navigationUI:'hide'});
            else if(el.webkitRequestFullscreen)r=el.webkitRequestFullscreen(); }catch(e){}
-      if(r&&r.catch)r.catch(function(){});        /* 没手势/不支持时会 reject，别让它冒泡成报错 */
+      if(r&&r.catch)r.catch(function(){});
       setTimeout(lockLand,400);
     },60);
   }
   var shutting=false;
   function leaveLandscape(){
-    shutting=true;                 /* 关的这段时间里，别再让游戏那边的 message 把横屏加回来 */
+    shutting=true;
     gp.classList.remove('rot90');
     unlockLand();
     try{ if(document.fullscreenElement||document.webkitFullscreenElement){
@@ -1775,10 +1749,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       if(q&&q.catch)q.catch(function(){}); } }catch(e){}
     setTimeout(function(){ shutting=false; },400);
   }
-  /* 游戏在 iframe 里也会自己判断，这里只是接收它的请求（比如点了「竖着玩」） */
-  /* 只认玩家自己的选择（why==='user'）。
-     游戏在 iframe 里会持续按屏幕比例报 auto，而"我已把它转成横屏"恰恰会让 iframe 变横、
-     于是它下一轮就报 auto:'0' —— 照这个做会来回抖。所以 auto 只用来加，不用来撤。 */
+
   addEventListener('message',function(e){
     var d=e&&e.data; if(!d||d.__yd30!=='landscape')return;
     if(shutting||gp.hidden)return;
@@ -1795,13 +1766,13 @@ html.cur-on,html.cur-on *{cursor:none!important}
   });
   function open(){
     if(!gp.hidden)return; gp.hidden=false; fr.src='异端星_荧惑.html'; document.body.style.overflow='hidden';
-    if(gLoad)gLoad.hidden=false;      /* 每次打开都重新显示，别一次收掉之后永远不出现 */
-    /* 兜底：万一 load 事件没来（缓存/拦截），8 秒后也收 */
+    if(gLoad)gLoad.hidden=false;
+
     clearTimeout(open.__t); open.__t=setTimeout(function(){ if(gLoad)gLoad.hidden=true; },8000);
-    /* 关键：官网自己的环境音必须让位，不然游戏底下一直有雨声 */
+
     if(window.__siteAudio)window.__siteAudio.duck();
     enterLandscape();
-    if(window.__ach)window.__ach('door'); }        /* 推门成就 = 真的推开了，不是路过这一屏 */
+    if(window.__ach)window.__ach('door'); }
   function close(){
     if(gp.hidden)return;
     leaveLandscape();
@@ -1813,10 +1784,10 @@ html.cur-on,html.cur-on *{cursor:none!important}
   if(pgo)pgo.addEventListener('click',open);
   document.getElementById('gpClose').addEventListener('click',close);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')close(); });
-  /* 退出全屏（手势/系统返回）也会关掉横屏状态 */
+
   document.addEventListener('fullscreenchange',function(){
     if(!(document.fullscreenElement||document.webkitFullscreenElement)&&!gp.hidden){
-      /* 全屏被退出了但游戏还开着：横屏盒子留着，只把方向锁松掉 */
+
       unlockLand();
     }
   });
@@ -1824,9 +1795,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
 </script>
 
 <div class="wxctl" id="wxctl">
-  <!-- 这里按「天气种类」列，不再把一天 8 个时段各列一条 ——
-       8 条里其实只有 4 种天气，重复列还让人以为每条不一样。
-       时段→天气的对应关系由下面的「一天」说明承担，canvas 里也确实按那个映射画。 -->
+
   <div class="wxmenu wx-day" id="wxMenu" role="menu">
     <span class="wx-cap">换一种天气</span>
     <button type="button" data-w="clear">晴</button>
@@ -1843,8 +1812,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     <div class="sep"></div>
     <button type="button" id="wxAuto">回到自动（跟着时间走）</button>
   </div>
-  <!-- 按钮上写一句话：此刻的天气 · 时段。天气由天空本身表达，
-       这里只是用文字把它说清楚，方便看不见效果的人。 -->
+
   <button class="wxbtn" id="wxBtn" type="button" aria-label="切换天气">
     <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M14 40h34a8 8 0 0 0 0-16 11 11 0 0 0-21 3 7 7 0 0 0-13 13z"/><path d="M22 48l-3 7M32 48l-3 7M42 48l-3 7"/></svg>
     <span id="wxTime">深夜</span></button>
@@ -1892,11 +1860,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     function size(){S=Math.min(window.devicePixelRatio||1,1.6);
       W=cv.width=Math.max(1,Math.floor(innerWidth*S));H=cv.height=Math.max(1,Math.floor(innerHeight*S));
       cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}
-    /* ================= 天气绘制（单层轻量版）=================
-       之前那版为了"真实感"上了三层景深 + ctx.filter blur + 云带径向渐变 + 雨溅，
-       每帧要对整块 canvas 做一次模糊，900+ 粒子 —— 滚动时直接掉帧。
-       这里的取舍：**真实感靠 CSS 背景和光影去做，canvas 只负责"会动的那部分"**。
-       单层、粒子数减半、不用任何滤镜，速度回到原来的水平。 */
+    /* ================= 天气绘制（单层轻量版）================= */
     var WIND={v:0};
     function windTick(){ WIND.v=Math.sin(t*0.0035)*0.6+Math.sin(t*0.0091+1.1)*0.25; }
     var CNT={rain:88,snow:150,clear:34,cloud:26,fog:16};   /* 比原来少一半以上 */
@@ -1906,7 +1870,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
         if(m==='rain')P.push({x:rnd(-.25,1.25)*W,y:rnd(0,1)*H,l:rnd(10,26)*S,v:rnd(11,19)*S,a:rnd(.14,.34)});
         else if(m==='snow'){var rr=Math.random(),r0=rr<0.14?rnd(2.7,4.2):(rr<0.5?rnd(1.6,2.7):rnd(.9,1.6));
           P.push({x:rnd(0,1)*W,y:rnd(0,1)*H,r:r0*S,v:rnd(.5,2.0)*S,ph:rnd(0,6.283),a:rr<0.14?rnd(.6,.95):rnd(.35,.75)})}
-        /* 雾：几团横向慢慢飘的浅色雾块，不画雨线也不画点 */
+
         else if(m==='fog')P.push({x:rnd(-.2,1.2)*W,y:rnd(-.05,.85)*H,
           rx:rnd(.16,.46)*W,ry:rnd(.05,.13)*H,v:rnd(.05,.22)*S,ph:rnd(0,6.283),a:rnd(.05,.13)});
         else P.push({x:rnd(0,1)*W,y:rnd(0,1)*H,r:rnd(.7,1.9)*S,v:rnd(.10,.40)*S,ph:rnd(0,6.283),a:rnd(.12,.40)});
@@ -1933,7 +1897,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
           if(p.y>H+12){p.y=-12;p.x=rnd(0,1)*W}
           if(p.x<-16)p.x=W+14; else if(p.x>W+16)p.x=-14}
       }else if(m==='fog'){
-        /* 雾：一团团横向飘的浅色椭圆，用径向渐变让它边缘散开 */
+
         for(i=0;i<P.length;i++){p=P[i];
           var br=Math.max(p.rx,p.ry);
           var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,br);
@@ -1966,34 +1930,21 @@ html.cur-on,html.cur-on *{cursor:none!important}
       if(window.__wxMark)window.__wxMark();
       if(instant||reduce){cur={P:mk(m),m:m};nxt=null;fade=1;return}
       nxt={P:mk(m),m:m};fade=0}
-    /* 之前是 fade+=1/170 —— 按"帧"算，掉帧时过渡会被拖长（30fps 下要 5 秒多），
-       而且 170 帧和 CSS 那 2.6s 的底色过渡根本对不上，所以看着一顿一顿的。
-       改成按真实时间推进，统一 2600ms，并且用 smoothstep 让首尾更柔。 */
+
     var FADE_MS=2600,lastTs=0;
     function loop(ts){
       var dt=lastTs?Math.min(60,(ts||0)-lastTs):16.7; lastTs=ts||0;
-      t+=dt/16.7;                      /* t 原本按帧计数，改成按时间，掉帧时速度不失真 */
+      t+=dt/16.7;
       windTick();ctx.clearRect(0,0,W,H);
       if(nxt){fade+=dt/FADE_MS;if(fade>=1){cur=nxt;nxt=null;fade=1}}
-      var e=fade*fade*(3-2*fade);      /* smoothstep：起步和收尾都更顺 */
+      var e=fade*fade*(3-2*fade);
       if(cur)draw(cur.P,cur.m,nxt?1-e:1);
       if(nxt)draw(nxt.P,nxt.m,e);
       requestAnimationFrame(loop)}
     size();cur={P:mk('rain'),m:'rain'};mode='rain';setMode('rain','deep',true);
     addEventListener('resize',function(){size();cur={P:mk(mode),m:mode};nxt=null;fade=1},{passive:true});
     if(!reduce)loop();
-    /* ============ 一天的时间线 ============
-       一整天按时间走完，每个时段配一种"心情天气"：
-       一个人一天的心情，跟天气一样会变好几次。所以滚到哪一块，
-       天光和天气就变成那一刻的样子 —— 从清早到深夜，走完一天。
-       first  未醒透 04–06  雾     睁眼但还没醒，冷、灰、没有形状
-       dawn   天亮   06–08  晴     光是淡的，什么都还看不清
-       morn   上午   08–11  晴     一天里最清醒的一段，能做点事
-       noon   正午   11–14  晴     亮到发白，反而有点晃神
-       aft    午后   14–17  多云   太阳偏了，气开始闷
-       dusk   黄昏   17–20  多云   一天最容易觉得"我什么都做不好"
-       night  入夜   20–23  雨     白天压住的开始往上涌
-       deep   深夜   23–04  雨     情绪才敢出来，也最需要人 */
+    /* ============ 一天的时间线 ============ */
     var HOUR_SKY=[
       {h:4,sky:'first',w:'fog',    n:'未醒透',t:'04 – 06',note:'雾'},
       {h:6,sky:'dawn', w:'clear',  n:'天亮',  t:'06 – 08',note:'晴'},
@@ -2006,10 +1957,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     ];
     var SKYNAME={first:'未醒透',dawn:'天亮',morn:'上午',noon:'正午',aft:'午后',dusk:'黄昏',night:'入夜',deep:'深夜'};
     var WXNAME={clear:'晴',cloud:'多云',rain:'雨',fog:'雾',snow:'雪'};
-    /* 每个板块的时段标签、天气，一律由 HOUR_SKY 推导 —— 不再手写。
-       之前手写的版本会出现「天气名不匹配」：比如 ill 那块 data-w 写的是 rain
-       但标签写的是雾，而 HOUR_SKY 里 first 明明是 fog。只要有一处对不上，
-       界面就会自相矛盾。现在这里统一改写一遍，从根上杜绝。 */
+
     (function(){
       var MAP={};
       for(var i=0;i<HOUR_SKY.length;i++)MAP[HOUR_SKY[i].sky]=HOUR_SKY[i];
@@ -2023,7 +1971,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
         if(!tn){tn=document.createTextNode('');tb.appendChild(tn)}
         tn.nodeValue=m.n+' · '+m.t+' · '+m.note;
       });
-      /* 菜单里「一天里」的对照表也由同一份数据生成 */
+
       var list=document.querySelector('.wx-day-list');
       if(list){
         var html='<span>一天里，天气跟着时辰换：</span>',j;
@@ -2032,31 +1980,44 @@ html.cur-on,html.cur-on *{cursor:none!important}
         list.innerHTML=html;
       }
     })();
-    /* 按现在几点开场：先按本地时间落在那一刻，之后往下滚动才继续往前走 */
-    var k=4,auto=true,tid=null;
+
+    var k=4,auto=true,tid=null,curSec=null;
+    /* 凌晨 0–3 点落在「深夜 23–04」这一段上，不能因为够不到 4 点就退回「未醒透 04–06」 */
+    function hourIdx(hh){
+      var i,r=(hh<HOUR_SKY[0].h)?HOUR_SKY.length-1:0;
+      for(i=0;i<HOUR_SKY.length;i++)if(hh>=HOUR_SKY[i].h)r=i;
+      return r;
+    }
+    /* 自动 = 跟着这台机器的钟走。
+       以前开场按本地时间落位之后，还有一条每 34~52 秒自己往下演一段的定时器，
+       结果一分钟不到天色就跑到下一个时辰了，看着像"自动时间根本没按本地时间来"。
+       现在只有真实时间跨过点（4/6/8/11/14/17/20/23）才换天色。 */
+    function syncClock(){
+      var i=hourIdx(new Date().getHours());
+      if(i===k)return;
+      k=i;curSec=null;
+      setMode(HOUR_SKY[k].w,HOUR_SKY[k].sky);
+      if(window.__wxMark)window.__wxMark();
+    }
     (function(){
-      var now=new Date();
-      k=0;
-      for(var i=0;i<HOUR_SKY.length;i++)if(now.getHours()>=HOUR_SKY[i].h)k=i;
+      k=hourIdx(new Date().getHours());
       setMode(HOUR_SKY[k].w,HOUR_SKY[k].sky,true);
     })();
-    function next(){clearTimeout(tid);if(!auto)return;
-      tid=setTimeout(function(){k=(k+1)%HOUR_SKY.length;setMode(HOUR_SKY[k].w,HOUR_SKY[k].sky);next()},34000+Math.random()*18000)}
-    next();
+    setInterval(function(){ if(auto)syncClock(); },60000);
     window.__wxSet=function(m,sky){setMode(m,sky)};
     (function(){
       var btn=document.getElementById('wxBtn'),menu=document.getElementById('wxMenu');if(!btn)return;
       function mark(){
         var h=document.getElementById('top'),w=(h&&h.getAttribute('data-weather'))||mode,
             sky=document.body.getAttribute('data-sky')||'deep';
-        /* 菜单现在只按「天气种类」列，所以只比 data-w 就行，不用再比时段 */
+
         [].forEach.call(menu.querySelectorAll('button[data-w]'),function(b){
           b.classList.toggle('on',!auto&&b.getAttribute('data-w')===w)});
         var a=document.getElementById('wxAuto');if(a)a.classList.toggle('on',auto);
-        /* 「一天里」的说明跟着当前时段高亮，让人看得见对应关系 */
+
         [].forEach.call(menu.querySelectorAll('.wx-day-list em'),function(e){
           e.classList.toggle('now',e.getAttribute('data-s')===sky)});
-        /* 按钮上写「此刻 天气 · 时段」——一句话说清现在是什么样，不拆成两栏重复 */
+
         var tm=document.getElementById('wxTime');
         if(tm)tm.textContent=(WXNAME[w]||'')+' · '+(SKYNAME[sky]||'')+(auto?'':' · 自选')}
       window.__wxMark=mark;mark();
@@ -2069,20 +2030,17 @@ html.cur-on,html.cur-on *{cursor:none!important}
           return}
         if(!b.hasAttribute('data-w'))return;
         auto=false;clearTimeout(tid);
-        /* 只换天气，时段保持不变（时段是「现在几点」，不该被手动改动） */
+
         setMode(b.getAttribute('data-w'),null);
         mark();menu.classList.remove('on');
       });
       document.addEventListener('click',function(){menu.classList.remove('on')});
     })();
-    /* 滚动只做"往后推进"，绝不往前回退 —— 一天的顺序必须是从早到晚。
-       关键：页面一打开时的时段由本地时间决定（上面那个 IIFE 已经落好位），
-       这里的首帧 pick() 曾经用首页 data-time="deep" 把它覆盖成深夜，
-       所以现在只在「用户真的往下滚过」之后才允许接手。 */
+
     (function(){
       var secs=[].slice.call(document.querySelectorAll('[data-time]'));
       if(!secs.length)return;
-      var idle=null,curSec=null,running=false,userScrolled=false;
+      var userScrolled=false;
       function apply(el){
         if(!auto)return;
         if(el===curSec)return;
@@ -2090,45 +2048,30 @@ html.cur-on,html.cur-on *{cursor:none!important}
         setMode(el.getAttribute('data-w')||'clear',el.getAttribute('data-time')||'deep');
         if(window.__wxMark)window.__wxMark()}
       function pick(){
-        if(!userScrolled)return;          /* 还没滚过 → 时段交给本地时间 */
+        if(!userScrolled)return;
         var mid=innerHeight*0.42,best=null;
         for(var i=0;i<secs.length;i++){var r=secs[i].getBoundingClientRect();
           if(r.top<=mid&&r.bottom>mid)best=secs[i]}
         if(best)apply(best)}
-      function cycle(){
-        clearTimeout(tid);
-        if(!auto){running=false;return}
-        tid=setTimeout(function(){
-          if(!auto){running=false;return}
-          k=(k+1)%seq.length;curSec=null;
-          setMode(seq[k].w,seq[k].sky);
-          if(window.__wxMark)window.__wxMark();
-          cycle()},34000+Math.random()*18000)}
-      function arm(){
-        clearTimeout(idle);
-        if(running)return;
-        idle=setTimeout(function(){if(auto){running=true;cycle()}},42000)}
-      /* 「回到自动」= 回到本地时间这一刻，不是回到滚动位置。
-         之前调 pick()，但 pick 有 userScrolled 门闩，没滚过就什么都不做，
-         结果点了「回到自动」天空卡在自选天气上。 */
+      /* 空闲自动轮播已去掉：它引用了外层并不存在的 seq，一跑就 ReferenceError，
+         而且和"按本地时间"是两回事 —— 自动现在只由 syncClock() 跟着真实时间走 */
       window.__wxSync=function(){
-        var hh=new Date().getHours(),i,idx=0;
-        for(i=0;i<HOUR_SKY.length;i++)if(hh>=HOUR_SKY[i].h)idx=i;
-        curSec=null;
+        auto=true;curSec=null;
+        var idx=hourIdx(new Date().getHours());
+        k=idx;
         setMode(HOUR_SKY[idx].w,HOUR_SKY[idx].sky);
         if(window.__wxMark)window.__wxMark();
       };
       addEventListener('scroll',function(){
-        if(!userScrolled&&scrollY>40)userScrolled=true;   /* 记下「人真的开始往下滚了」 */
-        pick();arm()},{passive:true});
+        if(!userScrolled&&scrollY>40)userScrolled=true;
+        pick()},{passive:true});
       addEventListener('resize',pick,{passive:true});
     })();
   })();
-  /* 光：滚动驱动的角度 —— 每滚一屏光斑换一个方向，过渡由 CSS 平滑；翻得快会"追不上"→ 拖影 */
+
   (function(){
     var el=document.getElementById('light');if(!el)return;
-    /* 补上 first/morn/aft（原来缺，会退回 deep 的冷蓝），
-       白天整体往暖里调一点，夜里稍微抬亮，配合 #amb 一起做"更亮一点"的观感。 */
+
     var C={first:[176,198,232,.24,'150% 118%'],
            dawn:[186,214,244,.30,'152% 122%'],
            morn:[255,232,182,.28,'132% 108%'],
@@ -2223,8 +2166,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     });
     load();
   })();
-  /* 清空本地痕迹：分项勾选，只删选中的，且**不刷新页面**（刷新会跳回顶部，
-     正在看的内容就没了）。音乐/操作提示这类偏好不提供清除——它们不是"痕迹"。 */
+
   (function(){
     var btn=document.getElementById('wipeBtn'),box=document.getElementById('wipeBox'),
         go=document.getElementById('wipeGo'),no=document.getElementById('wipeNo'),
@@ -2251,7 +2193,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       keys.forEach(function(k){
         try{ if(localStorage.getItem(k)!==null){localStorage.removeItem(k);n++;} }catch(e){}
       });
-      /* 页面上的痕迹立刻消失，不用刷新 */
+
       if(localStorage.getItem('xinxie_notes')===null){
         var w=document.getElementById('myNotes'); if(w)w.innerHTML='';
       }
@@ -2325,7 +2267,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     ];
     var got={},toastT=0,el=document.getElementById('ach'),elT=document.getElementById('achT'),
         list=document.getElementById('achList'),cnt=document.getElementById('achN');
-    /* 成就记在 localStorage：以前只存在内存里，一刷新就全灭、重新滚一遍又全亮。 */
+
     var AKEY='xinxie_ach';
     try{got=JSON.parse(localStorage.getItem(AKEY)||'{}')||{};}catch(e){got={}}
     function save(){try{localStorage.setItem(AKEY,JSON.stringify(got))}catch(e){}}
@@ -2342,12 +2284,11 @@ html.cur-on,html.cur-on *{cursor:none!important}
     function unlock(id,silent){
       if(got[id])return;var a=null;ACHS.forEach(function(x){if(x.id===id)a=x});if(!a)return;
       got[id]=1;save();render();
-      if(silent)return;                       /* 回填历史进度时不弹 toast */
+      if(silent)return;
       elT.textContent=a.t;el.classList.add('on');
       clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},3400);
     }
-    /* 解锁不再靠"路过"——必须真的在那块内容里停留够久，或真的动手做了一件事。
-       停留计时离开该区块就取消，读一半划走不算。 */
+
     var dwel={};
     function watch(id,aid,frac,ms){
       var e=document.getElementById(id);if(!e)return;
@@ -2359,7 +2300,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       io.observe(e);
     }
     setTimeout(function(){unlock('sit')},2600);
-    /* 每块停留更久：读"认识它们/问答"这种，得真的读一会儿 */
+
     watch('know','read',.45,12000);
     watch('ill','read2',.45,14000);
     watch('ask','ask',.45,12000);
@@ -2407,7 +2348,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
 })();
 </script>
 <script>
-/* 官网背景环境音：随天气变化的生成式声景（雨/雪/多云/晴各有音量与音色），纯 WebAudio，默认关闭 */
+
 (function(){
   var btn=document.getElementById('sndBtn');
   if(!btn)return;
@@ -2417,7 +2358,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     for(var i=0;i<len;i++){ var w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.2; }
     return buf;
   }
-  /* 开机提示音：轻柔两声小钟，直连输出（不受主音量淡入影响），给"已经打开"的明确反馈 */
+
   function chime(t0){
     if(!ctx)return;
     [659.25,987.77].forEach(function(f,i){
@@ -2429,7 +2370,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0+1.8);
     });
   }
-  /* 每种天气的声景：低通频率 / 雨噪增益 / 起伏深度 */
+
   var WX={
     rain: {f:1500, g:0.50, lfo:520},
     snow: {f:620,  g:0.20, lfo:170},
@@ -2450,14 +2391,14 @@ html.cur-on,html.cur-on *{cursor:none!important}
     var AC=window.AudioContext||window.webkitAudioContext; if(!AC)return false;
     ctx=new AC();
     master=ctx.createGain(); master.gain.value=0.0001; master.connect(ctx.destination);
-    /* 雨声：粉噪 → 低通，缓慢 LFO 让雨势起伏（参数随天气变） */
+
     var src=ctx.createBufferSource(); src.buffer=makeNoise(ctx); src.loop=true;
     lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1500; lp.Q.value=0.5;
     ng=ctx.createGain(); ng.gain.value=0.5;
     src.connect(lp); lp.connect(ng); ng.connect(master);
     var lfo=ctx.createOscillator(); lfo.frequency.value=0.07;
     lfg=ctx.createGain(); lfg.gain.value=520; lfo.connect(lfg); lfg.connect(lp.frequency); lfo.start();
-    /* 暖底：两个微失谐正弦 + 一个五度，垫着，像远处屋里的灯（不随天气变） */
+
     [110,110.6,165].forEach(function(f,i){
       var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
       var g=ctx.createGain(); g.gain.value=i===2?0.05:0.085; o.connect(g); g.connect(master); o.start();
@@ -2477,35 +2418,30 @@ html.cur-on,html.cur-on *{cursor:none!important}
       btn.classList.add('on'); btn.querySelector('em').textContent='开';
     }else{
       on=false; if(master)master.gain.setTargetAtTime(0.0001,ctx.currentTime,0.4);
-      /* 关闭也给一声轻的收尾，和开启的 chime 对称 */
+
       if(window.__uiPing){ try{ window.__uiPing(987.77,0.070,0.5,'sine'); window.__uiPing(659.25,0.050,0.7,'sine') }catch(e){} }
       btn.classList.remove('on'); btn.querySelector('em').textContent='关';
     }
   }
-  /* 天气自动/手动切换 → 声景跟着变 */
+
   var top=document.getElementById('top');
   if(top){ try{ new MutationObserver(function(){ applyWeather(top.getAttribute('data-weather')); }).observe(top,{attributes:true,attributeFilter:['data-weather']}); }catch(e){} }
   function toggle(){ set(!on); }
   btn.addEventListener('click',toggle);
 
-  /* ---------- 后台静音 ----------
-     游戏是 iframe 里跑的，它有自己一整套声音。
-     以前推开游戏浮层，官网这条声景还在底下响 —— 两套声音叠在一起，
-     听着像隔壁屋在下雨，很出戏，而且关掉浮层之前根本停不掉。
-     现在：开游戏 → 整条环境音挂起（ctx.suspend，连振荡器一起停，不耗电）；
-     关掉 → 只有原本开着的才恢复。同理切到别的标签页也挂起。 */
+  /* ---------- 后台静音 ---------- */
   var ducked=false;
   window.__siteAudio={
     get on(){ return on; },
     get ducked(){ return ducked; },
-    /* 挂起：整条链停掉（不是把音量拉到 0 —— 那样振荡器还在跑） */
+
     duck:function(){
       ducked=true;
       if(!ctx)return;
       try{ if(master)master.gain.setTargetAtTime(0.0001,ctx.currentTime,0.12); }catch(e){}
       setTimeout(function(){ try{ if(ctx&&ctx.state==='running')ctx.suspend(); }catch(e){} },200);
     },
-    /* 恢复：只有原本开着的才回来，别把用户没开的声音打开 */
+
     unduck:function(){
       ducked=false;
       if(!ctx||!on)return;
@@ -2514,18 +2450,13 @@ html.cur-on,html.cur-on *{cursor:none!important}
            master.gain.setTargetAtTime(0.9,ctx.currentTime,0.5); applyWeather(curW()); }catch(e){}
     }
   };
-  /* 切走标签页/最小化 → 也挂起，回来再恢复 */
+
   document.addEventListener('visibilitychange',function(){
     if(document.hidden){ window.__siteAudio.duck(); }
     else if(!(window.__gpOpen&&window.__gpOpen())){ window.__siteAudio.unduck(); }
   });
 
-  /* ---------- 界面音效 ----------
-     你之前觉得"开声音那一下的反馈挺好听"，那是 chime()（两声小钟）。
-     问题是它只在开声音时响一次，其他按钮全哑的。
-     现在给所有按钮接上音效，并且走**独立通道 uiG**：
-     它不受"声音"总开关控制 —— 否则默认关着的时候，按钮永远不会有声音，
-     那样等于白做。音量压得很轻（0.05~0.09），不吵。 */
+  /* ---------- 界面音效 ---------- */
   (function(){
     var u=null, uiG=null;
     function ensure(){
@@ -2535,7 +2466,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       return true;
     }
     function unlock(){ if(u&&u.state==='suspended')u.resume(); }
-    /* 一点点低频让音色不那么单薄 */
+
     function ping(freq,peak,dur,type){
       if(!ensure())return; unlock();
       var t=u.currentTime+0.001;
@@ -2546,27 +2477,27 @@ html.cur-on,html.cur-on *{cursor:none!important}
       g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.14));
       o.connect(g); g.connect(uiG); o.start(t); o.stop(t+(dur||0.14)+0.03);
     }
-    /* 同一时刻不叠加太多，连续点按钮也不会糊成一团 */
+
     var lastT=0;
     function gate(){ var n=Date.now(); if(n-lastT<45)return false; lastT=n; return true }
     var UI={
-      /* 悬停：很轻的一声"哒"，几乎察觉不到但手指有反馈 */
+
       hover :function(){ if(gate())ping(1180,0.020,0.05,'triangle') },
-      /* 点击：短促一点的方波，比悬停低一点 */
+
       click :function(){ if(!gate())return; ping(880,0.045,0.07,'triangle'); ping(1320,0.022,0.06,'sine') },
-      /* 确认/成功：上行两度 */
+
       ok    :function(){ if(!gate())return; ping(660,0.055,0.10,'sine'); setTimeout(function(){ping(990,0.045,0.16,'sine')},52) },
       /* 关闭/取消：下行 */
       off   :function(){ if(!gate())return; ping(660,0.040,0.09,'sine'); setTimeout(function(){ping(494,0.035,0.14,'sine')},50) }
     };
-    window.__ui=UI;                     /* 供其他模块按需调用 */
-    /* 声音按钮那一段要用 chime 的上下文（同一个 AudioContext，避免多开一个） */
+    window.__ui=UI;
+
     try{ window.__uiPing=function(f,peak,dur,type){ ping(f,peak,dur,type) } }catch(e){}
-    /* 首次任意交互时把 AudioContext 拉起来（浏览器自动播放策略） */
+
     ['pointerdown','keydown'].forEach(function(t){
       addEventListener(t,function(){ ensure(); unlock() },{once:true,passive:true});
     });
-    /* 全站委托：不用给每个按钮单独绑 */
+
     var SEL='a,button,.pgo,.opt,[role="button"],label,summary,.hb-ach,.wxbtn,.dock';
     document.addEventListener('pointerover',function(e){
       var t=e.target; if(!t||!t.closest)return;
@@ -2575,7 +2506,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     document.addEventListener('click',function(e){
       var t=e.target; if(!t||!t.closest)return;
       var el=t.closest(SEL); if(!el)return;
-      /* 天气/声音按钮各有自己的专属反馈，不重复叠 */
+
       if(el.id==='sndBtn')return;
       if(el.id==='wxBtn'){ UI.click(); return }
       if(el.closest('#wxMenu')){ UI.ok(); return }
@@ -2584,7 +2515,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       UI.click();
     });
   })();
-  /* 触屏兜底：部分手机浏览器 click 合成延迟或丢失，touchend 直接开（去抖防双触发） */
+
   var _lt=0;
   btn.addEventListener('touchend',function(e){
     e.preventDefault(); var n=Date.now(); if(n-_lt<400)return; _lt=n; toggle();
@@ -2592,7 +2523,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
 })();
 </script>
 <script>
-/* 展示增强：阅读进度 / 回到顶部 / 图片灯箱（纯原生，无依赖） */
+
 (function(){
   'use strict';
   /* 阅读进度条 */
@@ -2614,7 +2545,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}
     });
   })();
-  /* 图片灯箱：照片墙 + 海报横滑条，点开看大图 */
+
   (function(){
     var box=document.getElementById('lbox'); if(!box)return;
     var img=box.querySelector('img');
@@ -2634,7 +2565,6 @@ html.cur-on,html.cur-on *{cursor:none!important}
     document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
   })();
 
-  /* 心理问答：点击问题展开/收起答案 */
   (function(){
     var list=document.querySelector('.qalist'); if(!list)return;
     list.addEventListener('click',function(e){
@@ -2646,7 +2576,6 @@ html.cur-on,html.cur-on *{cursor:none!important}
     });
   })();
 
-  /* 心理知识小测：20 题（题目来自协会提供的题库，逐题可选、附解析） */
   (function(){
     var elT=document.getElementById('qTitle'), elO=document.getElementById('qOpts'),
         elW=document.getElementById('qWhy'), elP=document.getElementById('qProg'), elB=document.getElementById('qBar');
@@ -2674,7 +2603,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
       {q:'⭐商家宣传商品“限时特惠、仅剩最后5件”，会让人觉得机会难得，冲动下单，这种因为资源有限而大幅提升渴望程度的心理是？',o:['稀缺效应','峰值效应','罗森塔尔效应','巴纳姆效应'],a:0,w:'稀缺效应：当事物被标注为稀少、限时、限量时，人们会高估它的价值，产生想要立刻拥有的冲动。'}
     ];
     var i=0,right=0;
-    /* 已答题数记在本地：清空"小测"后要真的归零，且刷新后不被"恢复" */
+
     var QKEY='xinxie_quiz',done=0;
     try{done=parseInt(localStorage.getItem(QKEY)||'0',10)||0;}catch(e){done=0}
     function saveQ(){try{localStorage.setItem(QKEY,String(done))}catch(e){}}
@@ -2699,7 +2628,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
         elO.appendChild(b);
       });
     }
-    /* 重新测：题号、答对数、进度条、解析全部归零，从第一题重来 */
+
     function reset(){
       i=0;right=0;done=0;saveQ();
       elB.style.width='0%'; elW.innerHTML=''; elO.innerHTML='';
@@ -2735,11 +2664,11 @@ html.cur-on,html.cur-on *{cursor:none!important}
 })();
 </script>
 <script>
-/* 官网活起来：按压波纹 + 首屏视差（仅 transform/opacity，rAF 节流，不卡；尊重「减少动效」） */
+
 (function(){
   var reduce=false;
   try{ reduce=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
-  /* —— 按压波纹 —— */
+
   if(!reduce){
     var SEL='a.btn-a,a.btn-b,.hb-help,.pgo,.sq,.cell,.mo,.sm,.hs,.hcard,.pw,.strip a,.hb-nav a,.twrite button,.acts button,.crewc figure,.duo figure';
     function rip(el,e){
@@ -2762,7 +2691,7 @@ html.cur-on,html.cur-on *{cursor:none!important}
     }
     [].slice.call(document.querySelectorAll(SEL)).forEach(add);
   }
-  /* —— 首屏视差（只在首屏内才动，离开即停，省电） —— */
+
   if(!reduce){
     var hi=document.querySelector('.hero-inner'),
         mt=document.querySelector('.hero-motes');
